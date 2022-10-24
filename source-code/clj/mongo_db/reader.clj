@@ -22,8 +22,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn find-maps
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) query
   ; @param (namespaced map)(opt) projection
@@ -40,8 +38,6 @@
              (catch Exception e (println (str e "\n" {:collection-name collection-name :query query :projection projection})))))))
 
 (defn find-one-as-map
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) query
   ; @param (namespaced map)(opt) projection
@@ -58,8 +54,6 @@
              (catch Exception e (println (str e "\n" {:collection-name collection-name :query query :projection projection})))))))
 
 (defn find-map-by-id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (org.bson.types.ObjectId object) document-id
   ; @param (namespaced map)(opt) projection
@@ -76,8 +70,6 @@
              (catch Exception e (println (str e "\n" {:collection-name collection-name :document-id document-id :projection projection})))))))
 
 (defn count-documents
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ;
   ; @return (integer)
@@ -87,8 +79,6 @@
             (catch Exception e (println (str e "\n" {:collection-name collection-name}))))))
 
 (defn count-documents-by-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) query
   ;
@@ -105,7 +95,7 @@
 
 (defn get-collection-names
   ; @usage
-  ;  (mongo-db/get-collection-names)
+  ;  (get-collection-names)
   ;
   ; @return (strings in vector)
   []
@@ -116,7 +106,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/get-collection-namespace "my_collection")
+  ;  (get-collection-namespace "my_collection")
   ;
   ; @return (keyword)
   [collection-name]
@@ -127,7 +117,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/get-all-document-count "my_collection")
+  ;  (get-all-document-count "my_collection")
   ;
   ; @return (integer)
   [collection-name]
@@ -137,7 +127,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/collection-empty? "my_collection")
+  ;  (collection-empty? "my_collection")
   ;
   ; @return (boolean)
   [collection-name]
@@ -148,14 +138,14 @@
   ; @param (map) query
   ;
   ; @usage
-  ;  (mongo-db/get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ;  (get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (mongo-db/get-document-count-by-query "my_collection" {:$or [{...} {...}]})
+  ;  (get-document-count-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @usage
-  ;  (mongo-db/get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
-  ;                                                         :namespace/your-string "Your value"})
+  ;  (get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
+  ;                                                :namespace/your-string "Your value"})
   ;
   ; @return (integer)
   [collection-name query]
@@ -167,8 +157,8 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @example
-  ;  (mongo-db/get-collection "my_collection" {:namespace/my-keyword  0
-  ;                                            :namespace/your-string 1})
+  ;  (get-collection "my_collection" {:namespace/my-keyword  0
+  ;                                   :namespace/your-string 1})
   ;  =>
   ;  [{:namespace/my-keyword  :my-value
   ;    :namespace/your-string "Your value"
@@ -191,15 +181,15 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @usage
-  ;  (mongo-db/get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ;  (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (mongo-db/get-documents-by-query "my_collection" {:$or [{...} {...}]})
+  ;  (get-documents-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @example
-  ;  (mongo-db/get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                                   {:namespace/my-keyword  0
-  ;                                                    :namespace/your-string 1})
+  ;  (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
+  ;                                          {:namespace/my-keyword  0
+  ;                                           :namespace/your-string 1})
   ;  =>
   ;  [{:namespace/your-string "Your value"
   ;    :namespace/id          "MyObjectId"}]
@@ -228,15 +218,15 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @usage
-  ;  (mongo-db/get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ;  (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (mongo-db/get-document-by-query "my_collection" {:$or [{...} {...}]})
+  ;  (get-document-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @example
-  ;  (mongo-db/get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                                  {:namespace/my-keyword  0
-  ;                                                   :namespace/your-string 1})
+  ;  (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
+  ;                                         {:namespace/my-keyword  0
+  ;                                          :namespace/your-string 1})
   ;  =>
   ;  {:namespace/your-string "Your value"
   ;   :namespace/id          "MyObjectId"}
@@ -260,8 +250,8 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @example
-  ;  (mongo-db/get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
-  ;                                                             :namespace/your-string 1})
+  ;  (get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
+  ;                                                    :namespace/your-string 1})
   ;  =>
   ;  {:namespace/your-string "Your value"
   ;   :namespace/id          "MyObjectId"}
@@ -283,7 +273,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/get-first-document "my_collection")
+  ;  (get-first-document "my_collection")
   ;
   ; @return (namespaced map)
   [collection-name]
@@ -294,7 +284,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/get-last-document "my_collection")
+  ;  (get-last-document "my_collection")
   ;
   ; @return (namespaced map)
   [collection-name]
@@ -306,7 +296,7 @@
   ; @param (string) document-id
   ;
   ; @usage
-  ;  (mongo-db/document-exists? "my_collection" "MyObjectId")
+  ;  (document-exists? "my_collection" "MyObjectId")
   ;
   ; @return (boolean)
   [collection-name document-id]
@@ -323,10 +313,10 @@
   ; @param (maps in vector) pipeline
   ;
   ; @usage
-  ;  (mongo-db/get-documents-by-pipeline "my_collection" [...])
+  ;  (get-documents-by-pipeline "my_collection" [...])
   ;
   ; @usage
-  ;  (mongo-db/get-documents-by-pipeline "my_collection" (mongo-db/get-pipeline {...}))
+  ;  (get-documents-by-pipeline "my_collection" (get-pipeline {...}))
   ;
   ; @return (namespaced maps in vector)
   [collection-name pipeline]
@@ -339,10 +329,10 @@
   ; @param (maps in vector) pipeline
   ;
   ; @usage
-  ;  (mongo-db/count-documents-by-pipeline "my_collection" [...])
+  ;  (count-documents-by-pipeline "my_collection" [...])
   ;
   ; @usage
-  ;  (mongo-db/count-documents-by-pipeline "my_collection" (mongo-db/count-pipeline {...}))
+  ;  (count-documents-by-pipeline "my_collection" (count-pipeline {...}))
   ;
   ; @return (integer)
   [collection-name pipeline]
@@ -362,7 +352,7 @@
   ;  Default: some?
   ;
   ; @example
-  ;  (mongo-db/get-specified-values "my_collection" [:my-key :your-key] string?)
+  ;  (get-specified-values "my_collection" [:my-key :your-key] string?)
   ;  =>
   ;  {:my-key   ["..." "..."]
   ;   :your-key ["..." "..."]}

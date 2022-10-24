@@ -13,8 +13,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- get-connection
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @return (com.mongodb.DB object)
   [db _]
   (get-in db [:mongo-db :connection]))
@@ -22,8 +20,6 @@
 (r/reg-sub :mongo-db/get-connection get-connection)
 
 (defn- connected?
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @return (boolean)
   [db _]
   (r get-connection db))
@@ -36,8 +32,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- store-connection!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (com.mongodb.DB object) reference
   ;
   ; @return (map)
@@ -52,8 +46,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- build-connection!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) database-name
   ; @param (string) database-host
   ; @param (integer) database-port

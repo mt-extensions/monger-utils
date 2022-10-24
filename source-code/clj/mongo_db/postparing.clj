@@ -11,8 +11,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn apply-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options

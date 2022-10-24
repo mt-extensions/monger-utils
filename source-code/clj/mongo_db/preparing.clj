@@ -17,8 +17,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- ordered-insert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ;  {:namespace/order (integer)(opt)}
@@ -37,8 +35,6 @@
           (throw (Exception. errors/MISSING-NAMESPACE-ERROR))))
 
 (defn insert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -59,8 +55,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -79,8 +73,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -98,8 +90,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -116,8 +106,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn apply-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -133,8 +121,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- changed-duplicate-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -148,8 +134,6 @@
   (merge document changes))
 
 (defn- labeled-duplicate-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -164,8 +148,6 @@
        (assoc document label-key copy-label)))
 
 (defn- ordered-duplicate-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -181,8 +163,6 @@
           (throw (Exception. errors/MISSING-NAMESPACE-ERROR))))
 
 (defn duplicate-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -198,10 +178,11 @@
   (try (as-> document % (if-not changes   % (changed-duplicate-input collection-name % options))
                         (if-not label-key % (labeled-duplicate-input collection-name % options))
                         (if-not ordered?  % (ordered-duplicate-input collection-name % options))
-                        ; - A dokumentum a changes térképpel való összefésülés után kapja meg a másolat azonosítóját,
-                        ;   így nem okoz hibát, ha a changes térkép tartalmazza az eredeti azonosítót
-                        ; - A dokumentum a prototípus függvény alkalmazása előtt megkapja a másolat azonosítóját,
-                        ;   így az már elérhető a prototípus függvény számára
+                        ; A dokumentum a changes térképpel való összefésülés után kapja meg a másolat azonosítóját,
+                        ; így nem okoz hibát, ha a changes térkép tartalmazza az eredeti azonosítót
+                        ;
+                        ; A dokumentum a prototípus függvény alkalmazása előtt megkapja a másolat azonosítóját,
+                        ; így az már elérhető a prototípus függvény számára
                         (engine/assoc-id %)
                         (if-not prepare-f % (prepare-f %)))
        (catch Exception e (println (str e "\n" {:collection-name collection-name :document document :options options})))))

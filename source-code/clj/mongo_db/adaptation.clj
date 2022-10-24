@@ -17,12 +17,10 @@
 ;; ----------------------------------------------------------------------------
 
 (defn document-id-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) document-id
   ;
   ; @example
-  ;  (adaptation/document-id-input "MyObjectId")
+  ;  (document-id-input "MyObjectId")
   ;  =>
   ;  #<ObjectId MyObjectId>
   ;
@@ -36,12 +34,10 @@
        (catch Exception e nil)))
 
 (defn document-id-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (org.bson.types.ObjectId object) document-id
   ;
   ; @example
-  ;  (adaptation/document-id-output #<ObjectId MyObjectId>)
+  ;  (document-id-output #<ObjectId MyObjectId>)
   ;  =>
   ;  "MyObjectId"
   ;
@@ -55,8 +51,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn aggregation-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (DBObject) n
   ;
   ; @return (maps in vector)
@@ -70,8 +64,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn find-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @return (namespaced map)
@@ -83,16 +75,14 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn find-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) query
   ;
   ; @example
-  ;  (adaptation/find-query {:namespace/id            "MyObjectId"
-  ;                          :namespace/my-keyword    :my-value
-  ;                          :namespace/your-string   "your-value"
-  ;                          :namespace/our-timestamp "2020-04-20T16:20:00.000Z"
-  ;                          :$or [{:namespace/id "YourObjectId"}]})
+  ;  (find-query {:namespace/id            "MyObjectId"
+  ;               :namespace/my-keyword    :my-value
+  ;               :namespace/your-string   "your-value"
+  ;               :namespace/our-timestamp "2020-04-20T16:20:00.000Z"
+  ;               :$or [{:namespace/id "YourObjectId"}]})
   ;  =>
   ;  {"_id"                     #<ObjectId MyObjectId>
   ;   "namespace/my-keyword"    "*:my-value"
@@ -126,15 +116,13 @@
 ;; ----------------------------------------------------------------------------
 
 (defn insert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/insert-input {:namespace/id            "MyObjectId"
-  ;                            :namespace/my-keyword    :my-value
-  ;                            :namespace/your-string   "your-value"
-  ;                            :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ;  (insert-input {:namespace/id            "MyObjectId"
+  ;                 :namespace/my-keyword    :my-value
+  ;                 :namespace/your-string   "your-value"
+  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ;  =>
   ;  {"_id"                     #<ObjectId MyObjectId>
   ;   "namespace/my-keyword"    "*:my-value"
@@ -151,15 +139,13 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn insert-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/insert-output {"_id"                     #<ObjectId MyObjectId>
-  ;                             "namespace/my-keyword"    "*:my-value"
-  ;                             "namespace/your-string"   "your-value"
-  ;                             "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ;  (insert-output {"_id"                     #<ObjectId MyObjectId>
+  ;                  "namespace/my-keyword"    "*:my-value"
+  ;                  "namespace/your-string"   "your-value"
+  ;                  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ;  =>
   ;  {:namespace/id            "MyObjectId"
   ;   :namespace/my-keyword    :my-value
@@ -181,15 +167,13 @@
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/save-input {:namespace/id            "MyObjectId"
-  ;                          :namespace/my-keyword    :my-value
-  ;                          :namespace/your-string   "your-value"
-  ;                          :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ;  (save-input {:namespace/id            "MyObjectId"
+  ;               :namespace/my-keyword    :my-value
+  ;               :namespace/your-string   "your-value"
+  ;               :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ;  =>
   ;  {"_id"                     #<ObjectId MyObjectId>
   ;   "namespace/my-keyword"    "*:my-value"
@@ -206,15 +190,13 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn save-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/save-output {"_id"                     #<ObjectId MyObjectId>
-  ;                           "namespace/my-keyword"    "*:my-value"
-  ;                           "namespace/your-string"   "your-value"
-  ;                           "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ;  (save-output {"_id"                     #<ObjectId MyObjectId>
+  ;                "namespace/my-keyword"    "*:my-value"
+  ;                "namespace/your-string"   "your-value"
+  ;                "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ;  =>
   ;  {:namespace/id            "MyObjectId"
   ;   :namespace/my-keyword    :my-value
@@ -236,14 +218,12 @@
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/update-input {:namespace/my-keyword    :my-value
-  ;                            :namespace/your-string   "your-value"
-  ;                            :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ;  (update-input {:namespace/my-keyword    :my-value
+  ;                 :namespace/your-string   "your-value"
+  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ;  =>
   ;  {"namespace/my-keyword"    "*:my-value"
   ;   "namespace/your-string"   "your-value"
@@ -257,8 +237,6 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) query
   ;
   ; @return (map)
@@ -271,14 +249,12 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/upsert-input {:namespace/my-keyword    :my-value
-  ;                            :namespace/your-string   "your-value"
-  ;                            :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ;  (upsert-input {:namespace/my-keyword    :my-value
+  ;                 :namespace/your-string   "your-value"
+  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ;  =>
   ;  {"namespace/my-keyword"    "*:my-value"
   ;   "namespace/your-string"   "your-value"
@@ -294,15 +270,13 @@
 ;; ----------------------------------------------------------------------------
 
 (defn duplicate-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/duplicate-input {:namespace/id            "MyObjectId"
-  ;                               :namespace/my-keyword    :my-value
-  ;                               :namespace/your-string   "your-value"
-  ;                               :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ;  (duplicate-input {:namespace/id            "MyObjectId"
+  ;                    :namespace/my-keyword    :my-value
+  ;                    :namespace/your-string   "your-value"
+  ;                    :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ;  =>
   ;  {"_id"                     #<ObjectId MyObjectId>
   ;   "namespace/my-keyword"    "*:my-value"
@@ -319,15 +293,13 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn duplicate-output
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (adaptation/insert-output {"_id"                     #<ObjectId MyObjectId>
-  ;                             "namespace/my-keyword"    "*:my-value"
-  ;                             "namespace/your-string"   "your-value"
-  ;                             "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ;  (insert-output {"_id"                     #<ObjectId MyObjectId>
+  ;                  "namespace/my-keyword"    "*:my-value"
+  ;                  "namespace/your-string"   "your-value"
+  ;                  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ;  =>
   ;  {:namespace/id            "MyObjectId"
   ;   :namespace/my-keyword    :my-value
@@ -352,7 +324,7 @@
   ; @param (namespaced map) query
   ;
   ; @example
-  ;  (adaptation/search-query {:namespace/my-key "Xyz"}
+  ;  (search-query {:namespace/my-key "Xyz"}
   ;  =>
   ;  {"namespace/my-key" {"$regex" "Xyz" "$options" "i"}}
   ;

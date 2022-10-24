@@ -34,8 +34,8 @@
   ; @param (map) field-pattern
   ;
   ; @example
-  ;  (mongo-db/add-fields-operation {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-  ;                                  :namespace/total {:$sum     :$namespace/all-result}})
+  ;  (add-fields-operation {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+  ;                         :namespace/total {:$sum     :$namespace/all-result}})
   ;  =>
   ;  {"namespace/name"  {"$concat" ["$namespace/first-name" " " "$namespace/last-name"]}
   ;   "namespace/total" {"$sum"     "$namespace/all-result"}}}
@@ -52,10 +52,10 @@
   ;   :$and (maps in vector)(opt)
   ;
   ; @example
-  ;  (mongo-db/filter-query {:namespace/my-keyword :my-value
-  ;                          :$or  [{:namespace/my-boolean   false}
-  ;                                 {:namespace/my-boolean   nil}]
-  ;                          :$and [{:namespace/your-boolean true}]})
+  ;  (filter-query {:namespace/my-keyword :my-value
+  ;                 :$or  [{:namespace/my-boolean   false}
+  ;                        {:namespace/my-boolean   nil}]
+  ;                 :$and [{:namespace/your-boolean true}]})
   ;  =>
   ;  {"namespace/my-keyword" "*:my-value"
   ;   "$or"  [{"namespace/my-boolean"   false}
@@ -72,8 +72,8 @@
   ;   :$or (maps in vector)(opt)}
   ;
   ; @example
-  ;  (mongo-db/search-query {:$or [{:namespace/my-string   "My value"}
-  ;                                {:namespace/your-string "Your value"}]})
+  ;  (search-query {:$or [{:namespace/my-string   "My value"}
+  ;                       {:namespace/your-string "Your value"}]})
   ;  =>
   ;  {"$or" [{"namespace/my-string"   {"$regex" "My value" "$options" "i"}}
   ;          {"namespace/your-string" {"$regex" "Your value" "$options" "i"}}]}
@@ -89,7 +89,7 @@
   ; @param (map) sort-pattern
   ;
   ; @example
-  ;  (mongo-db/sort-query {:namespace/my-string -1 ...})
+  ;  (sort-query {:namespace/my-string -1 ...})
   ;  =>
   ;  {"namespace/my-string" -1 ...}
   ;
@@ -101,7 +101,7 @@
   ; @param (namespaced keywords in vector) unset-pattern
   ;
   ; @example
-  ;  (mongo-db/unset-query [:namespace/my-string :namespace/your-string])
+  ;  (unset-query [:namespace/my-string :namespace/your-string])
   ;  =>
   ;  ["namespace/my-string" "namespace/your-string"]
   ;
@@ -125,16 +125,16 @@
   ;   :unset-pattern (namespaced keywords in vector)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-  ;                          :filter-pattern {:namespace/my-keyword :my-value
-  ;                                           :$or [{:namespace/my-boolean   false}
-  ;                                                 {:namespace/my-boolean   nil}]}
-  ;                          :search-pattern {:$or [{:namespace/my-string   "My value"}
-  ;                                                 {:namespace/your-string "Your value"}]}
-  ;                          :sort-pattern   {:namespace/my-string -1}
-  ;                          :unset-pattern  [:namespace/my-string :namespace/your-string]
-  ;                          :max-count 20
-  ;                          :skip      40})
+  ;  (get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+  ;                 :filter-pattern {:namespace/my-keyword :my-value
+  ;                                  :$or [{:namespace/my-boolean   false}
+  ;                                        {:namespace/my-boolean   nil}]}
+  ;                 :search-pattern {:$or [{:namespace/my-string   "My value"}
+  ;                                        {:namespace/your-string "Your value"}]}
+  ;                 :sort-pattern   {:namespace/my-string -1}
+  ;                 :unset-pattern  [:namespace/my-string :namespace/your-string]
+  ;                 :max-count 20
+  ;                 :skip      40})
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern max-count search-pattern skip sort-pattern unset-pattern]}]
@@ -155,12 +155,12 @@
   ;   :search-pattern (map)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/count-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-  ;                            :filter-pattern {:namespace/my-keyword :my-value
-  ;                                             :$or [{:namespace/my-boolean   false}
-  ;                                                   {:namespace/my-boolean   nil}]}
-  ;                            :search-pattern {:$or [{:namespace/my-string   "My value"}]
-  ;                                                   {:namespace/your-string "Your value"}]}})
+  ;  (count-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+  ;                   :filter-pattern {:namespace/my-keyword :my-value
+  ;                                    :$or [{:namespace/my-boolean   false}
+  ;                                          {:namespace/my-boolean   nil}]}
+  ;                   :search-pattern {:$or [{:namespace/my-string   "My value"}]
+  ;                                          {:namespace/your-string "Your value"}]}})
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern search-pattern]}]

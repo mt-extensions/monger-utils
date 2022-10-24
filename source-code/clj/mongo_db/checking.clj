@@ -13,13 +13,11 @@
 ;; ----------------------------------------------------------------------------
 
 (defn find-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) query
   ;
   ; @usage
-  ;  (checking/find-query {:namespace/my-string "my-value"
-  ;                        :$or [{:namespace/id "MyObjectId"}]})
+  ;  (find-query {:namespace/my-string "my-value"
+  ;               :$or [{:namespace/id "MyObjectId"}]})
   ;
   ; @return (*)
   [query]
@@ -34,8 +32,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn insert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -51,8 +47,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -68,8 +62,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -83,8 +75,6 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) query
   ;
   ; @return (*)
@@ -97,8 +87,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -111,8 +99,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn search-query
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) query
   ;
   ; @return (*)

@@ -26,8 +26,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- drop!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ;
   ; @return (?)
@@ -37,8 +35,6 @@
             (catch Exception e (println e (str e "\n" {:collection-name collection-name}))))))
 
 (defn- insert-and-return!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) document
   ;  {"_id" (org.bson.types.ObjectId object)}
@@ -50,8 +46,6 @@
             (catch Exception e (println (str e "\n" {:collection-name collection-name :document document}))))))
 
 (defn- save-and-return!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ;  {"_id" (org.bson.types.ObjectId object)}
@@ -63,8 +57,6 @@
             (catch Exception e (println (str e "\n" {:collection-name collection-name :document document}))))))
 
 (defn- remove-by-id!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (org.bson.types.ObjectId object) document-id
   ;
@@ -75,8 +67,6 @@
             (catch Exception e (println (str e "\n" {:collection-name collection-name :document-id document-id}))))))
 
 (defn- update!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) query
   ;  {"_id" (org.bson.types.ObjectId object)(opt)}
@@ -98,8 +88,6 @@
                                                       :document        document        :options options})))))))
 
 (defn- upsert!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (map) query
   ;  {"_id" (org.bson.types.ObjectId object)(opt)}
@@ -124,8 +112,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- reorder-following-documents!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
@@ -169,7 +155,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+  ;  (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
   ;  =>
   ;  {:namespace/id "MyObjectId" ...}
   ;
@@ -200,7 +186,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
+  ;  (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
   ;  =>
   ;  [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}]
   ;
@@ -227,7 +213,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+  ;  (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
   ;  =>
   ;  {:namespace/id "MyObjectId" ...}
   ;
@@ -258,7 +244,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
+  ;  (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
   ;  =>
   ;  [{:namespace/id "MyObjectId" ...}]
   ;
@@ -284,13 +270,13 @@
   ;  {:prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ;  (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ;  (update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ;  (update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -318,13 +304,13 @@
   ;  {:prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ;  (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ;  (update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ;  (update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -355,13 +341,13 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ;  (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ;  (upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ;  (upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -389,13 +375,13 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ;  (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ;  (upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (mongo-db/upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ;  (upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -425,7 +411,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
+  ;  (apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced map)
   ([collection-name document-id f]
@@ -455,7 +441,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (mongo-db/apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
+  ;  (apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced maps in vector)
   ([collection-name f]
@@ -477,8 +463,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- remove-unordered-document!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
@@ -491,8 +475,6 @@
                    (adaptation/document-id-output document-id)))))
 
 (defn- remove-ordered-document!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
@@ -514,7 +496,7 @@
   ;    Default: false}
   ;
   ; @example
-  ;  (mongo-db/remove-document "my_collection" "MyObjectId" {...})
+  ;  (remove-document "my_collection" "MyObjectId" {...})
   ;  =>
   ;  "MyObjectId"
   ;
@@ -539,7 +521,7 @@
   ;    Default: false}
   ;
   ; @example
-  ;  (mongo-db/remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ;  (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
   ;  =>
   ;  ["MyObjectId" "YourObjectId"]
   ;
@@ -559,7 +541,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (mongo-db/remove-all-documents! "my_collection")
+  ;  (remove-all-documents! "my_collection")
   ;
   ; @return (?)
   [collection-name]
@@ -571,8 +553,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- duplicate-unordered-document!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
@@ -586,8 +566,6 @@
                                (adaptation/duplicate-output result))))))
 
 (defn- duplicate-ordered-document!
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
@@ -613,12 +591,12 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/duplicate-document! "my_collection" "MyObjectId" {...})
+  ;  (duplicate-document! "my_collection" "MyObjectId" {...})
   ;  =>
   ;  {:namespace/id "MyObjectId" :namespace/label "My document"}
   ;
   ; @example
-  ;  (mongo-db/duplicate-document! "my_collection" "MyObjectId" {:label-key :namespace/label})
+  ;  (duplicate-document! "my_collection" "MyObjectId" {:label-key :namespace/label})
   ;  =>
   ;  {:namespace/id "MyObjectId" :namespace/label "My document #2"}
   ;
@@ -647,7 +625,7 @@
   ;   :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (mongo-db/duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ;  (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
   ;  =>
   ;  [{...} {...}]
   ;
@@ -670,7 +648,7 @@
   ;    (integer) document-dex]]
   ;
   ; @usage
-  ;  (mongo-db/reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
+  ;  (reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
   ;
   ; @return (vectors in vector)
   [collection-name document-order]

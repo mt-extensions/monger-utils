@@ -14,8 +14,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- command
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) options
   ;
   ; @return (DBObject)
@@ -30,8 +28,6 @@
 ;; ----------------------------------------------------------------------------
 
 (defn process
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (string) collection-name
   ; @param (maps in vector) pipeline
   ; @param (map)(opt) options

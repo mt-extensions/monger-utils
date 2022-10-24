@@ -16,12 +16,10 @@
 ;; ----------------------------------------------------------------------------
 
 (defn operator?
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) n
   ;
   ; @example
-  ;  (engine/operator? :$or)
+  ;  (operator? :$or)
   ;  =>
   ;  true
   ;
@@ -31,18 +29,16 @@
        (->       n second str (= "$"))))
 
 (defn document?
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) n
   ;
   ; @example
-  ;  (engine/document? {:namespace/my-key "..."})
+  ;  (document? {:namespace/my-key "..."})
   ;  =>
   ;  false
   ;
   ; @example
-  ;  (engine/document? {:namespace/my-key "..."
-  ;                     :namespace/id     "..."})
+  ;  (document? {:namespace/my-key "..."
+  ;              :namespace/id     "..."})
   ;  =>
   ;  true
   ;
@@ -53,8 +49,6 @@
                (get n (keyword/add-namespace namespace :id)))))
 
 (defn DBObject->edn
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (DBObject) n
   ;
   ; @return (map)
@@ -76,12 +70,10 @@
   (str (ObjectId.)))
 
 (defn assoc-id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) n
   ;
   ; @example
-  ;  (engine/assoc-id {:namespace/my-key "my-value"})
+  ;  (assoc-id {:namespace/my-key "my-value"})
   ;  =>
   ;  {:namespace/id "MyObjectId" :namespace/my-key "my-value"}
   ;
@@ -93,13 +85,11 @@
           (return n)))
 
 (defn dissoc-id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) n
   ;  {:namespace/id (string)(opt)}
   ;
   ; @example
-  ;  (engine/dissoc-id {:namespace/id "MyObjectId" :namespace/my-key "my-value"})
+  ;  (dissoc-id {:namespace/id "MyObjectId" :namespace/my-key "my-value"})
   ;  =>
   ;  {:namespace/my-key "my-value"}
   ;
@@ -110,13 +100,11 @@
           (return n)))
 
 (defn id->_id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) n
   ;  {:namespace/id (string)(opt)}
   ;
   ; @example
-  ;  (engine/id->_id {:namespace/id "MyObjectId"})
+  ;  (id->_id {:namespace/id "MyObjectId"})
   ;  =>
   ;  {:_id #<ObjectId MyObjectId>}
   ;
@@ -135,13 +123,11 @@
           (return n)))
 
 (defn _id->id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (map) n
   ;  {:_id (string)}
   ;
   ; @example
-  ;  (engine/_id->id {:_id #<ObjectId MyObjectId>})
+  ;  (_id->id {:_id #<ObjectId MyObjectId>})
   ;  =>
   ;  {:namespace/id "MyObjectId"}
   ;
@@ -160,13 +146,11 @@
           (return n)))
 
 (defn id->>_id
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (*) n
   ;  {:namespace/id (string)(opt)}
   ;
   ; @example
-  ;  (engine/id->>_id {:$or [{...} {:namespace/id "MyObjectId"}]})
+  ;  (id->>_id {:$or [{...} {:namespace/id "MyObjectId"}]})
   ;  =>
   ;  {:$or [{...} {:_id #<ObjectId MyObjectId>}]}
   ;
@@ -183,12 +167,10 @@
 ;; ----------------------------------------------------------------------------
 
 (defn document->order
-  ; WARNING! NON-PUBLIC! DO NOT USE!
-  ;
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (engine/document->order {:namespace/order 3})
+  ;  (document->order {:namespace/order 3})
   ;  =>
   ;  3
   ;
