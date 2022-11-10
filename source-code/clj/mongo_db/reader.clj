@@ -1,7 +1,4 @@
 
-;; -- Namespace ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
 (ns mongo-db.reader
     (:require monger.joda-time
               [mid-fruits.candy     :refer [return]]
@@ -15,8 +12,6 @@
               [mongo-db.checking    :as checking]
               [mongo-db.engine      :as engine]
               [re-frame.api         :as r]))
-
-
 
 ;; -- Error handling ----------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -87,8 +82,6 @@
   (let [database @(r/subscribe [:mongo-db/get-connection])]
        (try (mcl/count database collection-name query)
             (catch Exception e (println (str e "\n" {:collection-name collection-name :query query}))))))
-
-
 
 ;; -- Collection functions ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -207,8 +200,6 @@
                    (if-let [documents (find-maps collection-name query projection)]
                            (vector/->items documents #(adaptation/find-output %)))))))
 
-
-
 ;; -- Document functions ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -303,8 +294,6 @@
   (boolean (if-let [document-id (adaptation/document-id-input document-id)]
                    (find-map-by-id collection-name document-id))))
 
-
-
 ;; -- Advanced DB functions ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -339,8 +328,6 @@
   (if-let [documents (aggregation/process collection-name pipeline)]
           (count  documents)
           (return 0)))
-
-
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

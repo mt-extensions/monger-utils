@@ -1,13 +1,8 @@
 
-;; -- Namespace ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
 (ns mongo-db.sample
     (:require [mid-fruits.candy :refer [return]]
               [mongo-db.api     :as mongo-db]
               [time.api         :as time]))
-
-
 
 ;; -- Prototípusok használata -------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -23,8 +18,6 @@
   (merge {:namespace/added-at    (time/timestamp-string)}
          document
          {:namespace/modified-at (time/timestamp-string)}))
-
-
 
 ;; -- Dokumentum hozzáadása (inserting) ------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -44,8 +37,6 @@
                                               :namespace/id          "MyObjectId"}
                                              {:prepare-f #(insert-prototype %)}))
 
-
-
 ;; -- Dokumentum mentése (saving aka upserting by id) -------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -64,8 +55,6 @@
                                             :namespace/id          "MyObjectId"}
                                            {:prepare-f #(update-prototype %)}))
 
-
-
 ;; -- Dokumentum felülírása (updating) ----------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -80,8 +69,6 @@
                                              {:namespace/my-keyword  :my-value
                                               :namespace/your-string "your-value"}
                                              {:prepare-f #(update-prototype %)}))
-
-
 
 ;; -- Dokumentum felülírása vagy hozzáadása (upserting) -----------------------
 ;; ----------------------------------------------------------------------------
@@ -98,8 +85,6 @@
                                               :namespace/your-string "your-value"}
                                              {:prepare-f #(update-prototype %)}))
 
-
-
 ;; -- Függvény alkalmazása dokumentumon (applying) ----------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -112,8 +97,6 @@
                                             {:prepare-f  #(update-prototype %)
                                              :postpare-f #(return           %)}))
 
-
-
 ;; -- Függvény alkalmazása az összes dokumentumon (applying) ------------------
 ;; ----------------------------------------------------------------------------
 
@@ -123,8 +106,6 @@
   (mongo-db/apply-documents! "my_collection" #(merge % {:namespace/my-keyword :my-value})
                                              {:prepare-f #(update-prototype %)}))
 
-
-
 ;; -- Dokumentum eltávolítása (removing) --------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -132,8 +113,6 @@
 (defn remove-my-document!
   []
   (mongo-db/remove-document! "my_collection" "MyObjectId"))
-
-
 
 ;; -- Dokumentum duplikálása (duplicating) ------------------------------------
 ;; ----------------------------------------------------------------------------

@@ -1,7 +1,4 @@
 
-;; -- Namespace ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
 (ns mongo-db.actions
     (:require monger.joda-time
               [mid-fruits.candy    :refer [return]]
@@ -19,8 +16,6 @@
               [mongo-db.preparing  :as preparing]
               [mongo-db.reader     :as reader]
               [re-frame.api        :as r]))
-
-
 
 ;; -- Error handling ----------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -106,8 +101,6 @@
              (catch Exception e (println (str e "\n" {:collection-name collection-name :query   query
                                                       :document        document        :options options})))))))
 
-
-
 ;; -- Reordering following documents ------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -140,8 +133,6 @@
                                             (throw (Exception. errors/REORDER-DOCUMENTS-FAILED)))))))
           (throw (Exception. errors/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
 
-
-
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -171,8 +162,6 @@
            (if-let [result (insert-and-return! collection-name document)]
                    (adaptation/insert-output result)))))
 
-
-
 ;; -- Inserting documents -----------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -197,8 +186,6 @@
 
   ([collection-name documents options]
    (vector/->items documents #(insert-document! collection-name % options))))
-
-
 
 ;; -- Saving document ---------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -229,8 +216,6 @@
            (if-let [result (save-and-return! collection-name document)]
                    (adaptation/save-output result)))))
 
-
-
 ;; -- Saving documents --------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -255,8 +240,6 @@
 
   ([collection-name documents options]
    (vector/->items documents #(save-document! collection-name % options))))
-
-
 
 ;; -- Updating document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -289,8 +272,6 @@
                     (if-let [query (-> query checking/find-query adaptation/find-query)]
                             (let [result (update! collection-name query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
-
-
 
 ;; -- Updating documents ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -326,8 +307,6 @@
                             (let [result (update! collection-name query document {:multi true :upsert false})]
                                  (mrt/updated-existing? result)))))))
 
-
-
 ;; -- Upserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -360,8 +339,6 @@
                     (if-let [query (-> query checking/find-query adaptation/find-query)]
                             (let [result (upsert! collection-name query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
-
-
 
 ;; -- Upserting documents -----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -397,8 +374,6 @@
                             (let [result (upsert! collection-name query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 
-
-
 ;; -- Applying document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -428,8 +403,6 @@
                                            (let [result (save-and-return! collection-name document)]
                                                 (adaptation/save-output result)))))))))
 
-
-
 ;; -- Applying documents ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -456,8 +429,6 @@
                                     (conj result document))
                                (return result)))]
                   (reduce fi [] collection)))))
-
-
 
 ;; -- Removing document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -508,8 +479,6 @@
    (if ordered? (remove-ordered-document!   collection-name document-id options)
                 (remove-unordered-document! collection-name document-id options))))
 
-
-
 ;; -- Removing documents ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -532,8 +501,6 @@
   ([collection-name document-ids options]
    (vector/->items document-ids #(remove-document! collection-name % options))))
 
-
-
 ;; -- Removing documents ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -546,8 +513,6 @@
   ; @return (?)
   [collection-name]
   (drop! collection-name))
-
-
 
 ;; -- Duplicating document ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -609,8 +574,6 @@
    (if ordered? (duplicate-ordered-document!   collection-name document-id options)
                 (duplicate-unordered-document! collection-name document-id options))))
 
-
-
 ;; -- Duplicating documents ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -635,8 +598,6 @@
 
   ([collection-name document-ids options]
    (vector/->items document-ids #(duplicate-document! collection-name % options))))
-
-
 
 ;; -- Reordering collection ---------------------------------------------------
 ;; ----------------------------------------------------------------------------

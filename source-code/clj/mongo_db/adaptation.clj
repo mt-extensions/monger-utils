@@ -1,7 +1,4 @@
 
-;; -- Namespace ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
 (ns mongo-db.adaptation
     (:import  org.bson.types.ObjectId)
     (:require [mid-fruits.candy :refer [return]]
@@ -10,8 +7,6 @@
               [mongo-db.engine  :as engine]
               [mongo-db.errors  :as errors]
               [time.api         :as time]))
-
-
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -45,8 +40,6 @@
   [document-id]
   (if document-id (str document-id)))
 
-
-
 ;; -- Aggregating documents ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -57,8 +50,6 @@
   [n]
   (try (-> n engine/DBObject->edn (get-in [:cursor :firstBatch]))
        (catch Exception e (println (str e "\n" {:aggregation-output n})))))
-
-
 
 ;; -- Find document -----------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -110,8 +101,6 @@
   (try (-> projection json/unkeywordize-keys)
        (catch Exception e (println (str e "\n" {:projection projection})))))
 
-
-
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -160,8 +149,6 @@
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
        (catch Exception e (println (str e "\n" {:document document})))))
-
-
 
 ;; -- Saving document ---------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -212,8 +199,6 @@
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
        (catch Exception e (println (str e "\n" {:document document})))))
 
-
-
 ;; -- Updating document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -243,8 +228,6 @@
   [query]
   (find-query query))
 
-
-
 ;; -- Upserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -263,8 +246,6 @@
   ; @return (namespaced map)
   [document]
   (update-input document))
-
-
 
 ;; -- Duplicating document ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -314,8 +295,6 @@
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
        (catch Exception e (println (str e "\n" {:document document})))))
-
-
 
 ;; -- Aggregation -------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

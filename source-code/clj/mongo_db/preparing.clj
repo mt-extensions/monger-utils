@@ -1,7 +1,4 @@
 
-;; -- Namespace ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
 (ns mongo-db.preparing
     (:require [mid-fruits.candy   :refer [return]]
               [gestures.api       :as gestures]
@@ -10,8 +7,6 @@
               [mongo-db.engine    :as engine]
               [mongo-db.errors    :as errors]
               [mongo-db.reader    :as reader]))
-
-
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -49,8 +44,6 @@
                         (if-not prepare-f % (prepare-f %)))
        (catch Exception e (println (str e "\n" {:collection-name collection-name :document document :options options})))))
 
-
-
 ;; -- Saving document ---------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -67,8 +60,6 @@
   [collection-name document options]
   (insert-input collection-name document options))
 
-
-
 ;; -- Updating document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -84,8 +75,6 @@
                      (return    document))
        (catch Exception e (println (str e "\n" {:collection-name collection-name :document document :options options})))))
 
-
-
 ;; -- Upserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -100,8 +89,6 @@
   [collection-name document options]
   (insert-input collection-name document options))
 
-
-
 ;; -- Applying document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
@@ -114,8 +101,6 @@
   ; @return (namespaced map)
   [collection-name document options]
   (update-input collection-name document options))
-
-
 
 ;; -- Duplicating document ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
