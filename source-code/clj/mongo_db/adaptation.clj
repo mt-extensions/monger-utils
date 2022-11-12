@@ -1,7 +1,7 @@
 
 (ns mongo-db.adaptation
     (:import  org.bson.types.ObjectId)
-    (:require [mid-fruits.candy :refer [return]]
+    (:require [candy.api        :refer [return]]
               [mid-fruits.json  :as json]
               [mid-fruits.map   :as map]
               [mongo-db.engine  :as engine]

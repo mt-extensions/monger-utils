@@ -1,7 +1,7 @@
 
 (ns mongo-db.actions
     (:require monger.joda-time
-              [mid-fruits.candy    :refer [return]]
+              [candy.api           :refer [return]]
               [mid-fruits.keyword  :as keyword]
               [mid-fruits.map      :as map]
               [mid-fruits.vector   :as vector]

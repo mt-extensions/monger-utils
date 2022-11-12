@@ -1,6 +1,6 @@
 
 (ns mongo-db.preparing
-    (:require [mid-fruits.candy   :refer [return]]
+    (:require [candy.api          :refer [return]]
               [gestures.api       :as gestures]
               [mid-fruits.keyword :as keyword]
               [mid-fruits.map     :as map]

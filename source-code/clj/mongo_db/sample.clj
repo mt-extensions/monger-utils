@@ -1,8 +1,8 @@
 
 (ns mongo-db.sample
-    (:require [mid-fruits.candy :refer [return]]
-              [mongo-db.api     :as mongo-db]
-              [time.api         :as time]))
+    (:require [candy.api    :refer [return]]
+              [mongo-db.api :as mongo-db]
+              [time.api     :as time]))
 
 ;; -- Prototípusok használata -------------------------------------------------
 ;; ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 
 (ns mongo-db.postparing
-    (:require [mid-fruits.candy :refer [return]]))
+    (:require [candy.api :refer [return]]))
 
 ;; -- Applying document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------

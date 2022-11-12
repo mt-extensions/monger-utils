@@ -1,7 +1,7 @@
 
 (ns mongo-db.reader
     (:require monger.joda-time
-              [mid-fruits.candy     :refer [return]]
+              [candy.api            :refer [return]]
               [mid-fruits.map       :as map]
               [mid-fruits.vector    :as vector]
               [monger.collection    :as mcl]
