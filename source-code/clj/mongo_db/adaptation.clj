@@ -62,7 +62,7 @@
   ; 1. A dokumentumban használt string típusra alakított értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  (try (-> document json/keywordize-values time/unparse-date-time engine/_id->id)
+  (try (-> document json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn find-query
@@ -96,9 +96,21 @@
 (defn find-projection
   ; @param (namespaced map) projection
   ;
+  ; @example
+  ;  (find-projection {:namespace/my-key 0})
+  ;  =>
+  ;  {"namespace/my-key" 0}
+  ;
+  ; @example
+  ;  (find-projection {:namespace/id     0
+  ;                    :namespace/my-key 0})
+  ;  =>
+  ;  {"_id"              0
+  ;   "namespace/my-key" 0}
+  ;
   ; @return (namespaced map)
   [projection]
-  (try (-> projection json/unkeywordize-keys)
+  (try (-> projection (engine/id->_id {:parse? false}) json/unkeywordize-keys)
        (catch Exception e (println (str e "\n" {:projection projection})))))
 
 ;; -- Inserting document ------------------------------------------------------
@@ -124,7 +136,7 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document engine/id->_id json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn insert-output
@@ -147,7 +159,7 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Saving document ---------------------------------------------------------
@@ -173,7 +185,7 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document engine/id->_id json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn save-output
@@ -196,7 +208,7 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Updating document -------------------------------------------------------
@@ -270,7 +282,7 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document engine/id->_id json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn duplicate-output
@@ -293,7 +305,7 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time engine/_id->id)
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Aggregation -------------------------------------------------------------

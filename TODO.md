@@ -1,8 +1,15 @@
 
 # mongo-db.actions
-- A get-document-copy-label függvény nincs használatban!
-  Ha szükséges a dokumentumról készülő másolat címkéjét megjelölni másolat-jelzővel,
-  akkor talán célszerűbb a "My document copy 1" kifejezés helyett a "My document #1" jelölést alkalmazni!
+- Az apply-document! függvényből hiányzik, hogy szükség esetén létrehozza a nem létező
+  dokumentumot és, hogy akár query alapján is lehessen apply-olni dokumentumokat,
+  ne csak id alapján!
+  =>
+  Legjobb lenne, ha a függvényekből vagy létezni *-by-id és *-by-query változat,
+  vagy a paraméter megvizsgálná, hogy string vagy map típust kapott-e és az alapján
+  kezelné id vagy query-ként!
+  +
+  Legjobb lenne, ha a függvények fogadnának egy olyan beállítást, hogy {:create? true},
+  ami alapján létrehozná/nem hozná létre a nem létező dokumentumot!
 
 
 

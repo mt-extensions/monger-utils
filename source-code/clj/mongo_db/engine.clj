@@ -95,6 +95,9 @@
 (defn id->_id
   ; @param (map) n
   ;  {:namespace/id (string)(opt)}
+  ; @param (map)(opt) options
+  ;  {:parse? (boolean)(opt)
+  ;    Default: false}
   ;
   ; @example
   ;  (id->_id {:namespace/id "MyObjectId"})
@@ -103,21 +106,29 @@
   ;
   ; @return (map)
   ;  {:_id (org.bson.types.ObjectId object)}
-  [n]
-  ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:namespace/id "..."}
-  ; tulajdonsággal (pl. query paraméterként átadott térképek, ...)
-  (if-let [namespace (map/get-namespace n)]
-          (let [id-key (keyword/add-namespace namespace :id)]
-               (if-let [document-id (get n id-key)]
-                       (let [object-id (ObjectId. document-id)]
-                            (-> n (assoc  :_id object-id)
-                                  (dissoc id-key)))
-                       (return n)))
-          (return n)))
+  ([n]
+   (id->_id n {}))
+
+  ([n {:keys [parse?]}]
+   ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:namespace/id "..."}
+   ; tulajdonsággal (pl. query paraméterként átadott térképek, ...)
+   (if-let [namespace (map/get-namespace n)]
+           (let [id-key (keyword/add-namespace namespace :id)]
+                (if-let [document-id (get n id-key)]
+                        (if parse? (let [object-id (ObjectId. document-id)]
+                                        (-> n (assoc  :_id object-id)
+                                              (dissoc id-key)))
+                                   (-> n (assoc  :_id document-id)
+                                         (dissoc id-key)))
+                        (return n)))
+           (return n))))
 
 (defn _id->id
   ; @param (map) n
   ;  {:_id (string)}
+  ; @param (map)(opt) options
+  ;  {:unparse? (boolean)(opt)
+  ;    Default: false}
   ;
   ; @example
   ;  (_id->id {:_id #<ObjectId MyObjectId>})
@@ -126,21 +137,29 @@
   ;
   ; @return (map)
   ;  {:namespace/id (string)}
-  [n]
-  ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:_id "..."}
-  ; tulajdonsággal (hasonlóan az id->_id függvényhez)
-  (if-let [namespace (map/get-namespace n)]
-          (let [id-key (keyword/add-namespace namespace :id)]
-               (if-let [object-id (get n :_id)]
-                       (let [document-id (str object-id)]
-                            (-> n (assoc  id-key document-id)
-                                  (dissoc :_id)))
-                       (return n)))
-          (return n)))
+  ([n]
+   (_id->id n {}))
+
+  ([n {:keys [unparse?]}]
+   ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:_id "..."}
+   ; tulajdonsággal (hasonlóan az id->_id függvényhez)
+   (if-let [namespace (map/get-namespace n)]
+           (let [id-key (keyword/add-namespace namespace :id)]
+                (if-let [object-id (get n :_id)]
+                        (if unparse? (let [document-id (str object-id)]
+                                          (-> n (assoc  id-key document-id)
+                                                (dissoc :_id)))
+                                     (-> n (assoc  id-key object-id)
+                                           (dissoc :_id)))
+                        (return n)))
+           (return n))))
 
 (defn id->>_id
   ; @param (*) n
   ;  {:namespace/id (string)(opt)}
+  ; @param (map)(opt) options
+  ;  {:parse? (boolean)(opt)
+  ;    Default: false}
   ;
   ; @example
   ;  (id->>_id {:$or [{...} {:namespace/id "MyObjectId"}]})
@@ -149,10 +168,13 @@
   ;
   ; @return (map)
   ;  {:_id (org.bson.types.ObjectId object)}
-  [n]
-  (cond (map?    n) (reduce-kv #(assoc %1 %2 (id->>_id %3)) {} (id->_id n))
-        (vector? n) (reduce    #(conj  %1    (id->>_id %2)) []          n)
-        :return  n))
+  ([n]
+   (id->>_id n {}))
+
+  ([n options]
+   (cond (map?    n) (reduce-kv #(assoc %1 %2 (id->>_id %3 options)) {} (id->_id n options))
+         (vector? n) (reduce    #(conj  %1    (id->>_id %2 options)) []          n)
+         :return  n)))
 
 ;; -- Document order ----------------------------------------------------------
 ;; ----------------------------------------------------------------------------
