@@ -1,7 +1,7 @@
 
 (ns mongo-db.pipelines
     (:require [candy.api           :refer [param]]
-              [mid-fruits.json     :as json]
+              [json.api            :as json]
               [mid-fruits.keyword  :as keyword]
               [mid-fruits.map      :as map]
               [mid-fruits.vector   :as vector]
