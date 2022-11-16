@@ -27,8 +27,8 @@
   ; @param (map) field-pattern
   ;
   ; @example
-  ; (add-fields-operation {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-  ;                        :namespace/total {:$sum     :$namespace/all-result}})
+  ; (add-fields-query {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+  ;                    :namespace/total {:$sum     :$namespace/all-result}})
   ; =>
   ; {"namespace/name"  {"$concat" ["$namespace/first-name" " " "$namespace/last-name"]}
   ;  "namespace/total" {"$sum"     "$namespace/all-result"}}}
