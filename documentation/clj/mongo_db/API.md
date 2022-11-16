@@ -559,22 +559,37 @@
 ### get-collection
 
 ```
-@usage
-(get-collection-names)
+@param (string) collection-name
+@param (namespaced map)(opt) projection
 ```
 
 ```
-@return (strings in vector)
+@example
+(get-collection "my_collection" {:namespace/my-keyword  0
+                                 :namespace/your-string 1})
+=>
+[{:namespace/my-keyword  :my-value
+  :namespace/your-string "Your value"
+  :namespace/id          "MyObjectId"}]
+```
+
+```
+@return (maps in vector)
 ```
 
 <details>
 <summary>Source code</summary>
 
 ```
-(defn get-collection-names
-  []
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (-> database mdb/get-collection-names vec)))
+(defn get-collection
+  ([collection-name]
+   (if-let [collection (find-maps collection-name {})]
+           (vector/->items collection #(adaptation/find-output %))))
+
+  ([collection-name projection]
+   (if-let [projection (adaptation/find-projection projection)]
+           (if-let [collection (find-maps collection-name {} projection)]
+                   (vector/->items collection #(adaptation/find-output %))))))
 ```
 
 </details>
@@ -585,8 +600,8 @@
 ```
 (ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-collection]]))
 
-(mongo-db/get-collection)
-(get-collection)
+(mongo-db/get-collection ...)
+(get-collection          ...)
 ```
 
 </details>
