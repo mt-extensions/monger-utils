@@ -5,7 +5,7 @@
 <strong>[README](../README.md) > DOCUMENTATION</strong>
 
 ### Public namespaces
-* [mongo_db.api](clj/mongo_db/API.md) [clj]
+* [mongo-db.api](clj/mongo_db/API.md) [clj]
 
 ---
 

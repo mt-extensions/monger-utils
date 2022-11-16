@@ -13,7 +13,12 @@
 ```
 
 ```
-@example=>
+@example
+(add-fields-operation {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+                       :namespace/total {:$sum     :$namespace/all-result}})
+=>
+{"namespace/name"  {"$concat" ["$namespace/first-name" " " "$namespace/last-name"]}
+ "namespace/total" {"$sum"     "$namespace/all-result"}}}
 ```
 
 ```
@@ -56,7 +61,7 @@
 
 ```
 @usage
- (apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
+(apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
 ```
 
 ```
@@ -107,7 +112,7 @@
 
 ```
 @usage
- (apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
+(apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
 ```
 
 ```
@@ -156,7 +161,7 @@
 
 ```
 @usage
- (collection-empty? "my_collection")
+(collection-empty? "my_collection")
 ```
 
 ```
@@ -197,12 +202,12 @@
 
 ```
 @usage
- (count-documents-by-pipeline "my_collection" [...])
+(count-documents-by-pipeline "my_collection" [...])
 ```
 
 ```
 @usage
- (count-documents-by-pipeline "my_collection" (count-pipeline {...}))
+(count-documents-by-pipeline "my_collection" (count-pipeline {...}))
 ```
 
 ```
@@ -244,12 +249,12 @@
 
 ```
 @usage
- (count-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-                  :filter-pattern {:namespace/my-keyword :my-value
-                                   :$or [{:namespace/my-boolean   false}
-                                         {:namespace/my-boolean   nil}]}
-                  :search-pattern {:$or [{:namespace/my-string   "My value"}]
-                                         {:namespace/your-string "Your value"}]}})
+(count-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+                 :filter-pattern {:namespace/my-keyword :my-value
+                                  :$or [{:namespace/my-boolean   false}
+                                        {:namespace/my-boolean   nil}]}
+                 :search-pattern {:$or [{:namespace/my-string   "My value"}]
+                                        {:namespace/your-string "Your value"}]}})
 ```
 
 ```
@@ -292,7 +297,7 @@
 
 ```
 @usage
- (document-exists? "my_collection" "MyObjectId")
+(document-exists? "my_collection" "MyObjectId")
 ```
 
 ```
@@ -334,11 +339,17 @@
 ```
 
 ```
-@example=>
+@example
+(duplicate-document! "my_collection" "MyObjectId" {...})
+=>
+{:namespace/id "MyObjectId" :namespace/label "My document"}
 ```
 
 ```
-@example=>
+@example
+(duplicate-document! "my_collection" "MyObjectId" {:label-key :namespace/label})
+=>
+{:namespace/id "MyObjectId" :namespace/label "My document #2"}
 ```
 
 ```
@@ -383,7 +394,10 @@
 ```
 
 ```
-@example=>
+@example
+(duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+=>
+[{...} {...}]
 ```
 
 ```
@@ -425,7 +439,16 @@
 ```
 
 ```
-@example=>
+@example
+(filter-query {:namespace/my-keyword :my-value
+               :$or  [{:namespace/my-boolean   false}
+                      {:namespace/my-boolean   nil}]
+               :$and [{:namespace/your-boolean true}]})
+=>
+{"namespace/my-keyword" "*:my-value"
+ "$or"  [{"namespace/my-boolean"   false}
+         {"namespace/my-boolean"   nil}]
+ "$and" [{"namespace/your-boolean" true}]}
 ```
 
 ```
@@ -461,7 +484,7 @@
 
 ```
 @usage
- (mongo-db/generate-id)
+(mongo-db/generate-id)
 ```
 
 ```
@@ -501,7 +524,7 @@
 
 ```
 @usage
- (get-all-document-count "my_collection")
+(get-all-document-count "my_collection")
 ```
 
 ```
@@ -537,7 +560,7 @@
 
 ```
 @usage
- (get-collection-names)
+(get-collection-names)
 ```
 
 ```
@@ -574,7 +597,7 @@
 
 ```
 @usage
- (get-collection-names)
+(get-collection-names)
 ```
 
 ```
@@ -615,7 +638,7 @@
 
 ```
 @usage
- (get-collection-namespace "my_collection")
+(get-collection-namespace "my_collection")
 ```
 
 ```
@@ -657,7 +680,12 @@
 ```
 
 ```
-@example=>
+@example
+(get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
+                                                  :namespace/your-string 1})
+=>
+{:namespace/your-string "Your value"
+ :namespace/id          "MyObjectId"}
 ```
 
 ```
@@ -707,16 +735,22 @@
 
 ```
 @usage
- (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
+(get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
 ```
 
 ```
 @usage
- (get-document-by-query "my_collection" {:$or [{...} {...}]})
+(get-document-by-query "my_collection" {:$or [{...} {...}]})
 ```
 
 ```
-@example=>
+@example
+(get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
+                                       {:namespace/my-keyword  0
+                                        :namespace/your-string 1})
+=>
+{:namespace/your-string "Your value"
+ :namespace/id          "MyObjectId"}
 ```
 
 ```
@@ -765,18 +799,18 @@
 
 ```
 @usage
- (get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
+(get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
 ```
 
 ```
 @usage
- (get-document-count-by-query "my_collection" {:$or [{...} {...}]})
+(get-document-count-by-query "my_collection" {:$or [{...} {...}]})
 ```
 
 ```
 @usage
- (get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
-                                               :namespace/your-string "Your value"})
+(get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
+                                              :namespace/your-string "Your value"})
 ```
 
 ```
@@ -818,12 +852,12 @@
 
 ```
 @usage
- (get-documents-by-pipeline "my_collection" [...])
+(get-documents-by-pipeline "my_collection" [...])
 ```
 
 ```
 @usage
- (get-documents-by-pipeline "my_collection" (get-pipeline {...}))
+(get-documents-by-pipeline "my_collection" (get-pipeline {...}))
 ```
 
 ```
@@ -867,16 +901,22 @@
 
 ```
 @usage
- (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
+(get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
 ```
 
 ```
 @usage
- (get-documents-by-query "my_collection" {:$or [{...} {...}]})
+(get-documents-by-query "my_collection" {:$or [{...} {...}]})
 ```
 
 ```
-@example=>
+@example
+(get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
+                                        {:namespace/my-keyword  0
+                                         :namespace/your-string 1})
+=>
+[{:namespace/your-string "Your value"
+  :namespace/id          "MyObjectId"}]
 ```
 
 ```
@@ -924,7 +964,7 @@
 
 ```
 @usage
- (get-first-document "my_collection")
+(get-first-document "my_collection")
 ```
 
 ```
@@ -965,7 +1005,7 @@
 
 ```
 @usage
- (get-last-document "my_collection")
+(get-last-document "my_collection")
 ```
 
 ```
@@ -1006,16 +1046,16 @@
 
 ```
 @usage
- (get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-                :filter-pattern {:namespace/my-keyword :my-value
-                                 :$or [{:namespace/my-boolean   false}
-                                       {:namespace/my-boolean   nil}]}
-                :search-pattern {:$or [{:namespace/my-string   "My value"}
-                                       {:namespace/your-string "Your value"}]}
-                :sort-pattern   {:namespace/my-string -1}
-                :unset-pattern  [:namespace/my-string :namespace/your-string]
-                :max-count 20
-                :skip      40})
+(get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
+               :filter-pattern {:namespace/my-keyword :my-value
+                                :$or [{:namespace/my-boolean   false}
+                                      {:namespace/my-boolean   nil}]}
+               :search-pattern {:$or [{:namespace/my-string   "My value"}
+                                      {:namespace/your-string "Your value"}]}
+               :sort-pattern   {:namespace/my-string -1}
+               :unset-pattern  [:namespace/my-string :namespace/your-string]
+               :max-count 20
+               :skip      40})
 ```
 
 ```
@@ -1062,7 +1102,11 @@
 ```
 
 ```
-@example=>
+@example
+(get-specified-values "my_collection" [:my-key :your-key] string?)
+=>
+{:my-key   ["..." "..."]
+ :your-key ["..." "..."]}
 ```
 
 ```
@@ -1114,7 +1158,10 @@
 ```
 
 ```
-@example=>
+@example
+(insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+=>
+{:namespace/id "MyObjectId" ...}
 ```
 
 ```
@@ -1162,7 +1209,10 @@
 ```
 
 ```
-@example=>
+@example
+(insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
+=>
+[{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}]
 ```
 
 ```
@@ -1205,7 +1255,7 @@
 
 ```
 @usage
- (remove-all-documents! "my_collection")
+(remove-all-documents! "my_collection")
 ```
 
 ```
@@ -1246,7 +1296,10 @@
 ```
 
 ```
-@example=>
+@example
+(remove-document "my_collection" "MyObjectId" {...})
+=>
+"MyObjectId"
 ```
 
 ```
@@ -1291,7 +1344,10 @@
 ```
 
 ```
-@example=>
+@example
+(remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+=>
+["MyObjectId" "YourObjectId"]
 ```
 
 ```
@@ -1335,7 +1391,7 @@
 
 ```
 @usage
- (reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
+(reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
 ```
 
 ```
@@ -1384,7 +1440,10 @@
 ```
 
 ```
-@example=>
+@example
+(save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+=>
+{:namespace/id "MyObjectId" ...}
 ```
 
 ```
@@ -1432,7 +1491,10 @@
 ```
 
 ```
-@example=>
+@example
+(save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
+=>
+[{:namespace/id "MyObjectId" ...}]
 ```
 
 ```
@@ -1474,7 +1536,12 @@
 ```
 
 ```
-@example=>
+@example
+(search-query {:$or [{:namespace/my-string   "My value"}
+                     {:namespace/your-string "Your value"}]})
+=>
+{"$or" [{"namespace/my-string"   {"$regex" "My value" "$options" "i"}}
+        {"namespace/your-string" {"$regex" "Your value" "$options" "i"}}]}
 ```
 
 ```
@@ -1514,7 +1581,10 @@
 ```
 
 ```
-@example=>
+@example
+(sort-query {:namespace/my-string -1 ...})
+=>
+{"namespace/my-string" -1 ...}
 ```
 
 ```
@@ -1553,7 +1623,10 @@
 ```
 
 ```
-@example=>
+@example
+(unset-query [:namespace/my-string :namespace/your-string])
+=>
+["namespace/my-string" "namespace/your-string"]
 ```
 
 ```
@@ -1596,17 +1669,17 @@
 
 ```
 @usage
- (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+(update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+(update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+(update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
 ```
 
 ```
@@ -1657,17 +1730,17 @@
 
 ```
 @usage
- (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+(update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+(update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+(update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
 ```
 
 ```
@@ -1718,17 +1791,17 @@
 
 ```
 @usage
- (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+(upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+(upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+(upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
 ```
 
 ```
@@ -1779,17 +1852,17 @@
 
 ```
 @usage
- (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+(upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+(upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
 ```
 
 ```
 @usage
- (upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+(upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
 ```
 
 ```
