@@ -9,7 +9,7 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:postpare-f (function)(opt)}
+  ; {:postpare-f (function)(opt)}
   ;
   ; @return (namespaced map)
   [collection-name document {:keys [postpare-f] :as options}]

@@ -88,7 +88,7 @@
 
 (defn get-collection-names
   ; @usage
-  ;  (get-collection-names)
+  ; (get-collection-names)
   ;
   ; @return (strings in vector)
   []
@@ -99,7 +99,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (get-collection-namespace "my_collection")
+  ; (get-collection-namespace "my_collection")
   ;
   ; @return (keyword)
   [collection-name]
@@ -110,7 +110,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (get-all-document-count "my_collection")
+  ; (get-all-document-count "my_collection")
   ;
   ; @return (integer)
   [collection-name]
@@ -120,7 +120,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (collection-empty? "my_collection")
+  ; (collection-empty? "my_collection")
   ;
   ; @return (boolean)
   [collection-name]
@@ -131,14 +131,14 @@
   ; @param (map) query
   ;
   ; @usage
-  ;  (get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ; (get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (get-document-count-by-query "my_collection" {:$or [{...} {...}]})
+  ; (get-document-count-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @usage
-  ;  (get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
-  ;                                                :namespace/your-string "Your value"})
+  ; (get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
+  ;                                               :namespace/your-string "Your value"})
   ;
   ; @return (integer)
   [collection-name query]
@@ -150,15 +150,15 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @example
-  ;  (get-collection "my_collection" {:namespace/my-keyword  0
-  ;                                   :namespace/your-string 1})
-  ;  =>
-  ;  [{:namespace/my-keyword  :my-value
-  ;    :namespace/your-string "Your value"
-  ;    :namespace/id          "MyObjectId"}]
+  ; (get-collection "my_collection" {:namespace/my-keyword  0
+  ;                                  :namespace/your-string 1})
+  ; =>
+  ; [{:namespace/my-keyword  :my-value
+  ;   :namespace/your-string "Your value"
+  ;   :namespace/id          "MyObjectId"}]
   ;
   ; @return (maps in vector)
-  ;  [{:namespace/id (string)}]
+  ; [{:namespace/id (string)}]
   ([collection-name]
    (if-let [collection (find-maps collection-name {})]
            (vector/->items collection #(adaptation/find-output %))))
@@ -174,21 +174,21 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @usage
-  ;  (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (get-documents-by-query "my_collection" {:$or [{...} {...}]})
+  ; (get-documents-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @example
-  ;  (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                          {:namespace/my-keyword  0
-  ;                                           :namespace/your-string 1})
-  ;  =>
-  ;  [{:namespace/your-string "Your value"
-  ;    :namespace/id          "MyObjectId"}]
+  ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
+  ;                                         {:namespace/my-keyword  0
+  ;                                          :namespace/your-string 1})
+  ; =>
+  ; [{:namespace/your-string "Your value"
+  ;   :namespace/id          "MyObjectId"}]
   ;
   ; @return (namespaced maps in vector)
-  ;  [{:namespace/id (string)}]
+  ; [{:namespace/id (string)}]
   ([collection-name query]
    (if-let [query (-> query checking/find-query adaptation/find-query)]
            (if-let [documents (find-maps collection-name query)]
@@ -209,21 +209,21 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @usage
-  ;  (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
+  ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
   ;
   ; @usage
-  ;  (get-document-by-query "my_collection" {:$or [{...} {...}]})
+  ; (get-document-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @example
-  ;  (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                         {:namespace/my-keyword  0
-  ;                                          :namespace/your-string 1})
-  ;  =>
-  ;  {:namespace/your-string "Your value"
-  ;   :namespace/id          "MyObjectId"}
+  ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
+  ;                                        {:namespace/my-keyword  0
+  ;                                         :namespace/your-string 1})
+  ; =>
+  ; {:namespace/your-string "Your value"
+  ;  :namespace/id          "MyObjectId"}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([collection-name query]
    (if-let [query (-> query checking/find-query adaptation/find-query)]
            (if-let [document (find-one-as-map collection-name query)]
@@ -241,14 +241,14 @@
   ; @param (namespaced map)(opt) projection
   ;
   ; @example
-  ;  (get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
-  ;                                                    :namespace/your-string 1})
-  ;  =>
-  ;  {:namespace/your-string "Your value"
-  ;   :namespace/id          "MyObjectId"}
+  ; (get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
+  ;                                                   :namespace/your-string 1})
+  ; =>
+  ; {:namespace/your-string "Your value"
+  ;  :namespace/id          "MyObjectId"}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([collection-name document-id]
    (if-let [document-id (adaptation/document-id-input document-id)]
            (if-let [document (find-map-by-id collection-name document-id)]
@@ -264,7 +264,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (get-first-document "my_collection")
+  ; (get-first-document "my_collection")
   ;
   ; @return (namespaced map)
   [collection-name]
@@ -275,7 +275,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (get-last-document "my_collection")
+  ; (get-last-document "my_collection")
   ;
   ; @return (namespaced map)
   [collection-name]
@@ -287,7 +287,7 @@
   ; @param (string) document-id
   ;
   ; @usage
-  ;  (document-exists? "my_collection" "MyObjectId")
+  ; (document-exists? "my_collection" "MyObjectId")
   ;
   ; @return (boolean)
   [collection-name document-id]
@@ -302,10 +302,10 @@
   ; @param (maps in vector) pipeline
   ;
   ; @usage
-  ;  (get-documents-by-pipeline "my_collection" [...])
+  ; (get-documents-by-pipeline "my_collection" [...])
   ;
   ; @usage
-  ;  (get-documents-by-pipeline "my_collection" (get-pipeline {...}))
+  ; (get-documents-by-pipeline "my_collection" (get-pipeline {...}))
   ;
   ; @return (namespaced maps in vector)
   [collection-name pipeline]
@@ -318,10 +318,10 @@
   ; @param (maps in vector) pipeline
   ;
   ; @usage
-  ;  (count-documents-by-pipeline "my_collection" [...])
+  ; (count-documents-by-pipeline "my_collection" [...])
   ;
   ; @usage
-  ;  (count-documents-by-pipeline "my_collection" (count-pipeline {...}))
+  ; (count-documents-by-pipeline "my_collection" (count-pipeline {...}))
   ;
   ; @return (integer)
   [collection-name pipeline]
@@ -336,13 +336,13 @@
   ; @param (string) collection-name
   ; @param (keywords in vector) specified-keys
   ; @param (function)(opt) test-f
-  ;  Default: some?
+  ; Default: some?
   ;
   ; @example
-  ;  (get-specified-values "my_collection" [:my-key :your-key] string?)
-  ;  =>
-  ;  {:my-key   ["..." "..."]
-  ;   :your-key ["..." "..."]}
+  ; (get-specified-values "my_collection" [:my-key :your-key] string?)
+  ; =>
+  ; {:my-key   ["..." "..."]
+  ;  :your-key ["..." "..."]}
   ;
   ; @return (map)
   ([collection-name specified-keys]

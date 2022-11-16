@@ -32,7 +32,7 @@
 (defn- insert-and-return!
   ; @param (string) collection-name
   ; @param (map) document
-  ;  {"_id" (org.bson.types.ObjectId object)}
+  ; {"_id" (org.bson.types.ObjectId object)}
   ;
   ; @return (namespaced map)
   [collection-name document]
@@ -43,7 +43,7 @@
 (defn- save-and-return!
   ; @param (string) collection-name
   ; @param (namespaced map) document
-  ;  {"_id" (org.bson.types.ObjectId object)}
+  ; {"_id" (org.bson.types.ObjectId object)}
   ;
   ; @return (namespaced map)
   [collection-name document]
@@ -64,13 +64,13 @@
 (defn- update!
   ; @param (string) collection-name
   ; @param (map) query
-  ;  {"_id" (org.bson.types.ObjectId object)(opt)}
+  ; {"_id" (org.bson.types.ObjectId object)(opt)}
   ; @param (map) document
   ; @param (map)(opt) options
-  ;  {:multi (boolean)(opt)
-  ;    Default: false
-  ;   :upsert (boolean)(opt)
-  ;    Default: false}
+  ; {:multi (boolean)(opt)
+  ;   Default: false
+  ;  :upsert (boolean)(opt)
+  ;   Default: false}
   ;
   ; @return (com.mongodb.WriteResult object)
   ([collection-name query document]
@@ -85,11 +85,11 @@
 (defn- upsert!
   ; @param (string) collection-name
   ; @param (map) query
-  ;  {"_id" (org.bson.types.ObjectId object)(opt)}
+  ; {"_id" (org.bson.types.ObjectId object)(opt)}
   ; @param (map) document
   ; @param (map)(opt) options
-  ;  {:multi (boolean)(opt)
-  ;    Default: false}
+  ; {:multi (boolean)(opt)
+  ;   Default: false}
   ;
   ; @return (com.mongodb.WriteResult object)
   ([collection-name query document]
@@ -108,8 +108,8 @@
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map) options
-  ;  {:operation (keyword)
-  ;    :decrease, :increase}
+  ; {:operation (keyword)
+  ;   :decrease, :increase}
   ;
   ; @return (namespaced map)
   [collection-name document-id {:keys [operation]}]
@@ -139,19 +139,19 @@
 (defn insert-document!
   ; @param (string) collection-name
   ; @param (namespaced map) document
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
-  ;  =>
-  ;  {:namespace/id "MyObjectId" ...}
+  ; (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+  ; =>
+  ; {:namespace/id "MyObjectId" ...}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([collection-name document]
    (insert-document! collection-name document {}))
 
@@ -168,19 +168,19 @@
 (defn insert-documents!
   ; @param (string) collection-name
   ; @param (namespaced maps in vector) documents
-  ;  [{:namespace/id (string)(opt)}]
+  ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
-  ;  =>
-  ;  [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}]
+  ; (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
+  ; =>
+  ; [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}]
   ;
   ; @return (namespaced maps in vector)
-  ;  [{:namespace/id (string)}]
+  ; [{:namespace/id (string)}]
   ([collection-name documents]
    (insert-documents! collection-name documents {}))
 
@@ -193,19 +193,19 @@
 (defn save-document!
   ; @param (string) collection-name
   ; @param (namespaced map) document
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
-  ;  =>
-  ;  {:namespace/id "MyObjectId" ...}
+  ; (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
+  ; =>
+  ; {:namespace/id "MyObjectId" ...}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([collection-name document]
    (save-document! collection-name document {}))
 
@@ -222,19 +222,19 @@
 (defn save-documents!
   ; @param (string) collection-name
   ; @param (namespaced maps in vector) documents
-  ;  [{:namespace/id (string)(opt)}]
+  ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
-  ;  =>
-  ;  [{:namespace/id "MyObjectId" ...}]
+  ; (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
+  ; =>
+  ; [{:namespace/id "MyObjectId" ...}]
   ;
   ; @return (namespaced maps in vector)
-  ;  [{:namespace/id (string)}]
+  ; [{:namespace/id (string)}]
   ([collection-name documents]
    (save-documents! collection-name documents {}))
 
@@ -247,19 +247,19 @@
 (defn update-document!
   ; @param (string) collection-name
   ; @param (map) query
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (map or namespaced map) document
   ; @param (map)(opt) options
-  ;  {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ; (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ; (update-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ; (update-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -279,19 +279,19 @@
 (defn update-documents!
   ; @param (string) collection-name
   ; @param (map) query
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (namespaced map) document
   ; @param (map)(opt) options
-  ;  {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ; (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ; (update-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ; (update-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -315,18 +315,18 @@
   ; @param (map) query
   ; @param (map or namespaced map) document
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ; (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ; (upsert-document! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ; (upsert-document! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -348,17 +348,17 @@
   ; @param (map) query
   ; @param (namespaced map) document
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)(opt)
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
+  ; (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
+  ; (upsert-documents! "my_collection" {:$or [{...} {...}]} {:namespace/score 0} {...})
   ;
   ; @usage
-  ;  (upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
+  ; (upsert-documents! "my_collection" {:$or [{...} {...}]} {:$inc {:namespace/score 0}} {...})
   ;
   ; @return (boolean)
   ([collection-name query document]
@@ -382,11 +382,11 @@
   ; @param (string) document-id
   ; @param (function) f
   ; @param (map)(opt) options
-  ;  {:postpare-f (function)(opt)
-  ;   :prepare-f (function)(opt)}
+  ; {:postpare-f (function)(opt)
+  ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
+  ; (apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced map)
   ([collection-name document-id f]
@@ -410,11 +410,11 @@
   ; @param (string) collection-name
   ; @param (function) f
   ; @param (map)(opt) options
-  ;  {:postpare-f (function)(opt)
-  ;   :prepare-f (function)(opt)}
+  ; {:postpare-f (function)(opt)
+  ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ;  (apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
+  ; (apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced maps in vector)
   ([collection-name f]
@@ -463,13 +463,13 @@
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)
-  ;    Default: false}
+  ; {:ordered? (boolean)
+  ;   Default: false}
   ;
   ; @example
-  ;  (remove-document "my_collection" "MyObjectId" {...})
-  ;  =>
-  ;  "MyObjectId"
+  ; (remove-document "my_collection" "MyObjectId" {...})
+  ; =>
+  ; "MyObjectId"
   ;
   ; @return (string)
   ([collection-name document-id]
@@ -486,13 +486,13 @@
   ; @param (string) collection-name
   ; @param (strings in vector) document-ids
   ; @param (map)(opt) options
-  ;  {:ordered? (boolean)
-  ;    Default: false}
+  ; {:ordered? (boolean)
+  ;   Default: false}
   ;
   ; @example
-  ;  (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
-  ;  =>
-  ;  ["MyObjectId" "YourObjectId"]
+  ; (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; =>
+  ; ["MyObjectId" "YourObjectId"]
   ;
   ; @return (strings in vector)
   ([collection-name document-ids]
@@ -508,7 +508,7 @@
   ; @param (string) collection-name
   ;
   ; @usage
-  ;  (remove-all-documents! "my_collection")
+  ; (remove-all-documents! "my_collection")
   ;
   ; @return (?)
   [collection-name]
@@ -548,25 +548,25 @@
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (map)(opt) options
-  ;  {:changes (namespaced map)(opt)
-  ;   :label-key (namespaced keyword)(opt)
-  ;    A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
-  ;   :ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:changes (namespaced map)(opt)
+  ;  :label-key (namespaced keyword)(opt)
+  ;   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  ;  :ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (duplicate-document! "my_collection" "MyObjectId" {...})
-  ;  =>
-  ;  {:namespace/id "MyObjectId" :namespace/label "My document"}
+  ; (duplicate-document! "my_collection" "MyObjectId" {...})
+  ; =>
+  ; {:namespace/id "MyObjectId" :namespace/label "My document"}
   ;
   ; @example
-  ;  (duplicate-document! "my_collection" "MyObjectId" {:label-key :namespace/label})
-  ;  =>
-  ;  {:namespace/id "MyObjectId" :namespace/label "My document #2"}
+  ; (duplicate-document! "my_collection" "MyObjectId" {:label-key :namespace/label})
+  ; =>
+  ; {:namespace/id "MyObjectId" :namespace/label "My document #2"}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([collection-name document-id]
    (duplicate-document! collection-name document-id {}))
 
@@ -581,16 +581,16 @@
   ; @param (string) collection-name
   ; @param (strings in vector) document-ids
   ; @param (map)(opt) options
-  ;  {:label-key (namespaced keyword)(opt)
-  ;    A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
-  ;   :ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:label-key (namespaced keyword)(opt)
+  ;   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  ;  :ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @example
-  ;  (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
-  ;  =>
-  ;  [{...} {...}]
+  ; (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; =>
+  ; [{...} {...}]
   ;
   ; @return (namespaced maps in vector)
   ([collection-name document-ids]
@@ -605,11 +605,11 @@
 (defn reorder-documents!
   ; @param (string) collection-name
   ; @param (vectors in vector) document-order
-  ;  [[(string) document-id
-  ;    (integer) document-dex]]
+  ; [[(string) document-id
+  ;   (integer) document-dex]]
   ;
   ; @usage
-  ;  (reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
+  ; (reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
   ;
   ; @return (vectors in vector)
   [collection-name document-order]

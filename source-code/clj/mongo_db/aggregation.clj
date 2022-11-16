@@ -24,8 +24,8 @@
   ; @param (string) collection-name
   ; @param (maps in vector) pipeline
   ; @param (map)(opt) options
-  ;  {:locale (string)(opt)
-  ;    Default: config/DEFAULT-LOCALE}
+  ; {:locale (string)(opt)
+  ;   Default: config/DEFAULT-LOCALE}
   ;
   ; @return (maps in vector)
   ([collection-name pipeline]

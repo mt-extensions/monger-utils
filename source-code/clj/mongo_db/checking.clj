@@ -11,8 +11,8 @@
   ; @param (*) query
   ;
   ; @usage
-  ;  (find-query {:namespace/my-string "my-value"
-  ;               :$or [{:namespace/id "MyObjectId"}]})
+  ; (find-query {:namespace/my-string "my-value"
+  ;              :$or [{:namespace/id "MyObjectId"}]})
   ;
   ; @return (*)
   [query]

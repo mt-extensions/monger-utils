@@ -14,11 +14,11 @@
 (defn- ordered-insert-input
   ; @param (string) collection-name
   ; @param (namespaced map) document
-  ;  {:namespace/order (integer)(opt)}
+  ; {:namespace/order (integer)(opt)}
   ; @param (map) options
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [collection-name document _]
   ; Az upsert-input, save-input, ... függvények is az insert-input függvényt használják
   ; a dokumentum előkészítésére ezért ha a dokumentum már rendelkezik namespace/order
@@ -33,12 +33,12 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [collection-name document {:keys [ordered? prepare-f] :as options}]
   (try (as-> document % (if-not ordered?  % (ordered-insert-input collection-name % options))
                         (if-not prepare-f % (prepare-f %)))
@@ -51,12 +51,12 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [collection-name document options]
   (insert-input collection-name document options))
 
@@ -67,7 +67,7 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
   [collection-name document {:keys [prepare-f] :as options}]
@@ -82,10 +82,10 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [collection-name document options]
   (insert-input collection-name document options))
 
@@ -96,7 +96,7 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
   [collection-name document options]
@@ -109,7 +109,7 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:changes (namespaced map)}
+  ; {:changes (namespaced map)}
   ;
   ; @return (string)
   [_ document {:keys [changes]}]
@@ -122,7 +122,7 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:label-key (namespaced keyword)}
+  ; {:label-key (namespaced keyword)}
   ;
   ; @return (string)
   [collection-name document {:keys [label-key]}]
@@ -138,7 +138,7 @@
   ; @param (map) options
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [_ document _]
   (if-let [namespace (map/get-namespace document)]
           (let [order-key (keyword/add-namespace namespace :order)]
@@ -151,14 +151,14 @@
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
-  ;  {:changes (namespaced map)(opt)
-  ;   :label-key (namespaced keyword)(opt)
-  ;   :ordered? (boolean)(opt)
-  ;    Default: false
-  ;   :prepare-f (function)(opt)}
+  ; {:changes (namespaced map)(opt)
+  ;  :label-key (namespaced keyword)(opt)
+  ;  :ordered? (boolean)(opt)
+  ;   Default: false
+  ;  :prepare-f (function)(opt)}
   ;
   ; @return (namespaced map)
-  ;  {:namespace/order (integer)}
+  ; {:namespace/order (integer)}
   [collection-name document {:keys [changes label-key ordered? prepare-f] :as options}]
   (try (as-> document % (if-not changes   % (changed-duplicate-input collection-name % options))
                         (if-not label-key % (labeled-duplicate-input collection-name % options))

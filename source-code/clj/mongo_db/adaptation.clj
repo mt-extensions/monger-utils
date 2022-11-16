@@ -15,9 +15,9 @@
   ; @param (string) document-id
   ;
   ; @example
-  ;  (document-id-input "MyObjectId")
-  ;  =>
-  ;  #<ObjectId MyObjectId>
+  ; (document-id-input "MyObjectId")
+  ; =>
+  ; #<ObjectId MyObjectId>
   ;
   ; @return (org.bson.types.ObjectId object)
   [document-id]
@@ -32,9 +32,9 @@
   ; @param (org.bson.types.ObjectId object) document-id
   ;
   ; @example
-  ;  (document-id-output #<ObjectId MyObjectId>)
-  ;  =>
-  ;  "MyObjectId"
+  ; (document-id-output #<ObjectId MyObjectId>)
+  ; =>
+  ; "MyObjectId"
   ;
   ; @return (string)
   [document-id]
@@ -69,23 +69,23 @@
   ; @param (map) query
   ;
   ; @example
-  ;  (find-query {:namespace/id            "MyObjectId"
-  ;               :namespace/my-keyword    :my-value
-  ;               :namespace/your-string   "your-value"
-  ;               :namespace/our-timestamp "2020-04-20T16:20:00.000Z"
-  ;               :$or [{:namespace/id "YourObjectId"}]})
-  ;  =>
-  ;  {"_id"                     #<ObjectId MyObjectId>
-  ;   "namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>
-  ;   "$or" [{"namespace/id" #<ObjectId YourObjectId>}]}
+  ; (find-query {:namespace/id            "MyObjectId"
+  ;              :namespace/my-keyword    :my-value
+  ;              :namespace/your-string   "your-value"
+  ;              :namespace/our-timestamp "2020-04-20T16:20:00.000Z"
+  ;              :$or [{:namespace/id "YourObjectId"}]})
+  ; =>
+  ; {"_id"                     #<ObjectId MyObjectId>
+  ;  "namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>
+  ;  "$or" [{"namespace/id" #<ObjectId YourObjectId>}]}
   ;
   ; @return (map)
   [query]
   (if (map/nonempty? query)
       ; 1. A query térképben található :namespace/id tulajdonságok átnevezése :_id tulajdonságra
-      ;    A query térképben található string típusú azonosítók átalakítása objektum típusra
+      ;   A query térképben található string típusú azonosítók átalakítása objektum típusra
       ; 2. A query térképben használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
       ; 3. A query térképben string típusként tárolt dátumok és idők átalakítása objektum típusra
       (try (-> query engine/id->>_id json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
@@ -97,16 +97,16 @@
   ; @param (namespaced map) projection
   ;
   ; @example
-  ;  (find-projection {:namespace/my-key 0})
-  ;  =>
-  ;  {"namespace/my-key" 0}
+  ; (find-projection {:namespace/my-key 0})
+  ; =>
+  ; {"namespace/my-key" 0}
   ;
   ; @example
-  ;  (find-projection {:namespace/id     0
-  ;                    :namespace/my-key 0})
-  ;  =>
-  ;  {"_id"              0
-  ;   "namespace/my-key" 0}
+  ; (find-projection {:namespace/id     0
+  ;                   :namespace/my-key 0})
+  ; =>
+  ; {"_id"              0
+  ;  "namespace/my-key" 0}
   ;
   ; @return (namespaced map)
   [projection]
@@ -120,20 +120,20 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (insert-input {:namespace/id            "MyObjectId"
-  ;                 :namespace/my-keyword    :my-value
-  ;                 :namespace/your-string   "your-value"
-  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
-  ;  =>
-  ;  {"_id"                     #<ObjectId MyObjectId>
-  ;   "namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
+  ; (insert-input {:namespace/id            "MyObjectId"
+  ;                :namespace/my-keyword    :my-value
+  ;                :namespace/your-string   "your-value"
+  ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ; =>
+  ; {"_id"                     #<ObjectId MyObjectId>
+  ;  "namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentum :namespace/id tulajdonságának átnevezése :_id tulajdonságra
-  ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
+  ;   A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
   (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
@@ -143,22 +143,22 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (insert-output {"_id"                     #<ObjectId MyObjectId>
-  ;                  "namespace/my-keyword"    "*:my-value"
-  ;                  "namespace/your-string"   "your-value"
-  ;                  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
-  ;  =>
-  ;  {:namespace/id            "MyObjectId"
-  ;   :namespace/my-keyword    :my-value
-  ;   :namespace/your-string   "your-value"
-  ;   :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
+  ; (insert-output {"_id"                     #<ObjectId MyObjectId>
+  ;                 "namespace/my-keyword"    "*:my-value"
+  ;                 "namespace/your-string"   "your-value"
+  ;                 "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ; =>
+  ; {:namespace/id            "MyObjectId"
+  ;  :namespace/my-keyword    :my-value
+  ;  :namespace/your-string   "your-value"
+  ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentumban használt string típusra alakított kulcsok és értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
+  ;   A dokumentum objektum típusú azonosítójának átalakítása string típusra
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
@@ -169,20 +169,20 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (save-input {:namespace/id            "MyObjectId"
-  ;               :namespace/my-keyword    :my-value
-  ;               :namespace/your-string   "your-value"
-  ;               :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
-  ;  =>
-  ;  {"_id"                     #<ObjectId MyObjectId>
-  ;   "namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
+  ; (save-input {:namespace/id            "MyObjectId"
+  ;              :namespace/my-keyword    :my-value
+  ;              :namespace/your-string   "your-value"
+  ;              :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ; =>
+  ; {"_id"                     #<ObjectId MyObjectId>
+  ;  "namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentum :namespace/id tulajdonságának átnevezése :_id tulajdonságra
-  ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
+  ;   A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
   (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
@@ -192,22 +192,22 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (save-output {"_id"                     #<ObjectId MyObjectId>
-  ;                "namespace/my-keyword"    "*:my-value"
-  ;                "namespace/your-string"   "your-value"
-  ;                "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
-  ;  =>
-  ;  {:namespace/id            "MyObjectId"
-  ;   :namespace/my-keyword    :my-value
-  ;   :namespace/your-string   "your-value"
-  ;   :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
+  ; (save-output {"_id"                     #<ObjectId MyObjectId>
+  ;               "namespace/my-keyword"    "*:my-value"
+  ;               "namespace/your-string"   "your-value"
+  ;               "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ; =>
+  ; {:namespace/id            "MyObjectId"
+  ;  :namespace/my-keyword    :my-value
+  ;  :namespace/your-string   "your-value"
+  ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentumban használt string típusra alakított kulcsok és értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
+  ;   A dokumentum objektum típusú azonosítójának átalakítása string típusra
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
@@ -218,13 +218,13 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (update-input {:namespace/my-keyword    :my-value
-  ;                 :namespace/your-string   "your-value"
-  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
-  ;  =>
-  ;  {"namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
+  ; (update-input {:namespace/my-keyword    :my-value
+  ;                :namespace/your-string   "your-value"
+  ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ; =>
+  ; {"namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
   [document]
@@ -247,13 +247,13 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (upsert-input {:namespace/my-keyword    :my-value
-  ;                 :namespace/your-string   "your-value"
-  ;                 :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
-  ;  =>
-  ;  {"namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
+  ; (upsert-input {:namespace/my-keyword    :my-value
+  ;                :namespace/your-string   "your-value"
+  ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ; =>
+  ; {"namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
   [document]
@@ -266,20 +266,20 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (duplicate-input {:namespace/id            "MyObjectId"
-  ;                    :namespace/my-keyword    :my-value
-  ;                    :namespace/your-string   "your-value"
-  ;                    :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
-  ;  =>
-  ;  {"_id"                     #<ObjectId MyObjectId>
-  ;   "namespace/my-keyword"    "*:my-value"
-  ;   "namespace/your-string"   "your-value"
-  ;   "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
+  ; (duplicate-input {:namespace/id            "MyObjectId"
+  ;                   :namespace/my-keyword    :my-value
+  ;                   :namespace/your-string   "your-value"
+  ;                   :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
+  ; =>
+  ; {"_id"                     #<ObjectId MyObjectId>
+  ;  "namespace/my-keyword"    "*:my-value"
+  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentum :namespace/id tulajdonságának átnevezése :_id tulajdonságra
-  ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
+  ;   A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
   (try (-> document (engine/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
@@ -289,22 +289,22 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (insert-output {"_id"                     #<ObjectId MyObjectId>
-  ;                  "namespace/my-keyword"    "*:my-value"
-  ;                  "namespace/your-string"   "your-value"
-  ;                  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
-  ;  =>
-  ;  {:namespace/id            "MyObjectId"
-  ;   :namespace/my-keyword    :my-value
-  ;   :namespace/your-string   "your-value"
-  ;   :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
+  ; (insert-output {"_id"                     #<ObjectId MyObjectId>
+  ;                 "namespace/my-keyword"    "*:my-value"
+  ;                 "namespace/your-string"   "your-value"
+  ;                 "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
+  ; =>
+  ; {:namespace/id            "MyObjectId"
+  ;  :namespace/my-keyword    :my-value
+  ;  :namespace/your-string   "your-value"
+  ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)
   [document]
   ; 1. A dokumentumban használt string típusra alakított kulcsok és értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
+  ;   A dokumentum objektum típusú azonosítójának átalakítása string típusra
   (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (engine/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
@@ -315,9 +315,9 @@
   ; @param (namespaced map) query
   ;
   ; @example
-  ;  (search-query {:namespace/my-key "Xyz"}
-  ;  =>
-  ;  {"namespace/my-key" {"$regex" "Xyz" "$options" "i"}}
+  ; (search-query {:namespace/my-key "Xyz"}
+  ; =>
+  ; {"namespace/my-key" {"$regex" "Xyz" "$options" "i"}}
   ;
   ; @return (namespaced map)
   [query]

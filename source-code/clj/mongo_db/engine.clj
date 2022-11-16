@@ -14,9 +14,9 @@
   ; @param (*) n
   ;
   ; @example
-  ;  (operator? :$or)
-  ;  =>
-  ;  true
+  ; (operator? :$or)
+  ; =>
+  ; true
   ;
   ; @return (boolean)
   [n]
@@ -27,15 +27,15 @@
   ; @param (*) n
   ;
   ; @example
-  ;  (document? {:namespace/my-key "..."})
-  ;  =>
-  ;  false
+  ; (document? {:namespace/my-key "..."})
+  ; =>
+  ; false
   ;
   ; @example
-  ;  (document? {:namespace/my-key "..."
-  ;              :namespace/id     "..."})
-  ;  =>
-  ;  true
+  ; (document? {:namespace/my-key "..."
+  ;             :namespace/id     "..."})
+  ; =>
+  ; true
   ;
   ; @return (boolean)
   [n]
@@ -56,7 +56,7 @@
 
 (defn generate-id
   ; @usage
-  ;  (mongo-db/generate-id)
+  ; (mongo-db/generate-id)
   ;
   ; @return (string)
   []
@@ -66,9 +66,9 @@
   ; @param (map) n
   ;
   ; @example
-  ;  (assoc-id {:namespace/my-key "my-value"})
-  ;  =>
-  ;  {:namespace/id "MyObjectId" :namespace/my-key "my-value"}
+  ; (assoc-id {:namespace/my-key "my-value"})
+  ; =>
+  ; {:namespace/id "MyObjectId" :namespace/my-key "my-value"}
   ;
   ; @return (map)
   [n]
@@ -79,12 +79,12 @@
 
 (defn dissoc-id
   ; @param (map) n
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ;
   ; @example
-  ;  (dissoc-id {:namespace/id "MyObjectId" :namespace/my-key "my-value"})
-  ;  =>
-  ;  {:namespace/my-key "my-value"}
+  ; (dissoc-id {:namespace/id "MyObjectId" :namespace/my-key "my-value"})
+  ; =>
+  ; {:namespace/my-key "my-value"}
   ;
   ; @return (map)
   [n]
@@ -94,18 +94,18 @@
 
 (defn id->_id
   ; @param (map) n
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
-  ;  {:parse? (boolean)(opt)
-  ;    Default: false}
+  ; {:parse? (boolean)(opt)
+  ;   Default: false}
   ;
   ; @example
-  ;  (id->_id {:namespace/id "MyObjectId"})
-  ;  =>
-  ;  {:_id #<ObjectId MyObjectId>}
+  ; (id->_id {:namespace/id "MyObjectId"})
+  ; =>
+  ; {:_id #<ObjectId MyObjectId>}
   ;
   ; @return (map)
-  ;  {:_id (org.bson.types.ObjectId object)}
+  ; {:_id (org.bson.types.ObjectId object)}
   ([n]
    (id->_id n {}))
 
@@ -125,18 +125,18 @@
 
 (defn _id->id
   ; @param (map) n
-  ;  {:_id (string)}
+  ; {:_id (string)}
   ; @param (map)(opt) options
-  ;  {:unparse? (boolean)(opt)
-  ;    Default: false}
+  ; {:unparse? (boolean)(opt)
+  ;   Default: false}
   ;
   ; @example
-  ;  (_id->id {:_id #<ObjectId MyObjectId>})
-  ;  =>
-  ;  {:namespace/id "MyObjectId"}
+  ; (_id->id {:_id #<ObjectId MyObjectId>})
+  ; =>
+  ; {:namespace/id "MyObjectId"}
   ;
   ; @return (map)
-  ;  {:namespace/id (string)}
+  ; {:namespace/id (string)}
   ([n]
    (_id->id n {}))
 
@@ -156,18 +156,18 @@
 
 (defn id->>_id
   ; @param (*) n
-  ;  {:namespace/id (string)(opt)}
+  ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
-  ;  {:parse? (boolean)(opt)
-  ;    Default: false}
+  ; {:parse? (boolean)(opt)
+  ;   Default: false}
   ;
   ; @example
-  ;  (id->>_id {:$or [{...} {:namespace/id "MyObjectId"}]})
-  ;  =>
-  ;  {:$or [{...} {:_id #<ObjectId MyObjectId>}]}
+  ; (id->>_id {:$or [{...} {:namespace/id "MyObjectId"}]})
+  ; =>
+  ; {:$or [{...} {:_id #<ObjectId MyObjectId>}]}
   ;
   ; @return (map)
-  ;  {:_id (org.bson.types.ObjectId object)}
+  ; {:_id (org.bson.types.ObjectId object)}
   ([n]
    (id->>_id n {}))
 
@@ -183,9 +183,9 @@
   ; @param (namespaced map) document
   ;
   ; @example
-  ;  (document->order {:namespace/order 3})
-  ;  =>
-  ;  3
+  ; (document->order {:namespace/order 3})
+  ; =>
+  ; 3
   ;
   ; @return (integer)
   [document]
