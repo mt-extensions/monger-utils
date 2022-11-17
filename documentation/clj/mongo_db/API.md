@@ -57,6 +57,8 @@
 @param (string) document-id
 @param (function) f
 @param (map)(opt) options
+{:postpare-f (function)(opt)
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -108,6 +110,8 @@
 @param (string) collection-name
 @param (function) f
 @param (map)(opt) options
+{:postpare-f (function)(opt)
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -245,6 +249,9 @@
 
 ```
 @param (map) pipeline-props
+{:field-pattern (map)(opt)
+ :filter-pattern (map)(opt)
+ :search-pattern (map)(opt)}
 ```
 
 ```
@@ -336,6 +343,12 @@
 @param (string) collection-name
 @param (string) document-id
 @param (map)(opt) options
+{:changes (namespaced map)(opt)
+ :label-key (namespaced keyword)(opt)
+  A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+ :ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -354,6 +367,7 @@
 
 ```
 @return (namespaced map)
+{:namespace/id (string)}
 ```
 
 <details>
@@ -391,6 +405,11 @@
 @param (string) collection-name
 @param (strings in vector) document-ids
 @param (map)(opt) options
+{:label-key (namespaced keyword)(opt)
+  A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+ :ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -436,6 +455,8 @@
 
 ```
 @param (map) filter-pattern
+{:$or (maps in vector)(opt)
+ :$and (maps in vector)(opt)
 ```
 
 ```
@@ -575,6 +596,7 @@
 
 ```
 @return (maps in vector)
+[{:namespace/id (string)}]
 ```
 
 <details>
@@ -705,6 +727,7 @@
 
 ```
 @return (namespaced map)
+{:namespace/id (string)}
 ```
 
 <details>
@@ -770,6 +793,7 @@
 
 ```
 @return (namespaced map)
+{:namespace/id (string)}
 ```
 
 <details>
@@ -936,6 +960,7 @@
 
 ```
 @return (namespaced maps in vector)
+[{:namespace/id (string)}]
 ```
 
 <details>
@@ -1057,6 +1082,13 @@
 
 ```
 @param (map) pipeline-props
+{:field-pattern (map)(opt)
+ :filter-pattern (map)(opt)
+ :max-count (integer)(opt)
+ :search-pattern (map)(opt)
+ :skip (integer)(opt)
+ :sort-pattern (map)(opt)
+ :unset-pattern (namespaced keywords in vector)(opt)}
 ```
 
 ```
@@ -1114,6 +1146,7 @@
 @param (string) collection-name
 @param (keywords in vector) specified-keys
 @param (function)(opt) test-f
+Default: some?
 ```
 
 ```
@@ -1169,7 +1202,11 @@
 ```
 @param (string) collection-name
 @param (namespaced map) document
+{:namespace/id (string)(opt)}
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -1181,6 +1218,7 @@
 
 ```
 @return (namespaced map)
+{:namespace/id (string)}
 ```
 
 <details>
@@ -1220,7 +1258,11 @@
 ```
 @param (string) collection-name
 @param (namespaced maps in vector) documents
+[{:namespace/id (string)(opt)}]
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -1232,6 +1274,7 @@
 
 ```
 @return (namespaced maps in vector)
+[{:namespace/id (string)}]
 ```
 
 <details>
@@ -1308,6 +1351,8 @@
 @param (string) collection-name
 @param (string) document-id
 @param (map)(opt) options
+{:ordered? (boolean)
+  Default: false}
 ```
 
 ```
@@ -1356,6 +1401,8 @@
 @param (string) collection-name
 @param (strings in vector) document-ids
 @param (map)(opt) options
+{:ordered? (boolean)
+  Default: false}
 ```
 
 ```
@@ -1402,6 +1449,8 @@
 ```
 @param (string) collection-name
 @param (vectors in vector) document-order
+[[(string) document-id
+  (integer) document-dex]]
 ```
 
 ```
@@ -1451,7 +1500,11 @@
 ```
 @param (string) collection-name
 @param (namespaced map) document
+{:namespace/id (string)(opt)}
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -1463,6 +1516,7 @@
 
 ```
 @return (namespaced map)
+{:namespace/id (string)}
 ```
 
 <details>
@@ -1502,7 +1556,11 @@
 ```
 @param (string) collection-name
 @param (namespaced maps in vector) documents
+[{:namespace/id (string)(opt)}]
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -1514,6 +1572,7 @@
 
 ```
 @return (namespaced maps in vector)
+[{:namespace/id (string)}]
 ```
 
 <details>
@@ -1548,6 +1607,8 @@
 
 ```
 @param (map) search-pattern
+{:$and (maps in vector)(opt)
+ :$or (maps in vector)(opt)}
 ```
 
 ```
@@ -1561,6 +1622,8 @@
 
 ```
 @return (map)
+{"$and" (maps in vector)
+ "$or" (maps in vector)}
 ```
 
 <details>
@@ -1678,8 +1741,10 @@
 ```
 @param (string) collection-name
 @param (map) query
+{:namespace/id (string)(opt)}
 @param (map or namespaced map) document
 @param (map)(opt) options
+{:prepare-f (function)(opt)}
 ```
 
 ```
@@ -1739,8 +1804,10 @@
 ```
 @param (string) collection-name
 @param (map) query
+{:namespace/id (string)(opt)}
 @param (namespaced map) document
 @param (map)(opt) options
+{:prepare-f (function)(opt)}
 ```
 
 ```
@@ -1802,6 +1869,9 @@
 @param (map) query
 @param (map or namespaced map) document
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+  Default: false
+ :prepare-f (function)(opt)}
 ```
 
 ```
@@ -1863,6 +1933,8 @@
 @param (map) query
 @param (namespaced map) document
 @param (map)(opt) options
+{:ordered? (boolean)(opt)
+ :prepare-f (function)(opt)}
 ```
 
 ```
