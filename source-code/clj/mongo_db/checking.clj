@@ -1,7 +1,7 @@
 
 (ns mongo-db.checking
     (:require [candy.api       :refer [return]]
-              [mid-fruits.map  :as map]
+              [map.api         :as map]
               [mongo-db.errors :as errors]))
 
 ;; ----------------------------------------------------------------------------

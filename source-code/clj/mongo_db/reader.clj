@@ -2,8 +2,7 @@
 (ns mongo-db.reader
     (:require monger.joda-time
               [candy.api            :refer [return]]
-              [mid-fruits.map       :as map]
-              [mid-fruits.vector    :as vector]
+              [map.api              :as map]
               [monger.collection    :as mcl]
               [monger.core          :as mcr]
               [monger.db            :as mdb]
@@ -11,7 +10,8 @@
               [mongo-db.aggregation :as aggregation]
               [mongo-db.checking    :as checking]
               [mongo-db.engine      :as engine]
-              [re-frame.api         :as r]))
+              [re-frame.api         :as r]
+              [vector.api           :as vector]))
 
 ;; -- Error handling ----------------------------------------------------------
 ;; ----------------------------------------------------------------------------

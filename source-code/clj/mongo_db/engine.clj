@@ -1,11 +1,11 @@
 
 (ns mongo-db.engine
     (:import  org.bson.types.ObjectId)
-    (:require [candy.api          :refer [return]]
-              [mid-fruits.keyword :as keyword]
-              [mid-fruits.map     :as map]
-              [monger.conversion  :as mcv]
-              [mongo-db.errors    :as errors]))
+    (:require [candy.api         :refer [return]]
+              [keyword.api       :as keyword]
+              [map.api           :as map]
+              [monger.conversion :as mcv]
+              [mongo-db.errors   :as errors]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

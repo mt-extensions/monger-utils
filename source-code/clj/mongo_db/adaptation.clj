@@ -3,7 +3,7 @@
     (:import  org.bson.types.ObjectId)
     (:require [candy.api        :refer [return]]
               [json.api         :as json]
-              [mid-fruits.map   :as map]
+              [map.api          :as map]
               [mongo-db.engine  :as engine]
               [mongo-db.errors  :as errors]
               [time.api         :as time]))

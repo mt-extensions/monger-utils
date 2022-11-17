@@ -2,9 +2,8 @@
 (ns mongo-db.actions
     (:require monger.joda-time
               [candy.api           :refer [return]]
-              [mid-fruits.keyword  :as keyword]
-              [mid-fruits.map      :as map]
-              [mid-fruits.vector   :as vector]
+              [keyword.api         :as keyword]
+              [map.api             :as map]
               [monger.collection   :as mcl]
               [monger.operators    :refer :all]
               [monger.result       :as mrt]
@@ -15,7 +14,8 @@
               [mongo-db.postparing :as postparing]
               [mongo-db.preparing  :as preparing]
               [mongo-db.reader     :as reader]
-              [re-frame.api        :as r]))
+              [re-frame.api        :as r]
+              [vector.api          :as vector]))
 
 ;; -- Error handling ----------------------------------------------------------
 ;; ----------------------------------------------------------------------------

@@ -2,11 +2,11 @@
 (ns mongo-db.pipelines
     (:require [candy.api           :refer [param]]
               [json.api            :as json]
-              [mid-fruits.keyword  :as keyword]
-              [mid-fruits.map      :as map]
-              [mid-fruits.vector   :as vector]
+              [keyword.api         :as keyword]
+              [map.api             :as map]
               [mongo-db.adaptation :as adaptation]
-              [mongo-db.checking   :as checking]))
+              [mongo-db.checking   :as checking]
+              [vector.api          :as vector]))
 
 ;; -- Names -------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
