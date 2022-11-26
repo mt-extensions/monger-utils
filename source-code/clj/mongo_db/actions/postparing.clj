@@ -1,5 +1,5 @@
 
-(ns mongo-db.postparing
+(ns mongo-db.actions.postparing
     (:require [candy.api :refer [return]]))
 
 ;; -- Applying document -------------------------------------------------------

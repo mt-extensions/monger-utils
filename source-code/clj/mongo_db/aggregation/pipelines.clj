@@ -1,12 +1,11 @@
 
-(ns mongo-db.pipelines
-    (:require [candy.api           :refer [param]]
-              [json.api            :as json]
-              [keyword.api         :as keyword]
-              [map.api             :as map]
-              [mongo-db.adaptation :as adaptation]
-              [mongo-db.checking   :as checking]
-              [vector.api          :as vector]))
+(ns mongo-db.aggregation.pipelines
+    (:require [candy.api                       :refer [param]]
+              [json.api                        :as json]
+              [map.api                         :as map]
+              [mongo-db.aggregation.adaptation :as aggregation.adaptation]
+              [mongo-db.aggregation.checking   :as aggregation.checking]
+              [vector.api                      :as vector]))
 
 ;; -- Names -------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -55,9 +54,9 @@
   ;          {"namespace/my-boolean"   nil}]
   ;  "$and" [{"namespace/your-boolean" true}]}
   ;
-  ; @return (maps in vector)
+  ; @return (map)
   [filter-pattern]
-  (adaptation/find-query filter-pattern))
+  (aggregation.adaptation/filter-query filter-pattern))
 
 (defn search-query
   ; @param (map) search-pattern
@@ -75,8 +74,8 @@
   ; {"$and" (maps in vector)
   ;  "$or" (maps in vector)}
   [{:keys [$and $or]}]
-  (cond-> {} $and (assoc "$and" (vector/->items $and #(-> % checking/search-query adaptation/search-query)))
-             $or  (assoc "$or"  (vector/->items $or  #(-> % checking/search-query adaptation/search-query)))))
+  (cond-> {} $and (assoc "$and" (vector/->items $and #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))
+             $or  (assoc "$or"  (vector/->items $or  #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))))
 
 (defn sort-query
   ; @param (map) sort-pattern

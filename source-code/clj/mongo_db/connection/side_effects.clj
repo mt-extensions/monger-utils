@@ -1,39 +1,10 @@
 
-(ns mongo-db.connection
+(ns mongo-db.connection.side-effects
     (:import  [com.mongodb MongoOptions ServerAddress])
     (:require [monger.core  :as mcr]
-              [re-frame.api :as r :refer [r]]))
+              [re-frame.api :as r]))
 
-;; -- Subscriptions -----------------------------------------------------------
 ;; ----------------------------------------------------------------------------
-
-(defn- get-connection
-  ; @return (com.mongodb.DB object)
-  [db _]
-  (get-in db [:mongo-db :connection]))
-
-(r/reg-sub :mongo-db/get-connection get-connection)
-
-(defn- connected?
-  ; @return (boolean)
-  [db _]
-  (r get-connection db))
-
-(r/reg-sub :mongo-db/connected? connected?)
-
-;; -- DB events ---------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
-(defn- store-connection!
-  ; @param (com.mongodb.DB object) reference
-  ;
-  ; @return (map)
-  [db [_ reference]]
-  (assoc-in db [:mongo-db :connection] reference))
-
-(r/reg-event-db :mongo-db/store-connection! store-connection!)
-
-;; -- Side-effect events ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn- build-connection!
@@ -46,5 +17,8 @@
                        connection     (mcr/connect        server-address mongo-options)
                        database       (mcr/get-db         connection     database-name)]
        (r/dispatch [:mongo-db/store-connection! database])))
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 (r/reg-fx :mongo-db/build-connection! build-connection!)

@@ -1,12 +1,12 @@
 
-(ns mongo-db.preparing
-    (:require [candy.api       :refer [return]]
-              [gestures.api    :as gestures]
-              [keyword.api     :as keyword]
-              [map.api         :as map]
-              [mongo-db.engine :as engine]
-              [mongo-db.errors :as errors]
-              [mongo-db.reader :as reader]))
+(ns mongo-db.actions.preparing
+    (:require [candy.api              :refer [return]]
+              [gestures.api           :as gestures]
+              [keyword.api            :as keyword]
+              [map.api                :as map]
+              [mongo-db.core.errors   :as core.errors]
+              [mongo-db.core.helpers  :as core.helpers]
+              [mongo-db.reader.engine :as reader.engine]))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -24,10 +24,10 @@
   ; a dokumentum előkészítésére ezért ha a dokumentum már rendelkezik namespace/order
   ; értékkel, akkor nem változtat rajta.
   (if-let [namespace (map/get-namespace document)]
-          (let [order-key  (keyword/add-namespace         namespace :order)
-                last-order (reader/get-all-document-count collection-name)]
+          (let [order-key  (keyword/add-namespace namespace :order)
+                last-order (reader.engine/get-all-document-count collection-name)]
                (merge {order-key last-order} document))
-          (throw (Exception. errors/MISSING-NAMESPACE-ERROR))))
+          (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
 
 (defn insert-input
   ; @param (string) collection-name
@@ -126,7 +126,7 @@
   ;
   ; @return (string)
   [collection-name document {:keys [label-key]}]
-  (let [collection          (reader/get-collection collection-name)
+  (let [collection          (reader.engine/get-collection collection-name)
         document-label      (get  document label-key)
         all-document-labels (mapv label-key collection)
         copy-label (gestures/item-label->copy-label document-label all-document-labels)]
@@ -144,8 +144,8 @@
           (let [order-key (keyword/add-namespace namespace :order)]
                (if-let [order (get document order-key)]
                        (update document order-key inc)
-                       (throw (Exception. errors/MISSING-DOCUMENT-ORDER-ERROR))))
-          (throw (Exception. errors/MISSING-NAMESPACE-ERROR))))
+                       (throw (Exception. core.errors/MISSING-DOCUMENT-ORDER-ERROR))))
+          (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
 
 (defn duplicate-input
   ; @param (string) collection-name
@@ -168,6 +168,6 @@
                         ;
                         ; A dokumentum a prototípus függvény alkalmazása előtt megkapja a másolat azonosítóját,
                         ; így az már elérhető a prototípus függvény számára
-                        (engine/assoc-id %)
+                        (core.helpers/assoc-id %)
                         (if-not prepare-f % (prepare-f %)))
        (catch Exception e (println (str e "\n" {:collection-name collection-name :document document :options options})))))

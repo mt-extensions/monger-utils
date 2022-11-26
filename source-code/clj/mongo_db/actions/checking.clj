@@ -1,25 +1,9 @@
 
-(ns mongo-db.checking
-    (:require [candy.api       :refer [return]]
-              [map.api         :as map]
-              [mongo-db.errors :as errors]))
-
-;; ----------------------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
-(defn find-query
-  ; @param (*) query
-  ;
-  ; @usage
-  ; (find-query {:namespace/my-string "my-value"
-  ;              :$or [{:namespace/id "MyObjectId"}]})
-  ;
-  ; @return (*)
-  [query]
-  (try (if (map?   query)
-           (return query)
-           (throw (Exception. errors/QUERY-MUST-BE-MAP-ERROR)))
-       (catch Exception e (println (str e "\n" {:query query})))))
+(ns mongo-db.actions.checking
+    (:require [candy.api                :refer [return]]
+              [map.api                  :as map]
+              [mongo-db.core.errors     :as core.errors]
+              [mongo-db.reader.checking :as reader.checking]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -31,7 +15,7 @@
   [document]
   (try (if-let [namespace (map/get-namespace document)]
                (return document)
-               (throw (Exception. errors/MISSING-NAMESPACE-ERROR)))
+               (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -44,7 +28,7 @@
   [document]
   (try (if-let [namespace (map/get-namespace document)]
                (return document)
-               (throw (Exception. errors/MISSING-NAMESPACE-ERROR)))
+               (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -60,7 +44,7 @@
   ; Pl.: {:$inc {:namespace/my-integer 1}}
   (try (if (map?   document)
            (return document)
-           (throw (Exception. errors/INPUT-MUST-BE-MAP-ERROR)))
+           (throw (Exception. core.errors/INPUT-MUST-BE-MAP-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
@@ -68,7 +52,7 @@
   ;
   ; @return (*)
   [query]
-  (find-query query))
+  (reader.checking/find-query query))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -79,13 +63,3 @@
   ; @return (*)
   [document]
   (update-input document))
-
-;; -- Aggregation -------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
-(defn search-query
-  ; @param (*) query
-  ;
-  ; @return (*)
-  [query]
-  (find-query query))

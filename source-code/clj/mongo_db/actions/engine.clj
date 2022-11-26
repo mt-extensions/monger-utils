@@ -1,105 +1,19 @@
 
-(ns mongo-db.actions
-    (:require monger.joda-time
-              [candy.api           :refer [return]]
-              [keyword.api         :as keyword]
-              [map.api             :as map]
-              [monger.collection   :as mcl]
-              [monger.operators    :refer :all]
-              [monger.result       :as mrt]
-              [mongo-db.adaptation :as adaptation]
-              [mongo-db.checking   :as checking]
-              [mongo-db.engine     :as engine]
-              [mongo-db.errors     :as errors]
-              [mongo-db.postparing :as postparing]
-              [mongo-db.preparing  :as preparing]
-              [mongo-db.reader     :as reader]
-              [re-frame.api        :as r]
-              [vector.api          :as vector]))
-
-;; -- Error handling ----------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
-(defn- drop!
-  ; @param (string) collection-name
-  ;
-  ; @return (?)
-  [collection-name]
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (try (mcl/drop database collection-name)
-            (catch Exception e (println e (str e "\n" {:collection-name collection-name}))))))
-
-(defn- insert-and-return!
-  ; @param (string) collection-name
-  ; @param (map) document
-  ; {"_id" (org.bson.types.ObjectId object)}
-  ;
-  ; @return (namespaced map)
-  [collection-name document]
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (try (mcl/insert-and-return database collection-name document)
-            (catch Exception e (println (str e "\n" {:collection-name collection-name :document document}))))))
-
-(defn- save-and-return!
-  ; @param (string) collection-name
-  ; @param (namespaced map) document
-  ; {"_id" (org.bson.types.ObjectId object)}
-  ;
-  ; @return (namespaced map)
-  [collection-name document]
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (try (mcl/save-and-return database collection-name document)
-            (catch Exception e (println (str e "\n" {:collection-name collection-name :document document}))))))
-
-(defn- remove-by-id!
-  ; @param (string) collection-name
-  ; @param (org.bson.types.ObjectId object) document-id
-  ;
-  ; @return (?)
-  [collection-name document-id]
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (try (mcl/remove-by-id database collection-name document-id)
-            (catch Exception e (println (str e "\n" {:collection-name collection-name :document-id document-id}))))))
-
-(defn- update!
-  ; @param (string) collection-name
-  ; @param (map) query
-  ; {"_id" (org.bson.types.ObjectId object)(opt)}
-  ; @param (map) document
-  ; @param (map)(opt) options
-  ; {:multi (boolean)(opt)
-  ;   Default: false
-  ;  :upsert (boolean)(opt)
-  ;   Default: false}
-  ;
-  ; @return (com.mongodb.WriteResult object)
-  ([collection-name query document]
-   (update! collection-name query document {}))
-
-  ([collection-name query document options]
-   (let [database @(r/subscribe [:mongo-db/get-connection])]
-        (try (mcl/update database collection-name query document options)
-             (catch Exception e (println (str e "\n" {:collection-name collection-name :query   query
-                                                      :document        document        :options options})))))))
-
-(defn- upsert!
-  ; @param (string) collection-name
-  ; @param (map) query
-  ; {"_id" (org.bson.types.ObjectId object)(opt)}
-  ; @param (map) document
-  ; @param (map)(opt) options
-  ; {:multi (boolean)(opt)
-  ;   Default: false}
-  ;
-  ; @return (com.mongodb.WriteResult object)
-  ([collection-name query document]
-   (upsert! collection-name query document {}))
-
-  ([collection-name query document options]
-   (let [database @(r/subscribe [:mongo-db/get-connection])]
-        (try (mcl/upsert database collection-name query document options)
-             (catch Exception e (println (str e "\n" {:collection-name collection-name :query   query
-                                                      :document        document        :options options})))))))
+(ns mongo-db.actions.engine
+    (:require [candy.api                   :refer [return]]
+              [keyword.api                 :as keyword]
+              [map.api                     :as map]
+              [monger.result               :as mrt]
+              [mongo-db.actions.checking   :as actions.checking]
+              [mongo-db.actions.helpers    :as actions.helpers]
+              [mongo-db.actions.adaptation :as actions.adaptation]
+              [mongo-db.actions.postparing :as actions.postparing]
+              [mongo-db.actions.preparing  :as actions.preparing]
+              [mongo-db.reader.checking    :as reader.checking]
+              [mongo-db.reader.adaptation  :as reader.adaptation]
+              [mongo-db.core.errors        :as core.errors]
+              [mongo-db.reader.engine      :as reader.engine]
+              [vector.api                  :as vector]))
 
 ;; -- Reordering following documents ------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -118,20 +32,20 @@
   ;
   ; Egy rendezett kollekcióba történő dokumentum beszúrása a dokumentum után sorrendben következő
   ; többi dokumentum pozíciójának növelését teszi szükségessé.
-  (if-let [document (reader/get-document-by-id collection-name document-id)]
+  (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
           (let [namespace    (map/get-namespace     document)
                 order-key    (keyword/add-namespace namespace :order)
                 document-dex (get document order-key)
                 query        {order-key {:$gt document-dex}}
                 document     (case operation :increase {:$inc {order-key  1}}
                                              :decrease {:$inc {order-key -1}})]
-               (if-let [query (-> query checking/update-query adaptation/update-query)]
-                       (if-let [document (-> document checking/update-input adaptation/update-input)]
+               (if-let [query (-> query actions.checking/update-query actions.adaptation/update-query)]
+                       (if-let [document (-> document actions.checking/update-input actions.adaptation/update-input)]
                                ; A sorrendben a dokumentum után következő dokumentumok sorrendbeli pozíciójának eltolása
-                               (let [result (update! collection-name query document {:multi true})]
+                               (let [result (actions.helpers/update! collection-name query document {:multi true})]
                                     (if-not (mrt/acknowledged? result)
-                                            (throw (Exception. errors/REORDER-DOCUMENTS-FAILED)))))))
-          (throw (Exception. errors/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
+                                            (throw (Exception. core.errors/REORDER-DOCUMENTS-FAILED)))))))
+          (throw (Exception. core.errors/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -156,11 +70,11 @@
    (insert-document! collection-name document {}))
 
   ([collection-name document options]
-   (if-let [document (as-> document % (checking/insert-input %)
-                                      (preparing/insert-input collection-name % options)
-                                      (adaptation/insert-input %))]
-           (if-let [result (insert-and-return! collection-name document)]
-                   (adaptation/insert-output result)))))
+   (if-let [document (as-> document % (actions.checking/insert-input %)
+                                      (actions.preparing/insert-input collection-name % options)
+                                      (actions.adaptation/insert-input %))]
+           (if-let [result (actions.helpers/insert-and-return! collection-name document)]
+                   (actions.adaptation/insert-output result)))))
 
 ;; -- Inserting documents -----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -210,11 +124,11 @@
    (save-document! collection-name document {}))
 
   ([collection-name document options]
-   (if-let [document (as-> document % (checking/save-input %)
-                                      (preparing/save-input collection-name % options)
-                                      (adaptation/save-input %))]
-           (if-let [result (save-and-return! collection-name document)]
-                   (adaptation/save-output result)))))
+   (if-let [document (as-> document % (actions.checking/save-input %)
+                                      (actions.preparing/save-input collection-name % options)
+                                      (actions.adaptation/save-input %))]
+           (if-let [result (actions.helpers/save-and-return! collection-name document)]
+                   (actions.adaptation/save-output result)))))
 
 ;; -- Saving documents --------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -266,11 +180,11 @@
    (update-document! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/update-input %)
-                                               (preparing/update-input collection-name % options)
-                                               (adaptation/update-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (update! collection-name query document {:multi false :upsert false})]
+   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-name % options)
+                                               (actions.adaptation/update-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/update! collection-name query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
 
 ;; -- Updating documents ------------------------------------------------------
@@ -298,13 +212,13 @@
    (update-documents! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/update-input %)
-                                               (preparing/update-input collection-name % options)
-                                               (adaptation/update-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
+   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-name % options)
+                                               (actions.adaptation/update-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             ; WARNING! DO NOT USE!
                             ; java.lang.IllegalArgumentException: Replacements can not be multi
-                            (let [result (update! collection-name query document {:multi true :upsert false})]
+                            (let [result (actions.helpers/update! collection-name query document {:multi true :upsert false})]
                                  (mrt/updated-existing? result)))))))
 
 ;; -- Upserting document ------------------------------------------------------
@@ -333,11 +247,11 @@
    (upsert-document! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/upsert-input %)
-                                               (preparing/upsert-input collection-name % options)
-                                               (adaptation/upsert-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (upsert! collection-name query document {:multi false})]
+   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-name % options)
+                                               (actions.adaptation/upsert-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/upsert! collection-name query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
 
 ;; -- Upserting documents -----------------------------------------------------
@@ -365,13 +279,13 @@
    (upsert-documents! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/upsert-input %)
-                                               (preparing/upsert-input collection-name % options)
-                                               (adaptation/upsert-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
+   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-name % options)
+                                               (actions.adaptation/upsert-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             ; WARNING! DO NOT USE!
                             ; java.lang.IllegalArgumentException: Replacements can not be multi
-                            (let [result (upsert! collection-name query document {:multi true})]
+                            (let [result (actions.helpers/upsert! collection-name query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 
 ;; -- Applying document -------------------------------------------------------
@@ -395,13 +309,13 @@
   ([collection-name document-id f options]
    ; A prepare-f az f fügvvény alkalmazása előtt, a postpare-f függvény pedig az
    ; f függvény alkalmazása után van használva.
-   (if-let [document (reader/get-document-by-id collection-name document-id)]
-           (if-let [document (preparing/apply-input collection-name document options)]
+   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
+           (if-let [document (actions.preparing/apply-input collection-name document options)]
                    (if-let [document (f document)]
-                           (if-let [document (postparing/apply-input collection-name document options)]
-                                   (if-let [document (adaptation/save-input document)]
-                                           (let [result (save-and-return! collection-name document)]
-                                                (adaptation/save-output result)))))))))
+                           (if-let [document (actions.postparing/apply-input collection-name document options)]
+                                   (if-let [document (actions.adaptation/save-input document)]
+                                           (let [result (actions.helpers/save-and-return! collection-name document)]
+                                                (actions.adaptation/save-output result)))))))))
 
 ;; -- Applying documents ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -422,7 +336,7 @@
 
   ([collection-name f options]
    ; XXX#9801
-   (if-let [collection (reader/get-collection collection-name)]
+   (if-let [collection (reader.engine/get-collection collection-name)]
            (letfn [(fi [result document]
                        (if-let [document (f document)]
                                (let [document (save-document! collection-name document options)]
@@ -440,10 +354,10 @@
   ;
   ; @return (string)
   [collection-name document-id _]
-  (if-let [document-id (adaptation/document-id-input document-id)]
-          (let [result (remove-by-id! collection-name document-id)]
+  (if-let [document-id (actions.adaptation/document-id-input document-id)]
+          (let [result (actions.helpers/remove-by-id! collection-name document-id)]
                (if (mrt/acknowledged? result)
-                   (adaptation/document-id-output document-id)))))
+                   (actions.adaptation/document-id-output document-id)))))
 
 (defn- remove-ordered-document!
   ; @param (string) collection-name
@@ -452,12 +366,12 @@
   ;
   ; @return (string)
   [collection-name document-id _]
-  (if-let [document-id (adaptation/document-id-input document-id)]
-          (do (let [document-id (adaptation/document-id-output document-id)]
+  (if-let [document-id (actions.adaptation/document-id-input document-id)]
+          (do (let [document-id (actions.adaptation/document-id-output document-id)]
                    (reorder-following-documents! collection-name document-id {:operation :decrease}))
-              (let [result (remove-by-id! collection-name document-id)]
+              (let [result (actions.helpers/remove-by-id! collection-name document-id)]
                    (if (mrt/acknowledged? result)
-                       (adaptation/document-id-output document-id))))))
+                       (actions.adaptation/document-id-output document-id))))))
 
 (defn remove-document!
   ; @param (string) collection-name
@@ -512,7 +426,7 @@
   ;
   ; @return (?)
   [collection-name]
-  (drop! collection-name))
+  (actions.helpers/drop! collection-name))
 
 ;; -- Duplicating document ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -524,11 +438,11 @@
   ;
   ; @return (namespaced map)
   [collection-name document-id options]
-  (if-let [document (reader/get-document-by-id collection-name document-id)]
-          (if-let [document-copy (preparing/duplicate-input collection-name document options)]
-                  (if-let [document-copy (adaptation/duplicate-input document-copy)]
-                          (let [result (insert-and-return! collection-name document-copy)]
-                               (adaptation/duplicate-output result))))))
+  (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
+          (if-let [document-copy (actions.preparing/duplicate-input collection-name document options)]
+                  (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
+                          (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
+                               (actions.adaptation/duplicate-output result))))))
 
 (defn- duplicate-ordered-document!
   ; @param (string) collection-name
@@ -537,12 +451,12 @@
   ;
   ; @return (namespaced map)
   [collection-name document-id options]
-  (if-let [document (reader/get-document-by-id collection-name document-id)]
-          (if-let [document-copy (preparing/duplicate-input collection-name document options)]
-                  (if-let [document-copy (adaptation/duplicate-input document-copy)]
+  (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
+          (if-let [document-copy (actions.preparing/duplicate-input collection-name document options)]
+                  (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
                           (do (reorder-following-documents! collection-name document-id {:operation :increase})
-                              (let [result (insert-and-return! collection-name document-copy)]
-                                   (adaptation/duplicate-output result)))))))
+                              (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
+                                   (actions.adaptation/duplicate-output result)))))))
 
 (defn duplicate-document!
   ; @param (string) collection-name
@@ -613,11 +527,11 @@
   ;
   ; @return (vectors in vector)
   [collection-name document-order]
-  (let [namespace (reader/get-collection-namespace collection-name)
+  (let [namespace (reader.engine/get-collection-namespace collection-name)
         order-key (keyword/add-namespace namespace :order)]
        (letfn [(f [[document-id document-dex]]
-                  (if-let [document-id (adaptation/document-id-input document-id)]
-                          (let [result (update! collection-name {:_id document-id}
+                  (if-let [document-id (actions.adaptation/document-id-input document-id)]
+                          (let [result (actions.helpers/update! collection-name {:_id document-id}
                                                                 {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
                                    (return [document-id document-dex])))))]

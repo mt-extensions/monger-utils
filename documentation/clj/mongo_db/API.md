@@ -79,13 +79,13 @@
    (apply-document! collection-name document-id f {}))
 
   ([collection-name document-id f options]
-   (if-let [document (reader/get-document-by-id collection-name document-id)]
-           (if-let [document (preparing/apply-input collection-name document options)]
+   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
+           (if-let [document (actions.preparing/apply-input collection-name document options)]
                    (if-let [document (f document)]
-                           (if-let [document (postparing/apply-input collection-name document options)]
-                                   (if-let [document (adaptation/save-input document)]
-                                           (let [result (save-and-return! collection-name document)]
-                                                (adaptation/save-output result)))))))))
+                           (if-let [document (actions.postparing/apply-input collection-name document options)]
+                                   (if-let [document (actions.adaptation/save-input document)]
+                                           (let [result (actions.helpers/save-and-return! collection-name document)]
+                                                (actions.adaptation/save-output result)))))))))
 ```
 
 </details>
@@ -132,7 +132,7 @@
    (apply-documents! collection-name f {}))
 
   ([collection-name f options]
-   (if-let [collection (reader/get-collection collection-name)]
+   (if-let [collection (reader.engine/get-collection collection-name)]
            (letfn [(fi [result document]
                        (if-let [document (f document)]
                                (let [document (save-document! collection-name document options)]
@@ -178,7 +178,7 @@
 ```
 (defn collection-empty?
   [collection-name]
-  (= 0 (count-documents collection-name)))
+  (= 0 (reader.helpers/count-documents collection-name)))
 ```
 
 </details>
@@ -224,7 +224,7 @@
 ```
 (defn count-documents-by-pipeline
   [collection-name pipeline]
-  (if-let [documents (aggregation/process collection-name pipeline)]
+  (if-let [documents (aggregation.engine/process collection-name pipeline)]
           (count  documents)
           (return 0)))
 ```
@@ -317,8 +317,8 @@
 ```
 (defn document-exists?
   [collection-name document-id]
-  (boolean (if-let [document-id (adaptation/document-id-input document-id)]
-                   (find-map-by-id collection-name document-id))))
+  (boolean (if-let [document-id (reader.adaptation/document-id-input document-id)]
+                   (reader.helpers/find-map-by-id collection-name document-id))))
 ```
 
 </details>
@@ -473,7 +473,7 @@
 ```
 
 ```
-@return (maps in vector)
+@return (map)
 ```
 
 <details>
@@ -482,7 +482,7 @@
 ```
 (defn filter-query
   [filter-pattern]
-  (adaptation/find-query filter-pattern))
+  (aggregation.adaptation/filter-query filter-pattern))
 ```
 
 </details>
@@ -558,7 +558,7 @@
 ```
 (defn get-all-document-count
   [collection-name]
-  (count-documents collection-name))
+  (reader.helpers/count-documents collection-name))
 ```
 
 </details>
@@ -581,17 +581,38 @@
 
 ```
 @param (string) collection-name
-@param (namespaced map)(opt) projection
+@param (map)(opt) options
+{:projection (namespaced map)(opt)
+ :prototype-f (function)(opt)}
+```
+
+```
+@usage
+(get-collection "my_collection")
+```
+
+```
+@usage
+(get-collection "my_collection" {...})
 ```
 
 ```
 @example
-(get-collection "my_collection" {:namespace/my-keyword  0
-                                 :namespace/your-string 1})
+(get-collection "my_collection"
+                {:projection {:namespace/id          1
+                              :namespace/your-string 1}})
 =>
-[{:namespace/my-keyword  :my-value
-  :namespace/your-string "Your value"
-  :namespace/id          "MyObjectId"}]
+[{:namespace/id          "MyObjectId"
+  :namespace/your-string "Your value"}]
+```
+
+```
+@example
+(get-collection "my_collection"
+                {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))}})
+=>
+[{:namespace/id        "MyObjectId"
+  :namespace/my-string "My value"}]
 ```
 
 ```
@@ -605,13 +626,15 @@
 ```
 (defn get-collection
   ([collection-name]
-   (if-let [collection (find-maps collection-name {})]
-           (vector/->items collection #(adaptation/find-output %))))
+   (if-let [collection (reader.helpers/find-maps collection-name {})]
+           (vector/->items collection #(reader.adaptation/find-output %))))
 
-  ([collection-name projection]
-   (if-let [projection (adaptation/find-projection projection)]
-           (if-let [collection (find-maps collection-name {} projection)]
-                   (vector/->items collection #(adaptation/find-output %))))))
+  ([collection-name {:keys [projection] :as options}]
+   (if-let [projection (reader.adaptation/find-projection projection)]
+           (if-let [collection (reader.helpers/find-maps collection-name {} projection)]
+                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
+                                                          (reader.prototyping/find-output % options)))]
+                          (vector/->items collection f))))))
 ```
 
 </details>
@@ -688,7 +711,7 @@
 ```
 (defn get-collection-namespace
   [collection-name]
-  (let [collection (find-maps collection-name {})]
+  (let [collection (reader.helpers/find-maps collection-name {})]
        (-> collection first map/get-namespace)))
 ```
 
@@ -713,16 +736,28 @@
 ```
 @param (string) collection-name
 @param (string) document-id
-@param (namespaced map)(opt) projection
+@param (map)(opt) options
+{:projection (namespaced map)(opt)
+ :prototype-f (function)(opt)}
 ```
 
 ```
 @example
-(get-document-by-id "my_collection" "MyObjectId" {:namespace/my-keyword  0
-                                                  :namespace/your-string 1})
+(get-document-by-id "my_collection" "MyObjectId"
+                    {:projection {:namespace/id          1
+                                  :namespace/your-string 1}})
 =>
-{:namespace/your-string "Your value"
- :namespace/id          "MyObjectId"}
+{:namespace/id          "MyObjectId"
+ :namespace/your-string "Your value"}
+```
+
+```
+@example
+(get-document-by-id "my_collection" "MyObjectId"
+                    {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+=>
+{:namespace/id        "MyObjectId"
+ :namespace/my-string "My value"}
 ```
 
 ```
@@ -736,15 +771,16 @@
 ```
 (defn get-document-by-id
   ([collection-name document-id]
-   (if-let [document-id (adaptation/document-id-input document-id)]
-           (if-let [document (find-map-by-id collection-name document-id)]
-                   (adaptation/find-output document))))
+   (if-let [document-id (reader.adaptation/document-id-input document-id)]
+           (if-let [document (reader.helpers/find-map-by-id collection-name document-id)]
+                   (reader.adaptation/find-output document))))
 
-  ([collection-name document-id projection]
-   (if-let [document-id (adaptation/document-id-input document-id)]
-           (if-let [projection (adaptation/find-projection projection)]
-                   (if-let [document (find-map-by-id collection-name document-id projection)]
-                           (adaptation/find-output document))))))
+  ([collection-name document-id {:keys [projection] :as options}]
+   (if-let [document-id (reader.adaptation/document-id-input document-id)]
+           (if-let [projection (reader.adaptation/find-projection projection)]
+                   (if-let [document (reader.helpers/find-map-by-id collection-name document-id projection)]
+                           (as-> document % (reader.adaptation/find-output  %)
+                                            (reader.prototyping/find-output % options)))))))
 ```
 
 </details>
@@ -768,7 +804,9 @@
 ```
 @param (string) collection-name
 @param (map) query
-@param (namespaced map)(opt) projection
+@param (map)(opt) options
+{:projection (namespaced map)(opt)
+ :prototype-f (function)(opt)}
 ```
 
 ```
@@ -784,11 +822,21 @@
 ```
 @example
 (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-                                       {:namespace/my-keyword  0
-                                        :namespace/your-string 1})
+                       {:projection {:namespace/id          1
+                                     :namespace/your-string 1}})
 =>
-{:namespace/your-string "Your value"
- :namespace/id          "MyObjectId"}
+{:namespace/id          "MyObjectId"
+ :namespace/your-string "Your value"}
+```
+
+```
+@example
+(get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
+                       {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+=>
+{:namespace/id         "MyObjectId"
+ :namespace/my-keyword :my-value
+ :namespace/my-string  "My value"}
 ```
 
 ```
@@ -802,15 +850,16 @@
 ```
 (defn get-document-by-query
   ([collection-name query]
-   (if-let [query (-> query checking/find-query adaptation/find-query)]
-           (if-let [document (find-one-as-map collection-name query)]
-                   (adaptation/find-output document))))
+   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+           (if-let [document (reader.helpers/find-one-as-map collection-name query)]
+                   (reader.adaptation/find-output document))))
 
-  ([collection-name query projection]
-   (if-let [query (-> query checking/find-query adaptation/find-query)]
-           (if-let [projection (adaptation/find-projection projection)]
-                   (if-let [document (find-one-as-map collection-name query projection)]
-                           (adaptation/find-output document))))))
+  ([collection-name query {:keys [projection] :as options}]
+   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+           (if-let [projection (reader.adaptation/find-projection projection)]
+                   (if-let [document (reader.helpers/find-one-as-map collection-name query projection)]
+                           (as-> document % (reader.adaptation/find-output  %)
+                                            (reader.prototyping/find-output % options)))))))
 ```
 
 </details>
@@ -862,8 +911,8 @@
 ```
 (defn get-document-count-by-query
   [collection-name query]
-  (if-let [query (-> query checking/find-query adaptation/find-query)]
-          (count-documents-by-query collection-name query)))
+  (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+          (reader.helpers/count-documents-by-query collection-name query)))
 ```
 
 </details>
@@ -909,8 +958,8 @@
 ```
 (defn get-documents-by-pipeline
   [collection-name pipeline]
-  (if-let [documents (aggregation/process collection-name pipeline)]
-          (vector/->items documents #(adaptation/find-output %))
+  (if-let [documents (aggregation.engine/process collection-name pipeline)]
+          (vector/->items documents #(reader.adaptation/find-output %))
           (return [])))
 ```
 
@@ -935,7 +984,9 @@
 ```
 @param (string) collection-name
 @param (map) query
-@param (namespaced map)(opt) projection
+@param (map)(opt) options
+{:projection (namespaced map)(opt)
+ :prototype-f (function)(opt)}
 ```
 
 ```
@@ -951,11 +1002,22 @@
 ```
 @example
 (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-                                        {:namespace/my-keyword  0
-                                         :namespace/your-string 1})
+                        {:projection {:namespace/id          1
+                                      :namespace/your-string 1}})
 =>
-[{:namespace/your-string "Your value"
-  :namespace/id          "MyObjectId"}]
+[{:namespace/id          "MyObjectId"
+  :namespace/my-keyword  :my-value
+  :namespace/your-string "Your value"}]
+```
+
+```
+@example
+(get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
+                        {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+=>
+[{:namespace/id           "MyObjectId"
+  :namespace/my-string    "My value"
+  :namespace/your-keyword :my-value}]
 ```
 
 ```
@@ -969,15 +1031,17 @@
 ```
 (defn get-documents-by-query
   ([collection-name query]
-   (if-let [query (-> query checking/find-query adaptation/find-query)]
-           (if-let [documents (find-maps collection-name query)]
-                   (vector/->items documents #(adaptation/find-output %)))))
+   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+           (if-let [documents (reader.helpers/find-maps collection-name query)]
+                   (vector/->items documents #(reader.adaptation/find-output %)))))
 
-  ([collection-name query projection]
-   (if-let [query (-> query checking/find-query adaptation/find-query)]
-           (if-let [projection (adaptation/find-projection projection)]
-                   (if-let [documents (find-maps collection-name query projection)]
-                           (vector/->items documents #(adaptation/find-output %)))))))
+  ([collection-name query {:keys [projection] :as options}]
+   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+           (if-let [projection (reader.adaptation/find-projection projection)]
+                   (if-let [documents (reader.helpers/find-maps collection-name query projection)]
+                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
+                                                                  (reader.prototyping/find-output % options)))]
+                                  (vector/->items documents f)))))))
 ```
 
 </details>
@@ -1230,11 +1294,11 @@ Default: some?
    (insert-document! collection-name document {}))
 
   ([collection-name document options]
-   (if-let [document (as-> document % (checking/insert-input %)
-                                      (preparing/insert-input collection-name % options)
-                                      (adaptation/insert-input %))]
-           (if-let [result (insert-and-return! collection-name document)]
-                   (adaptation/insert-output result)))))
+   (if-let [document (as-> document % (actions.checking/insert-input %)
+                                      (actions.preparing/insert-input collection-name % options)
+                                      (actions.adaptation/insert-input %))]
+           (if-let [result (actions.helpers/insert-and-return! collection-name document)]
+                   (actions.adaptation/insert-output result)))))
 ```
 
 </details>
@@ -1326,7 +1390,7 @@ Default: some?
 ```
 (defn remove-all-documents!
   [collection-name]
-  (drop! collection-name))
+  (actions.helpers/drop! collection-name))
 ```
 
 </details>
@@ -1468,11 +1532,11 @@ Default: some?
 ```
 (defn reorder-documents!
   [collection-name document-order]
-  (let [namespace (reader/get-collection-namespace collection-name)
+  (let [namespace (reader.engine/get-collection-namespace collection-name)
         order-key (keyword/add-namespace namespace :order)]
        (letfn [(f [[document-id document-dex]]
-                  (if-let [document-id (adaptation/document-id-input document-id)]
-                          (let [result (update! collection-name {:_id document-id}
+                  (if-let [document-id (actions.adaptation/document-id-input document-id)]
+                          (let [result (actions.helpers/update! collection-name {:_id document-id}
                                                                 {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
                                    (return [document-id document-dex])))))]
@@ -1528,11 +1592,11 @@ Default: some?
    (save-document! collection-name document {}))
 
   ([collection-name document options]
-   (if-let [document (as-> document % (checking/save-input %)
-                                      (preparing/save-input collection-name % options)
-                                      (adaptation/save-input %))]
-           (if-let [result (save-and-return! collection-name document)]
-                   (adaptation/save-output result)))))
+   (if-let [document (as-> document % (actions.checking/save-input %)
+                                      (actions.preparing/save-input collection-name % options)
+                                      (actions.adaptation/save-input %))]
+           (if-let [result (actions.helpers/save-and-return! collection-name document)]
+                   (actions.adaptation/save-output result)))))
 ```
 
 </details>
@@ -1632,8 +1696,8 @@ Default: some?
 ```
 (defn search-query
   [{:keys [$and $or]}]
-  (cond-> {} $and (assoc "$and" (vector/->items $and #(-> % checking/search-query adaptation/search-query)))
-             $or  (assoc "$or"  (vector/->items $or  #(-> % checking/search-query adaptation/search-query)))))
+  (cond-> {} $and (assoc "$and" (vector/->items $and #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))
+             $or  (assoc "$or"  (vector/->items $or  #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))))
 ```
 
 </details>
@@ -1775,11 +1839,11 @@ Default: some?
    (update-document! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/update-input %)
-                                               (preparing/update-input collection-name % options)
-                                               (adaptation/update-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (update! collection-name query document {:multi false :upsert false})]
+   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-name % options)
+                                               (actions.adaptation/update-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/update! collection-name query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1838,11 +1902,11 @@ Default: some?
    (update-documents! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/update-input %)
-                                               (preparing/update-input collection-name % options)
-                                               (adaptation/update-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (update! collection-name query document {:multi true :upsert false})]
+   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-name % options)
+                                               (actions.adaptation/update-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/update! collection-name query document {:multi true :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1902,11 +1966,11 @@ Default: some?
    (upsert-document! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/upsert-input %)
-                                               (preparing/upsert-input collection-name % options)
-                                               (adaptation/upsert-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (upsert! collection-name query document {:multi false})]
+   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-name % options)
+                                               (actions.adaptation/upsert-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/upsert! collection-name query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
 ```
 
@@ -1965,11 +2029,11 @@ Default: some?
    (upsert-documents! collection-name query document {}))
 
   ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (checking/upsert-input %)
-                                               (preparing/upsert-input collection-name % options)
-                                               (adaptation/upsert-input %))]
-                    (if-let [query (-> query checking/find-query adaptation/find-query)]
-                            (let [result (upsert! collection-name query document {:multi true})]
+   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-name % options)
+                                               (actions.adaptation/upsert-input %))]
+                    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
+                            (let [result (actions.helpers/upsert! collection-name query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 ```
 
