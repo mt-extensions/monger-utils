@@ -742,6 +742,16 @@
 ```
 
 ```
+@usage
+(get-document-by-id "my_collection" "MyObjectId")
+```
+
+```
+@usage
+(get-document-by-id "my_collection" "MyObjectId" {:prototype-f :namespace/my-keyword})
+```
+
+```
 @example
 (get-document-by-id "my_collection" "MyObjectId"
                     {:projection {:namespace/id          1
@@ -812,6 +822,11 @@
 ```
 @usage
 (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
+```
+
+```
+@usage
+(get-document-by-query "my_collection" {:namespace/my-keyword :my-value} {:prototype-f :namespace/my-keyword})
 ```
 
 ```
