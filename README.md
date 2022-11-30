@@ -5,7 +5,9 @@
 
 ### Overview
 
-...
+The <strong>mongo-db-api</strong> is a MongoDB implementation for Clojure projects
+based on the [michaelklishin / monger] library with some extra features like
+error-handling, input-checking or output-checking.
 
 ### deps.edn
 
