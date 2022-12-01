@@ -5,6 +5,7 @@
               [mongo-db.connection.subs]
               [mongo-db.actions.engine        :as actions.engine]
               [mongo-db.aggregation.pipelines :as aggregation.pipelines]
+              [mongo-db.connection.helpers    :as connection.helpers]
               [mongo-db.core.helpers          :as core.helpers]
               [mongo-db.reader.engine         :as reader.engine]))
 
@@ -37,6 +38,9 @@
 (def unset-query      aggregation.pipelines/unset-query)
 (def get-pipeline     aggregation.pipelines/get-pipeline)
 (def count-pipeline   aggregation.pipelines/count-pipeline)
+
+; mongo-db.connection.helpers
+(def connected? connection.helpers/connected?)
 
 ; mongo-db.core.helpers
 (def generate-id core.helpers/generate-id)

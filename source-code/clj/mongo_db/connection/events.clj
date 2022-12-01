@@ -5,7 +5,7 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn- store-connection!
+(defn- store-reference!
   ; @param (com.mongodb.DB object) reference
   ;
   ; @return (map)
@@ -15,4 +15,4 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(r/reg-event-db :mongo-db/store-connection! store-connection!)
+(r/reg-event-db :mongo-db/store-reference! store-reference!)

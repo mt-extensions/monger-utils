@@ -1,6 +1,6 @@
 
 (ns mongo-db.connection.subs
-    (:require [re-frame.api :as r :refer [r]]))
+    (:require [re-frame.api :as r]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -10,13 +10,9 @@
   [db _]
   (get-in db [:mongo-db :connection/reference]))
 
-(defn- connected?
-  ; @return (boolean)
-  [db _]
-  (r get-connection db))
-
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
+; @usage
+; [:mongo-db/get-connection]
 (r/reg-sub :mongo-db/get-connection get-connection)
-(r/reg-sub :mongo-db/connected?     connected?)

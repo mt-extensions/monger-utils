@@ -5,7 +5,21 @@
               [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]
-              [mongo-db.core.errors :as core.errors]))
+              [monger.core          :as mcr]
+              [mongo-db.core.errors :as core.errors]
+              [re-frame.api         :as r]))
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
+
+(defn command
+  ; @param (map) options
+  ;
+  ; @return (DBObject)
+  [options]
+  (let [database @(r/subscribe [:mongo-db/get-connection])]
+       (try (mcr/command database options)
+            (catch Exception e (println (str e "\n" {:options options}))))))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
