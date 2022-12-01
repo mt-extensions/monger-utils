@@ -11,4 +11,4 @@
   ;
   ; @return (boolean)
   []
-  (core.helpers/command {:ping 1}))
+  (core.helpers/command {:ping 1 :warn? false}))

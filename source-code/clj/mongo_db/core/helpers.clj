@@ -14,12 +14,14 @@
 
 (defn command
   ; @param (map) options
+  ;  {:warn? (boolean)(opt)
+  ;    Default: true}
   ;
   ; @return (DBObject)
-  [options]
+  [{:keys [warn?] :or {warn? true} :as options}]
   (let [database @(r/subscribe [:mongo-db/get-connection])]
        (try (mcr/command database options)
-            (catch Exception e (println (str e "\n" {:options options}))))))
+            (catch Exception e (if warn? (println (str e "\n" {:options options})))))))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
