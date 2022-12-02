@@ -1,10 +1,7 @@
 
 # <strong>mongo-db.api</strong> namespace
-<p>Documentation of the <strong>mongo_db/api.clj</strong> file</p>
 
-<strong>[README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > mongo-db.api</strong>
-
-
+<strong>[README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > </strong>source-code/clj/mongo_db/api.clj
 
 ### add-fields-query
 
@@ -40,10 +37,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [add-fields-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [add-fields-query]]))
 
-(mongo-db/add-fields-query ...)
-(add-fields-query          ...)
+(mongo-db.api/add-fields-query ...)
+(add-fields-query              ...)
 ```
 
 </details>
@@ -94,10 +91,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [apply-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [apply-document!]]))
 
-(mongo-db/apply-document! ...)
-(apply-document!          ...)
+(mongo-db.api/apply-document! ...)
+(apply-document!              ...)
 ```
 
 </details>
@@ -147,10 +144,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [apply-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [apply-documents!]]))
 
-(mongo-db/apply-documents! ...)
-(apply-documents!          ...)
+(mongo-db.api/apply-documents! ...)
+(apply-documents!              ...)
 ```
 
 </details>
@@ -187,10 +184,46 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [collection-empty?]]))
+(ns my-namespace (:require [mongo-db.api :refer [collection-empty?]]))
 
-(mongo-db/collection-empty? ...)
-(collection-empty?          ...)
+(mongo-db.api/collection-empty? ...)
+(collection-empty?              ...)
+```
+
+</details>
+
+---
+
+### connected?
+
+```
+@usage
+(connected?)
+```
+
+```
+@return (boolean)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn connected?
+  []
+  (core.helpers/command {:ping 1 :warn? false}))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [connected?]]))
+
+(mongo-db.api/connected?)
+(connected?)
 ```
 
 </details>
@@ -235,10 +268,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [count-documents-by-pipeline]]))
+(ns my-namespace (:require [mongo-db.api :refer [count-documents-by-pipeline]]))
 
-(mongo-db/count-documents-by-pipeline ...)
-(count-documents-by-pipeline          ...)
+(mongo-db.api/count-documents-by-pipeline ...)
+(count-documents-by-pipeline              ...)
 ```
 
 </details>
@@ -285,10 +318,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [count-pipeline]]))
+(ns my-namespace (:require [mongo-db.api :refer [count-pipeline]]))
 
-(mongo-db/count-pipeline ...)
-(count-pipeline          ...)
+(mongo-db.api/count-pipeline ...)
+(count-pipeline              ...)
 ```
 
 </details>
@@ -327,10 +360,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [document-exists?]]))
+(ns my-namespace (:require [mongo-db.api :refer [document-exists?]]))
 
-(mongo-db/document-exists? ...)
-(document-exists?          ...)
+(mongo-db.api/document-exists? ...)
+(document-exists?              ...)
 ```
 
 </details>
@@ -389,10 +422,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [duplicate-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [duplicate-document!]]))
 
-(mongo-db/duplicate-document! ...)
-(duplicate-document!          ...)
+(mongo-db.api/duplicate-document! ...)
+(duplicate-document!              ...)
 ```
 
 </details>
@@ -441,10 +474,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [duplicate-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [duplicate-documents!]]))
 
-(mongo-db/duplicate-documents! ...)
-(duplicate-documents!          ...)
+(mongo-db.api/duplicate-documents! ...)
+(duplicate-documents!              ...)
 ```
 
 </details>
@@ -491,10 +524,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [filter-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [filter-query]]))
 
-(mongo-db/filter-query ...)
-(filter-query          ...)
+(mongo-db.api/filter-query ...)
+(filter-query              ...)
 ```
 
 </details>
@@ -527,9 +560,9 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [generate-id]]))
+(ns my-namespace (:require [mongo-db.api :refer [generate-id]]))
 
-(mongo-db/generate-id)
+(mongo-db.api/generate-id)
 (generate-id)
 ```
 
@@ -567,10 +600,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-all-document-count]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-all-document-count]]))
 
-(mongo-db/get-all-document-count ...)
-(get-all-document-count          ...)
+(mongo-db.api/get-all-document-count ...)
+(get-all-document-count              ...)
 ```
 
 </details>
@@ -643,10 +676,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-collection]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-collection]]))
 
-(mongo-db/get-collection ...)
-(get-collection          ...)
+(mongo-db.api/get-collection ...)
+(get-collection              ...)
 ```
 
 </details>
@@ -680,9 +713,9 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-collection-names]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-collection-names]]))
 
-(mongo-db/get-collection-names)
+(mongo-db.api/get-collection-names)
 (get-collection-names)
 ```
 
@@ -721,10 +754,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-collection-namespace]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-collection-namespace]]))
 
-(mongo-db/get-collection-namespace ...)
-(get-collection-namespace          ...)
+(mongo-db.api/get-collection-namespace ...)
+(get-collection-namespace              ...)
 ```
 
 </details>
@@ -799,10 +832,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-document-by-id]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-document-by-id]]))
 
-(mongo-db/get-document-by-id ...)
-(get-document-by-id          ...)
+(mongo-db.api/get-document-by-id ...)
+(get-document-by-id              ...)
 ```
 
 </details>
@@ -883,10 +916,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-document-by-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-document-by-query]]))
 
-(mongo-db/get-document-by-query ...)
-(get-document-by-query          ...)
+(mongo-db.api/get-document-by-query ...)
+(get-document-by-query              ...)
 ```
 
 </details>
@@ -936,10 +969,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-document-count-by-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-document-count-by-query]]))
 
-(mongo-db/get-document-count-by-query ...)
-(get-document-count-by-query          ...)
+(mongo-db.api/get-document-count-by-query ...)
+(get-document-count-by-query              ...)
 ```
 
 </details>
@@ -984,10 +1017,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-documents-by-pipeline]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-documents-by-pipeline]]))
 
-(mongo-db/get-documents-by-pipeline ...)
-(get-documents-by-pipeline          ...)
+(mongo-db.api/get-documents-by-pipeline ...)
+(get-documents-by-pipeline              ...)
 ```
 
 </details>
@@ -1065,10 +1098,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-documents-by-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-documents-by-query]]))
 
-(mongo-db/get-documents-by-query ...)
-(get-documents-by-query          ...)
+(mongo-db.api/get-documents-by-query ...)
+(get-documents-by-query              ...)
 ```
 
 </details>
@@ -1106,10 +1139,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-first-document]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-first-document]]))
 
-(mongo-db/get-first-document ...)
-(get-first-document          ...)
+(mongo-db.api/get-first-document ...)
+(get-first-document              ...)
 ```
 
 </details>
@@ -1147,10 +1180,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-last-document]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-last-document]]))
 
-(mongo-db/get-last-document ...)
-(get-last-document          ...)
+(mongo-db.api/get-last-document ...)
+(get-last-document              ...)
 ```
 
 </details>
@@ -1209,10 +1242,10 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-pipeline]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-pipeline]]))
 
-(mongo-db/get-pipeline ...)
-(get-pipeline          ...)
+(mongo-db.api/get-pipeline ...)
+(get-pipeline              ...)
 ```
 
 </details>
@@ -1266,10 +1299,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [get-specified-values]]))
+(ns my-namespace (:require [mongo-db.api :refer [get-specified-values]]))
 
-(mongo-db/get-specified-values ...)
-(get-specified-values          ...)
+(mongo-db.api/get-specified-values ...)
+(get-specified-values              ...)
 ```
 
 </details>
@@ -1322,10 +1355,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [insert-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [insert-document!]]))
 
-(mongo-db/insert-document! ...)
-(insert-document!          ...)
+(mongo-db.api/insert-document! ...)
+(insert-document!              ...)
 ```
 
 </details>
@@ -1374,10 +1407,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [insert-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [insert-documents!]]))
 
-(mongo-db/insert-documents! ...)
-(insert-documents!          ...)
+(mongo-db.api/insert-documents! ...)
+(insert-documents!              ...)
 ```
 
 </details>
@@ -1414,10 +1447,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [remove-all-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [remove-all-documents!]]))
 
-(mongo-db/remove-all-documents! ...)
-(remove-all-documents!          ...)
+(mongo-db.api/remove-all-documents! ...)
+(remove-all-documents!              ...)
 ```
 
 </details>
@@ -1464,10 +1497,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [remove-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [remove-document!]]))
 
-(mongo-db/remove-document! ...)
-(remove-document!          ...)
+(mongo-db.api/remove-document! ...)
+(remove-document!              ...)
 ```
 
 </details>
@@ -1513,10 +1546,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [remove-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [remove-documents!]]))
 
-(mongo-db/remove-documents! ...)
-(remove-documents!          ...)
+(mongo-db.api/remove-documents! ...)
+(remove-documents!              ...)
 ```
 
 </details>
@@ -1564,10 +1597,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [reorder-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [reorder-documents!]]))
 
-(mongo-db/reorder-documents! ...)
-(reorder-documents!          ...)
+(mongo-db.api/reorder-documents! ...)
+(reorder-documents!              ...)
 ```
 
 </details>
@@ -1620,10 +1653,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [save-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [save-document!]]))
 
-(mongo-db/save-document! ...)
-(save-document!          ...)
+(mongo-db.api/save-document! ...)
+(save-document!              ...)
 ```
 
 </details>
@@ -1672,10 +1705,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [save-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [save-documents!]]))
 
-(mongo-db/save-documents! ...)
-(save-documents!          ...)
+(mongo-db.api/save-documents! ...)
+(save-documents!              ...)
 ```
 
 </details>
@@ -1721,10 +1754,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [search-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [search-query]]))
 
-(mongo-db/search-query ...)
-(search-query          ...)
+(mongo-db.api/search-query ...)
+(search-query              ...)
 ```
 
 </details>
@@ -1763,10 +1796,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [sort-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [sort-query]]))
 
-(mongo-db/sort-query ...)
-(sort-query          ...)
+(mongo-db.api/sort-query ...)
+(sort-query              ...)
 ```
 
 </details>
@@ -1805,10 +1838,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [unset-query]]))
+(ns my-namespace (:require [mongo-db.api :refer [unset-query]]))
 
-(mongo-db/unset-query ...)
-(unset-query          ...)
+(mongo-db.api/unset-query ...)
+(unset-query              ...)
 ```
 
 </details>
@@ -1868,10 +1901,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [update-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [update-document!]]))
 
-(mongo-db/update-document! ...)
-(update-document!          ...)
+(mongo-db.api/update-document! ...)
+(update-document!              ...)
 ```
 
 </details>
@@ -1931,10 +1964,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [update-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [update-documents!]]))
 
-(mongo-db/update-documents! ...)
-(update-documents!          ...)
+(mongo-db.api/update-documents! ...)
+(update-documents!              ...)
 ```
 
 </details>
@@ -1995,10 +2028,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [upsert-document!]]))
+(ns my-namespace (:require [mongo-db.api :refer [upsert-document!]]))
 
-(mongo-db/upsert-document! ...)
-(upsert-document!          ...)
+(mongo-db.api/upsert-document! ...)
+(upsert-document!              ...)
 ```
 
 </details>
@@ -2058,10 +2091,10 @@ Default: some?
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :as mongo-db :refer [upsert-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [upsert-documents!]]))
 
-(mongo-db/upsert-documents! ...)
-(upsert-documents!          ...)
+(mongo-db.api/upsert-documents! ...)
+(upsert-documents!              ...)
 ```
 
 </details>
