@@ -22,7 +22,7 @@ Check out the latest commit on the [release branch](https://github.com/bithandsh
 
 ### Documentation
 
-The <strong>mongo-db-api</strong> documentation is [available here](documentation/COVER.md).
+The <strong>mongo-db-api</strong> functional documentation is [available here](documentation/COVER.md).
 
 ### Changelog
 
