@@ -5,4 +5,4 @@
 ;; ----------------------------------------------------------------------------
 
 ; @constant (string)
-(def DEFAULT-LOCALE "hu")
+(def DEFAULT-LOCALE "en")

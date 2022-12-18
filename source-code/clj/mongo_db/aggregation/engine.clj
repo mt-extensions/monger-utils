@@ -16,9 +16,9 @@
   ;
   ; @return (maps in vector)
   ([collection-name pipeline]
-   (process collection-name pipeline {:locale core.config/DEFAULT-LOCALE}))
+   (process collection-name pipeline {}))
 
-  ([collection-name pipeline {:keys [locale]}]
+  ([collection-name pipeline {:keys [locale] :or {locale core.config/DEFAULT-LOCALE}}]
    (if-let [db-object (core.helpers/command {:aggregate collection-name
                                              :pipeline  pipeline
                                              :collation {:locale locale :numericOrdering true}
