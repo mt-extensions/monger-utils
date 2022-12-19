@@ -317,6 +317,10 @@
 ```
 @param (string) collection-name
 @param (maps in vector) pipeline
+@param (map)(opt) options
+{:locale (string)(opt)
+  Default: "en"
+  https://www.mongodb.com/docs/manual/reference/collation-locales-defaults}
 ```
 
 ```
@@ -338,10 +342,13 @@
 
 ```
 (defn count-documents-by-pipeline
-  [collection-name pipeline]
-  (if-let [documents (aggregation.engine/process collection-name pipeline)]
-          (count  documents)
-          (return 0)))
+  ([collection-name pipeline]
+   (count-documents-by-pipeline collection-name pipeline {}))
+
+  ([collection-name pipeline options]
+   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
+           (count  documents)
+           (return 0))))
 ```
 
 </details>
@@ -1066,6 +1073,10 @@
 ```
 @param (string) collection-name
 @param (maps in vector) pipeline
+@param (map)(opt) options
+{:locale (string)(opt)
+  Default: "en"
+  https://www.mongodb.com/docs/manual/reference/collation-locales-defaults}
 ```
 
 ```
@@ -1079,6 +1090,11 @@
 ```
 
 ```
+@usage
+(get-documents-by-pipeline "my_collection" [...] {:locale "en"})
+```
+
+```
 @return (namespaced maps in vector)
 ```
 
@@ -1087,10 +1103,13 @@
 
 ```
 (defn get-documents-by-pipeline
-  [collection-name pipeline]
-  (if-let [documents (aggregation.engine/process collection-name pipeline)]
-          (vector/->items documents #(reader.adaptation/find-output %))
-          (return [])))
+  ([collection-name pipeline]
+   (get-documents-by-pipeline collection-name pipeline {}))
+
+  ([collection-name pipeline options]
+   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
+           (vector/->items documents #(reader.adaptation/find-output %))
+           (return []))))
 ```
 
 </details>
@@ -1289,8 +1308,8 @@
 @usage
 (get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
                :filter-pattern {:namespace/my-keyword :my-value
-                                :$or [{:namespace/my-boolean   false}
-                                      {:namespace/my-boolean   nil}]}
+                                :$or [{:namespace/my-boolean  false}
+                                      {:namespace/my-boolean  nil}]}
                :search-pattern {:$or [{:namespace/my-string   "My value"}
                                       {:namespace/your-string "Your value"}]}
                :sort-pattern   {:namespace/my-string -1}
@@ -1869,7 +1888,8 @@ Default: some?
 ```
 (defn sort-query
   [sort-pattern]
-  (map/->keys sort-pattern json/unkeywordize-key))
+  (-> sort-pattern (core.helpers/id->_id)
+                   (map/->keys json/unkeywordize-key)))
 ```
 
 </details>

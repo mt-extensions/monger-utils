@@ -288,10 +288,10 @@
                             (let [result (actions.helpers/upsert! collection-name query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 
-;; -- Applying document -------------------------------------------------------
+;; -- Applying on document ----------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn apply-document!
+(defn apply-on-document!
   ; @param (string) collection-name
   ; @param (string) document-id
   ; @param (function) f
@@ -300,15 +300,15 @@
   ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ; (apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
+  ; (apply-on-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced map)
   ([collection-name document-id f]
-   (apply-document! collection-name document-id f {}))
+   (apply-on-document! collection-name document-id f {}))
 
   ([collection-name document-id f options]
-   ; A prepare-f az f fügvvény alkalmazása előtt, a postpare-f függvény pedig az
-   ; f függvény alkalmazása után van használva.
+   ; The prepare-f function will be applied before the f function.
+   ; The postpare-f function will be applied after the f function.
    (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
            (if-let [document (actions.preparing/apply-input collection-name document options)]
                    (if-let [document (f document)]
@@ -317,10 +317,10 @@
                                            (let [result (actions.helpers/save-and-return! collection-name document)]
                                                 (actions.adaptation/save-output result)))))))))
 
-;; -- Applying documents ------------------------------------------------------
+;; -- Applying on collection --------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn apply-documents!
+(defn apply-on-collection!
   ; @param (string) collection-name
   ; @param (function) f
   ; @param (map)(opt) options
@@ -328,11 +328,11 @@
   ;  :prepare-f (function)(opt)}
   ;
   ; @usage
-  ; (apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
+  ; (apply-on-collection! "my_collection" #(assoc % :namespace/color "Blue") {...})
   ;
   ; @return (namespaced maps in vector)
   ([collection-name f]
-   (apply-documents! collection-name f {}))
+   (apply-on-collection! collection-name f {}))
 
   ([collection-name f options]
    ; XXX#9801
@@ -440,9 +440,10 @@
   [collection-name document-id options]
   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
           (if-let [document-copy (actions.preparing/duplicate-input collection-name document options)]
-                  (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
-                          (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
-                               (actions.adaptation/duplicate-output result))))))
+                  (if-let [document-copy (actions.postparing/duplicate-input collection-name document-copy options)]
+                          (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
+                                  (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
+                                       (actions.adaptation/duplicate-output result)))))))
 
 (defn- duplicate-ordered-document!
   ; @param (string) collection-name
@@ -453,10 +454,11 @@
   [collection-name document-id options]
   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
           (if-let [document-copy (actions.preparing/duplicate-input collection-name document options)]
-                  (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
-                          (do (reorder-following-documents! collection-name document-id {:operation :increase})
-                              (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
-                                   (actions.adaptation/duplicate-output result)))))))
+                  (if-let [document-copy (actions.postparing/duplicate-input collection-name document-copy options)]
+                          (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
+                                  (do (reorder-following-documents! collection-name document-id {:operation :increase})
+                                      (let [result (actions.helpers/insert-and-return! collection-name document-copy)]
+                                           (actions.adaptation/duplicate-output result))))))))
 
 (defn duplicate-document!
   ; @param (string) collection-name
@@ -467,6 +469,7 @@
   ;   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
   ;  :ordered? (boolean)(opt)
   ;   Default: false
+  ;  :postpare-f (function)(opt)
   ;  :prepare-f (function)(opt)}
   ;
   ; @example
@@ -527,6 +530,7 @@
   ;
   ; @return (vectors in vector)
   [collection-name document-order]
+  ; What if a document got a new position which is still used by another document?
   (let [namespace (reader.engine/get-collection-namespace collection-name)
         order-key (keyword/add-namespace namespace :order)]
        (letfn [(f [[document-id document-dex]]

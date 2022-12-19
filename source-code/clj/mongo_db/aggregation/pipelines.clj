@@ -5,19 +5,20 @@
               [map.api                         :as map]
               [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.aggregation.checking   :as aggregation.checking]
+              [mongo-db.core.helpers           :as core.helpers]
               [vector.api                      :as vector]))
 
-;; -- Names -------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 ; @name pipeline
-;  An aggregation pipeline can return results for groups of documents.
+; An aggregation pipeline can return results for groups of documents.
 ;
 ; @name stage
-;  Each stage performs an operation on the input documents.
+; Each stage performs an operation on the input documents.
 ;
 ; @name operation
-;  TODO
+; TODO
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -34,8 +35,9 @@
   ;
   ; @return (map)
   [field-pattern]
-  ; A kulcsok és értékek függvénye is json/unkeywordize-key, mert szükségetlen a json/unkeywordize-value
-  ; függvény által használt biztonsági prefixum alkalmazása.
+  ; The add-fields-query function instead of aplying the json/unkeywordize-value
+  ; on values it applies the json/unkeywordize-key on both the keys and values,
+  ; because the json/unkeywordize-value function uses prefix on values!
   (map/->>kv field-pattern json/unkeywordize-key json/unkeywordize-key))
 
 (defn filter-query
@@ -87,7 +89,14 @@
   ;
   ; @return (map)
   [sort-pattern]
-  (map/->keys sort-pattern json/unkeywordize-key))
+  ; BUG#8871
+  ; https://jira.mongodb.org/browse/SERVER-51498
+  ; Sorting on duplicate values causes repeated results with limit and skip.
+  ;
+  ; https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#sort-cursor-stable-sorting
+  ; To achieve a consistent sort, add a field which contains exclusively unique values to the sort.
+  (-> sort-pattern (core.helpers/id->_id)
+                   (map/->keys json/unkeywordize-key)))
 
 (defn unset-query
   ; @param (namespaced keywords in vector) unset-pattern
@@ -117,8 +126,8 @@
   ; @usage
   ; (get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
   ;                :filter-pattern {:namespace/my-keyword :my-value
-  ;                                 :$or [{:namespace/my-boolean   false}
-  ;                                       {:namespace/my-boolean   nil}]}
+  ;                                 :$or [{:namespace/my-boolean  false}
+  ;                                       {:namespace/my-boolean  nil}]}
   ;                :search-pattern {:$or [{:namespace/my-string   "My value"}
   ;                                       {:namespace/your-string "Your value"}]}
   ;                :sort-pattern   {:namespace/my-string -1}
@@ -128,12 +137,12 @@
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern max-count search-pattern skip sort-pattern unset-pattern]}]
-             ; Az $addFields operátor a $match és $sort operátorok végrehajtása előtt adja hozzá a virtuális mező(ke)t ...
+  ; The $addFields operator - which adds virtual fields - has to placed before the $match and the $sort operators!
+  ; The $unset operator - which removes virtual fields - has to placed after the $match and the $sort operators!
   (cond-> [] field-pattern (conj {"$addFields"      (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query     filter-pattern)
                                                     (search-query     search-pattern)]}})
              sort-pattern  (conj {"$sort"           (sort-query       sort-pattern)})
-             ; Az $unset operátor a $match és $sort operátorok végrehajtása után távolítja el az eltávolítandó mező(ke)t ...
              unset-pattern (conj {"$unset"          (unset-query      unset-pattern)})
              skip          (conj {"$skip"           (param            skip)})
              max-count     (conj {"$limit"          (param            max-count)})))

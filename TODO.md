@@ -6,16 +6,11 @@
 
 # mongo-db.actions
 
-- Az apply-document! függvényből hiányzik, hogy szükség esetén létrehozza a nem létező
-  dokumentumot és, hogy akár query alapján is lehessen apply-olni dokumentumokat,
-  ne csak id alapján!
-  =>
-  Legjobb lenne, ha a függvényekből vagy létezni *-by-id és *-by-query változat,
-  vagy a paraméter megvizsgálná, hogy string vagy map típust kapott-e és az alapján
-  kezelné id vagy query-ként!
-  +
-  Legjobb lenne, ha a függvények fogadnának egy olyan beállítást, hogy {:create? true},
-  ami alapján létrehozná/nem hozná létre a nem létező dokumentumot!
+- {create? true} beállítás, azokhoz a függvényekhez, amelyek ignorálják a műveletet,
+  nem létező dokumentum esetén.
+
+- Az apply-*, remove-*, duplicate-* függvények query-t fogadjanak, mert az használható
+  id alapú azonosításhoz is!
 
 # mongo-db.adaptation
 

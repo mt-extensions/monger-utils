@@ -110,13 +110,18 @@
 
 (defn id->_id
   ; @param (map) n
-  ; {:namespace/id (string)(opt)}
+  ; {:namespace/id (*)(opt)}
   ; @param (map)(opt) options
   ; {:parse? (boolean)(opt)
   ;   Default: false}
   ;
   ; @example
-  ; (id->_id {:namespace/id "MyObjectId"})
+  ; (id->_id {:namespace/id 1})
+  ; =>
+  ; {:_id 1}
+  ;
+  ; @example
+  ; (id->_id {:namespace/id "MyObjectId"} {:parse? true})
   ; =>
   ; {:_id #<ObjectId MyObjectId>}
   ;
@@ -126,28 +131,27 @@
    (id->_id n {}))
 
   ([n {:keys [parse?]}]
-   ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:namespace/id "..."}
-   ; tulajdonsággal (pl. query paraméterként átadott térképek, ...)
+   ; The n map (given as a parameter) doesn't have to contain the :namespace/id key!
    (if-let [namespace (map/get-namespace n)]
            (let [id-key (keyword/add-namespace namespace :id)]
-                (if-let [document-id (get n id-key)]
-                        (if parse? (let [object-id (ObjectId. document-id)]
+                (if-let [value (get n id-key)]
+                        (if parse? (let [object-id (ObjectId. value)]
                                         (-> n (assoc  :_id object-id)
                                               (dissoc id-key)))
-                                   (-> n (assoc  :_id document-id)
+                                   (-> n (assoc  :_id value)
                                          (dissoc id-key)))
                         (return n)))
            (return n))))
 
 (defn _id->id
   ; @param (map) n
-  ; {:_id (string)}
+  ; {:_id (*)(opt)}
   ; @param (map)(opt) options
   ; {:unparse? (boolean)(opt)
   ;   Default: false}
   ;
   ; @example
-  ; (_id->id {:_id #<ObjectId MyObjectId>})
+  ; (_id->id {:_id #<ObjectId MyObjectId>} {:unparse? true})
   ; =>
   ; {:namespace/id "MyObjectId"}
   ;
@@ -157,15 +161,14 @@
    (_id->id n {}))
 
   ([n {:keys [unparse?]}]
-   ; A paraméterként átadott térkép NEM szükséges, hogy rendelkezzen {:_id "..."}
-   ; tulajdonsággal (hasonlóan az id->_id függvényhez)
+   ; The n map (given as a parameter) doesn't have to contain the :_id key!
    (if-let [namespace (map/get-namespace n)]
            (let [id-key (keyword/add-namespace namespace :id)]
-                (if-let [object-id (get n :_id)]
-                        (if unparse? (let [document-id (str object-id)]
+                (if-let [value (get n :_id)]
+                        (if unparse? (let [document-id (str value)]
                                           (-> n (assoc  id-key document-id)
                                                 (dissoc :_id)))
-                                     (-> n (assoc  id-key object-id)
+                                     (-> n (assoc  id-key value)
                                            (dissoc :_id)))
                         (return n)))
            (return n))))
