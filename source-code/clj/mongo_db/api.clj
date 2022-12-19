@@ -22,7 +22,7 @@
 (def upsert-document!      actions.engine/upsert-document!)
 (def upsert-documents!     actions.engine/upsert-documents!)
 (def apply-document!       actions.engine/apply-document!)
-(def apply-documents!      actions.engine/apply-documents!)
+(def apply-collection!     actions.engine/apply-collection!)
 (def remove-document!      actions.engine/remove-document!)
 (def remove-documents!     actions.engine/remove-documents!)
 (def remove-all-documents! actions.engine/remove-all-documents!)
@@ -31,13 +31,8 @@
 (def reorder-documents!    actions.engine/reorder-documents!)
 
 ; mongo-db.aggregation.pipelines
-(def add-fields-query aggregation.pipelines/add-fields-query)
-(def filter-query     aggregation.pipelines/filter-query)
-(def search-query     aggregation.pipelines/search-query)
-(def sort-query       aggregation.pipelines/sort-query)
-(def unset-query      aggregation.pipelines/unset-query)
-(def get-pipeline     aggregation.pipelines/get-pipeline)
-(def count-pipeline   aggregation.pipelines/count-pipeline)
+(def get-pipeline   aggregation.pipelines/get-pipeline)
+(def count-pipeline aggregation.pipelines/count-pipeline)
 
 ; mongo-db.connection.helpers
 (def connected? connection.helpers/connected?)

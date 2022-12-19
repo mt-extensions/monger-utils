@@ -7,7 +7,9 @@
 
 The <strong>mongo-db-api</strong> is a MongoDB implementation for Clojure projects
 based on the [michaelklishin / monger] library with some extra features like
-error-handling, input-checking, output-checking, etc.
+error handling, input checking, output checking, order handling, prototype handling, etc.
+
+> This libary designed for working with namespaced documents!
 
 ### deps.edn
 
@@ -27,3 +29,518 @@ The <strong>mongo-db-api</strong> functional documentation is [available here](d
 ### Changelog
 
 You can track the changes of the <strong>mongo-db-api</strong> library [here](CHANGES.md).
+
+### Index
+
+- [How to insert a document?](#how-to-insert-a-document)
+- [How to insert more than one document?](#how-to-insert-more-than-one-document)
+- [How to save a document?](#how-to-save-a-document-upserting-by-id)
+- [How to save more than one document?](#how-to-save-more-than-one-document)
+- [How to update a document?](#how-to-update-a-document)
+- [How to update more than one document?](#how-to-update-more-than-one-document)
+- [How to upsert a document?](#how-to-upsert-a-document)
+- [How to upsert more than one document?](#how-to-upsert-more-than-one-document)
+- [How to apply a function on a document?](#how-to-apply-a-function-on-a-document)
+- [How to apply a function on a collection?](#how-to-apply-a-function-on-a-collection)
+- [How to remove a document?](#how-to-remove-a-document)
+- [How to remove more than one document?](#how-to-remove-more-than-one-document)
+- [How to remove all documents of a collection?](#how-to-remove-all-documents-of-a-collection)
+- [How to duplicate a document?](#how-to-duplicate-a-document)
+- [How to duplicate more than one document?](#how-to-duplicate-more-than-one-document)
+- [How to reorder documents?](#how-to-reorder-documents)
+- [How to check whether the database is connected?](#how-to-reorder-documents)
+- [How to generate a compatible document id?](#how-to-reorder-documents)
+- [How to make a pipeline for getting documents?](#how-to-make-a-pipeline-for-getting-documents)
+- [How to make a pipeline for counting documents?](#how-to-make-a-pipeline-for-counting-documents)
+- [How to get the names of the collections?](#how-get-the-names-of-the-collections)
+- [How to get the namespace of a collection?](#how-to-the-namespace-of-a-collection)
+- [How to check whether a collection is empty?](#how-to-check-whether-a-collection-is-empty)
+- [How to count all the documents in a collection?](#how-to-count-all-the-documents-in-a-collection)
+- [How to count documents by pipeline?](#how-to-count-document-by-pipeline)
+- [How to count documents by query?](#how-to-count-documents-by-query)
+- [How to get all the documents of a collection?](#how-to-get-all-the-documents-of-a-collection)
+- [How to get a document by query?](#how-to-get-a-document-by-query)
+- [How to get documents by query?](#how-to-get-documents-by-query)
+- [How to get a document by id?](#how-to-get-document-by-id)
+- [How to get documents by pipeline?](#how-to-get-documents-by-pipeline)
+- [How to check whether a document exists?](#how-to-check-whether-a-document-exists)
+- [How to collect the values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
+
+# Modifier functions
+
+### How to insert a document?
+
+The `insert-document!` function inserts the given document to the end of
+the collection.
+
+- If the given document doesn't have the `:namespace/id` key, the function will
+  generate it.
+- If the collection has a document with the same `:namespace/id` value, the function
+  will ignore the inserting!
+- If the `{:ordered? true}` setting passed, the inserted document will get the
+  last position in the collection: `{:namespace/order 123}`.
+- In case of successfully inserting, the return value will be the stored document.
+
+```
+(defn insert-my-document!
+  []
+  (insert-document! "my_collection" {:namespace/my-keyword  :my-value
+                                     :namespace/your-string "your-value"
+                                     :namespace/id          "MyObjectId"}))
+```
+
+```
+(defn my-prepare-f
+  [document]
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn insert-my-document!
+  []
+  (insert-document! "my_collection" {:namespace/my-keyword :my-value}
+                                    {:prepare-f my-prepare-f}))
+```
+
+```
+(defn insert-my-document!
+  []
+  (insert-document! "my_collection" {:namespace/my-keyword :my-value}
+                                    {:ordered? true}))
+```
+
+### How to insert more than one document?
+
+The `insert-documents!` function inserts the given documents to the end of
+the collection.
+
+> The `insert-documents!` function applies the `insert-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully inserting, the return value will be a vector with the
+  stored documents.
+
+```
+(defn insert-my-documents!
+  []
+  (insert-documents! "my_collection" [{:namespace/my-keyword :my-value}
+                                      {:namespace/my-keyword :your-value}]))
+```
+
+### How to save a document? (upserting by id)
+
+The `save-document!` function updates the given document if it exists in
+the collection with the same `:namespace/id` value, otherwise it inserts it
+to the end of the collection.
+
+- If the given document doesn't have the `:namespace/id` key, the function will
+  generate it.
+- If the collection has a document with the same `:namespace/id` value, the
+  function will update it!
+- If the `{:ordered? true}` setting passed and the document not existed before,
+  the inserted document will get the last position in the collection.
+- In case of successfully saving, the return value will be the stored document.
+
+```
+(defn save-my-document!
+  []
+  (save-document! "my_collection" {:namespace/my-keyword  :my-value
+                                   :namespace/your-string "your-value"
+                                   :namespace/id          "MyObjectId"}))
+```
+
+```
+(defn my-prepare-f
+  [document]
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn save-my-document!
+  []
+  (save-document! "my_collection" {:namespace/my-keyword :my-value}
+                                  {:prepare-f my-prepare-f}))
+```
+
+```
+(defn save-my-document!
+  []
+  (save-document! "my_collection" {:namespace/my-keyword :my-value}
+                                  {:ordered? true}))
+```
+
+### How to save more than one document?
+
+The `save-documents!` function updates the given documents if it exists in
+the collection with the same `:namespace/id` value, otherwise it inserts them
+to the end of the collection.
+
+> The `insert-documents!` function applies the `insert-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully saving, the return value will be a vector with the
+  stored documents.
+
+```
+(defn save-my-documents!
+  []
+  (save-documents! "my_collection" [{:namespace/my-keyword :my-value}
+                                    {:namespace/my-keyword :your-value}]))
+```
+
+### How to update a document?
+
+The `update-document!` function updates the first document in the collection
+found by the given query.
+
+- If the function cannot find a document in the collection by the given query,
+  it will ignore the updating!
+- The given query can contains the `:namespace/id` key.
+- The given document cannot contains the `:namespace/id` key!
+- In case of successfully updating, the return value will be `TRUE`.
+
+```
+(defn update-my-document!
+  []
+  (update-document! "my_collection" {:namespace/id "MyObjectId"}
+                                    {:namespace/my-keyword  :my-value
+                                     :namespace/your-string "your-value"}))
+```
+
+```
+(defn my-prepare-f
+  [document]
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn update-my-document!
+  []
+  (update-document! "my_collection" {:namespace/id "MyObjectId"}
+                                    {:namespace/my-keyword :my-value}
+                                    {:prepare-f my-prepare-f}))
+```
+
+### How to update more than one document?
+
+The `update-documents!` function updates documents in the collection
+found by the given query.
+
+> The `update-documents!` function applies the `update-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully updating, the return value will be `TRUE`.
+
+```
+(defn update-my-documents!
+  []
+  (update-documents! "my_collection" {:namespace/id "MyObjectId"}
+                                     {:namespace/my-keyword :my-value}))
+```
+
+### How to upsert a document?
+
+The `upsert-document!` function updates the first document in the collection
+found by the given query, otherwise inserts it as a new document to the end of
+the collection.
+
+- If the function cannot find a document in the collection by the given query,
+  it will inserts it as a new document to the end of the collection!
+- The given query can contains the `:namespace/id` key.
+- The given document cannot contains the `:namespace/id` key!
+- In case of successfully upserting, the return value will be `TRUE`.
+
+```
+(defn upsert-my-document!
+  []
+  (upsert-document! "my_collection" {:namespace/id "MyObjectId"}
+                                    {:namespace/my-keyword  :my-value
+                                     :namespace/your-string "your-value"}))
+```
+
+```
+(defn my-prepare-f
+  [document]
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn upsert-my-document!
+  []
+  (upsert-document! "my_collection" {:namespace/id "MyObjectId"}
+                                    {:namespace/my-keyword :my-value}
+                                    {:prepare-f my-prepare-f}))
+```
+
+### How to upsert more than one document?
+
+The `upsert-documents!` function updates documents in the collection
+found by the given query, otherwise inserts it as a new document to the end of
+the collection.
+
+> The `upsert-documents!` function applies the `upsert-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully upserting, the return value will be `TRUE`.
+
+```
+(defn upsert-my-documents!
+  []
+  (upsert-documents! "my_collection" {:namespace/id "MyObjectId"}
+                                     {:namespace/my-keyword :my-value}))
+```
+
+### How to apply a function on a document?
+
+The `apply-on-document!` function applies the given function on a document found
+by the given id.
+
+- If the function cannot find a document in the collection by the given id,
+  it will ignore the applying!
+- In case of successfully applying, the return value will be the modified document.
+
+```
+(defn my-modifier-f
+  [document]
+  (assoc document :namespace/my-keyword :my-value))
+
+(defn apply-on-my-document!
+  []
+  (apply-on-document! "my_collection" "MyObjectId" my-modifier-f))
+```
+
+```
+(defn my-prepare-f
+  [document]
+  ; This function will be applied before the given modifier function!
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn my-postpare-f
+  [document]
+  ; This function will be applied after the given modifier function!
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn my-modifier-f
+  [document]
+  (assoc document :namespace/my-keyword :my-value))
+
+(defn apply-on-my-document!
+  []
+  (apply-on-document! "my_collection" "MyObjectId" my-modifier-f
+                                      {:prepare-f  my-prepare-f
+                                       :postpare-f my-postpare-f}))
+```
+
+### How to apply a function on a collection?
+
+The `apply-on-collection!` function applies the given function on all documents
+in a collection.
+
+> The `apply-on-collection!` function works similar to the `apply-on-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully applying, the return value will be the modified collection.
+
+```
+(defn my-modifier-f
+  [document]
+  (assoc document :namespace/my-keyword :my-value))
+
+(defn apply-on-my-collection!
+  []
+  (apply-on-collection! "my_collection" my-modifier-f))
+```
+
+### How to remove a document?
+
+The `remove-document!` function removes the document found by the given id.
+
+- If the function cannot find a document in the collection by the given id,
+  it will ignore the removing!
+- If the `{:ordered? true}` setting passed, the function will update the
+  `:namespace/order` value of the documents which come after the removed document.
+- In case of successfully removing, the return value will be the id of the
+  removed document.
+
+```
+(defn remove-my-document!
+  []
+  (remove-document! "my_collection" "MyObjectId")
+```
+
+```
+(defn remove-my-document!
+  []
+  (remove-document! "my_collection" "MyObjectId" {:ordered? true}))
+```
+
+### How to remove more than one document?
+
+The `remove-document!` function removes documents from the collection
+found by the given id-s.
+
+> The `remove-documents!` function applies the `remove-document!` function.
+  You can find more information in the previous section.
+
+- In case of successfully removing, the return value will be a vector of the
+  removed documents' id-s.
+
+```
+(defn remove-my-documents!
+  []
+  (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"]))
+```
+
+### How to remove all documents of a collection?
+
+The `remove-all-documents!` function removes all documents of a collection.
+
+```
+(defn remove-all-of-my-documents!
+  []
+  (remove-all-documents! "my_collection"))
+```
+
+### How to duplicate a document?
+
+The `duplicate-document!` function duplicates the document found by the given id.
+
+- If the function cannot find a document in the collection by the given id,
+  it will ignore the duplicating!
+- If the `{:ordered? true}` setting passed, the copy document will get the
+  next position in the collection and the function updates the `:namespace/order`
+  value of the documents which come after the original document.
+- If the `{:label-key ...}` setting passed, the copy document will get the
+  `"#2"` suffix on its label. In case of the second copy label (`"My label #2"`)
+  not available, the suffix will contain the next available number.
+- If the `{:changes {...}}` setting passed, the given changes will be merged into
+  the copy document. If the changes map contains the id of the original document,
+  the function will remove it before the changes merged into the copy document.
+- In case of successfully duplicating, the return value will be the duplicated document.
+
+```
+(defn duplicate-my-document!
+  []
+  (duplicate-document! "my_collection" "MyObjectId")
+```
+
+```
+(defn my-prepare-f
+  [document]
+  ; This function will be applied before the copy document got its id
+  ; and updated label, and the changes merged into it.
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn my-postpare-f
+  [document]
+  ; This function will be applied after the copy document got its id
+  ; and updated label, and the changes merged into it.
+  (assoc document :namespace/modified-by {:user/id "my-user"}))
+
+(defn duplicate-my-document!
+  []
+  (duplicate-document! "my_collection" "MyObjectId" {:changes    {:namespace/your-string "I'm changed!"}
+                                                     :label-key  :namespace/label
+                                                     :ordered?   true
+                                                     :prepare-f  my-prepare-f
+                                                     :postpare-f my-postpare-f}))
+```
+
+### How to duplicate more than one document?
+
+The `duplicate-documents!` function duplicates the documents found by the given id-s.
+
+- In case of successfully duplicating, the return value will be a vector of the
+  duplicated documents.
+
+```
+(defn duplicate-my-documents!
+  []
+  (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"])
+```
+
+### How to reorder documents?
+
+The `reorder-documents!` function updates the `:namespace/order` value with the
+given values of the documents found by the given id-s.
+
+- If the function cannot find a document in the collection by a given id,
+  it will ignore that certain updating!
+- Not necessarry to update all documents in one time, this function can updates
+  certain documents of the collection.
+- In case of successfully updating, the return value will be a vector of the updated
+  documents' id-s and their updated positions.
+
+```
+(defn reorder-my-documents!
+  []
+  (reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]])
+```
+
+# Database functions
+
+### How to check whether the database is connected?
+
+...
+
+# Utility functions
+
+### How to generate a compatible document id?
+
+...
+
+# Pipeline functions
+
+### How to make a pipeline for getting documents?
+
+...
+
+### How to make a pipeline for counting documents?
+
+...
+
+# Reader functions
+
+### How to get the names of the collections?
+
+...
+
+### How to get the namespace of a collection?
+
+...
+
+### How to check whether a collection is empty?
+
+...
+
+### How to count all the documents in a collection?
+
+...
+
+### How to count documents by pipeline?
+
+...
+
+### How to count documents by query?
+
+...
+
+### How to get all the documents of a collection?
+
+...
+
+### How to get a document by query?
+
+...
+
+### How to get documents by query?
+
+...
+
+### How to get a document by id?
+
+...
+
+### How to get documents by pipeline?
+
+...
+
+### How to check whether a document exists?
+
+...
+
+### How to collect the values of specific keys from all documents in a collection?
+
+...
