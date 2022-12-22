@@ -87,21 +87,18 @@
   ; (get-collection "my_collection" {...})
   ;
   ; @example
-  ; (get-collection "my_collection"
-  ;                 {:projection {:namespace/id          1
-  ;                               :namespace/your-string 1}})
+  ; (get-collection "my_collection" {:projection {:namespace/id          1
+  ;                                               :namespace/your-string 1}})
   ; =>
   ; [{:namespace/id          "MyObjectId"
   ;   :namespace/your-string "Your value"}]
   ;
   ; @example
-  ; (get-collection "my_collection"
-  ;                 {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))}})
+  ; (get-collection "my_collection" {:prototype-f :namespace/my-string}})
   ; =>
-  ; [{:namespace/id        "MyObjectId"
-  ;   :namespace/my-string "My value"}]
+  ; ["MY value" "Your value"]
   ;
-  ; @return (maps in vector)
+  ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
   ([collection-name]
    (if-let [collection (reader.helpers/find-maps collection-name {})]
@@ -129,8 +126,8 @@
   ;
   ; @example
   ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                         {:projection {:namespace/id          1
-  ;                                       :namespace/your-string 1}})
+  ;                                         {:projection {:namespace/id          1
+  ;                                                       :namespace/your-string 1}})
   ; =>
   ; [{:namespace/id          "MyObjectId"
   ;   :namespace/my-keyword  :my-value
@@ -138,13 +135,11 @@
   ;
   ; @example
   ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                         {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+  ;                                         {:prototype-f :namespace/my-string})
   ; =>
-  ; [{:namespace/id           "MyObjectId"
-  ;   :namespace/my-string    "My value"
-  ;   :namespace/your-keyword :my-value}]
+  ; ["My value" "Your value"]
   ;
-  ; @return (namespaced maps in vector)
+  ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -180,21 +175,19 @@
   ;
   ; @example
   ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                        {:projection {:namespace/id          1
-  ;                                      :namespace/your-string 1}})
+  ;                                        {:projection {:namespace/id          1
+  ;                                                      :namespace/your-string 1}})
   ; =>
   ; {:namespace/id          "MyObjectId"
   ;  :namespace/your-string "Your value"}
   ;
   ; @example
   ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                        {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+  ;                                        {:prototype-f :namespace/my-string})
   ; =>
-  ; {:namespace/id         "MyObjectId"
-  ;  :namespace/my-keyword :my-value
-  ;  :namespace/my-string  "My value"}
+  ; "My value"
   ;
-  ; @return (namespaced map)
+  ; @return (namespaced map or *)
   ; {:namespace/id (string)}
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -230,13 +223,11 @@
   ;  :namespace/your-string "Your value"}
   ;
   ; @example
-  ; (get-document-by-id "my_collection" "MyObjectId"
-  ;                     {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+  ; (get-document-by-id "my_collection" "MyObjectId" {:prototype-f :namespace/my-string})
   ; =>
-  ; {:namespace/id        "MyObjectId"
-  ;  :namespace/my-string "My value"}
+  ; "My value"
   ;
-  ; @return (namespaced map)
+  ; @return (namespaced map or *)
   ; {:namespace/id (string)}
   ([collection-name document-id]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
@@ -252,11 +243,16 @@
 
 (defn get-first-document
   ; @param (string) collection-name
+  ; @param (map)(opt) options
+  ; {:prototype-f (function)(opt)}
   ;
   ; @usage
   ; (get-first-document "my_collection")
   ;
-  ; @return (namespaced map)
+  ; @usage
+  ; (get-first-document "my_collection" {:prototype-f :namespace/my-string})
+  ;
+  ; @return (namespaced map or *)
   [collection-name]
   (let [collection (get-collection collection-name)]
        (first collection)))
@@ -267,7 +263,10 @@
   ; @usage
   ; (get-last-document "my_collection")
   ;
-  ; @return (namespaced map)
+  ; @usage
+  ; (get-last-document "my_collection" {:prototype-f :namespace/my-string})
+  ;
+  ; @return (namespaced map or *)
   [collection-name]
   (let [collection (get-collection collection-name)]
        (last collection)))
@@ -293,7 +292,8 @@
   ; @param (map)(opt) options
   ; {:locale (string)(opt)
   ;   Default: "en"
-  ;   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults}
+  ;   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
+  ;  :prototype-f (function)(opt)}
   ;
   ; @usage
   ; (get-documents-by-pipeline "my_collection" [...])
@@ -304,13 +304,18 @@
   ; @usage
   ; (get-documents-by-pipeline "my_collection" [...] {:locale "en"})
   ;
-  ; @return (namespaced maps in vector)
+  ; @usage
+  ; (get-documents-by-pipeline "my_collection" [...] {:prototype-f :namespace/my-string})
+  ;
+  ; @return (namespaced maps or * in vector)
   ([collection-name pipeline]
    (get-documents-by-pipeline collection-name pipeline {}))
 
   ([collection-name pipeline options]
    (if-let [documents (aggregation.engine/process collection-name pipeline options)]
-           (vector/->items documents #(reader.adaptation/find-output %))
+           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
+                                                  (reader.prototyping/find-output % options)))]
+                  (vector/->items documents f))
            (return []))))
 
 (defn count-documents-by-pipeline

@@ -66,7 +66,11 @@ You can track the changes of the <strong>mongo-db-api</strong> library [here](CH
 - [How to check whether a document exists?](#how-to-check-whether-a-document-exists)
 - [How to collect the values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
 
-# Modifier functions
+# Usage
+
+> Some functions and some parameters of the following functions won't be discussed.
+  To learn more about the available functionality, check out the
+  [functional documentation](documentation/COVER.md)!
 
 ### How to insert a document?
 
@@ -474,19 +478,13 @@ found by the given id-s.
   (reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]])
 ```
 
-# Database functions
-
 ### How to check whether the database is connected?
 
 ...
 
-# Utility functions
-
 ### How to generate a compatible document id?
 
 ...
-
-# Pipeline functions
 
 ### How to make a pipeline for getting documents?
 
@@ -495,8 +493,6 @@ found by the given id-s.
 ### How to make a pipeline for counting documents?
 
 ...
-
-# Reader functions
 
 ### How to get the names of collections?
 
