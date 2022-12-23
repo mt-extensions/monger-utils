@@ -86,11 +86,9 @@ function inserts the given document to the end of the collection.
 - In case of successfully inserting, the return value will be the inserted document.
 
 ```
-(defn insert-my-document!
-  []
-  (insert-document! "my_collection" {:namespace/my-keyword  :my-value
-                                     :namespace/your-string "your-value"
-                                     :namespace/id          "MyObjectId"}))
+(insert-document! "my_collection" {:namespace/my-keyword  :my-value
+                                   :namespace/your-string "your-value"
+                                   :namespace/id          "MyObjectId"})
 ```
 
 ```
@@ -98,17 +96,13 @@ function inserts the given document to the end of the collection.
   [document]
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(defn insert-my-document!
-  []
-  (insert-document! "my_collection" {:namespace/my-keyword :my-value}
-                                    {:prepare-f my-prepare-f}))
+(insert-document! "my_collection" {:namespace/my-keyword :my-value}
+                                  {:prepare-f my-prepare-f})
 ```
 
 ```
-(defn insert-my-document!
-  []
-  (insert-document! "my_collection" {:namespace/my-keyword :my-value}
-                                    {:ordered? true}))
+(insert-document! "my_collection" {:namespace/my-keyword :my-value}
+                                  {:ordered? true})
 ```
 
 ### How to insert more than one document?
@@ -123,10 +117,8 @@ function inserts the given documents to the end of the collection.
   inserted documents.
 
 ```
-(defn insert-my-documents!
-  []
-  (insert-documents! "my_collection" [{:namespace/my-keyword :my-value}
-                                      {:namespace/my-keyword :your-value}]))
+(insert-documents! "my_collection" [{:namespace/my-keyword :my-value}
+                                    {:namespace/my-keyword :your-value}])
 ```
 
 ### How to save a document? (upserting by id)
@@ -144,11 +136,9 @@ function updates the given document if it exists in the collection with the same
 - In case of successfully saving, the return value will be the saved document.
 
 ```
-(defn save-my-document!
-  []
-  (save-document! "my_collection" {:namespace/my-keyword  :my-value
-                                   :namespace/your-string "your-value"
-                                   :namespace/id          "MyObjectId"}))
+(save-document! "my_collection" {:namespace/my-keyword  :my-value
+                                 :namespace/your-string "your-value"
+                                 :namespace/id          "MyObjectId"})
 ```
 
 ```
@@ -156,17 +146,13 @@ function updates the given document if it exists in the collection with the same
   [document]
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(defn save-my-document!
-  []
-  (save-document! "my_collection" {:namespace/my-keyword :my-value}
-                                  {:prepare-f my-prepare-f}))
+(save-document! "my_collection" {:namespace/my-keyword :my-value}
+                                {:prepare-f my-prepare-f})
 ```
 
 ```
-(defn save-my-document!
-  []
-  (save-document! "my_collection" {:namespace/my-keyword :my-value}
-                                  {:ordered? true}))
+(save-document! "my_collection" {:namespace/my-keyword :my-value}
+                                {:ordered? true})
 ```
 
 ### How to save more than one document?
@@ -182,10 +168,8 @@ function updates the given documents if it exists in the collection with the sam
   saved documents.
 
 ```
-(defn save-my-documents!
-  []
-  (save-documents! "my_collection" [{:namespace/my-keyword :my-value}
-                                    {:namespace/my-keyword :your-value}]))
+(save-documents! "my_collection" [{:namespace/my-keyword :my-value}
+                                  {:namespace/my-keyword :your-value}])
 ```
 
 ### How to update a document?
@@ -200,11 +184,9 @@ function updates the first document in the collection found by the given query.
 - In case of successfully updating, the return value will be `TRUE`.
 
 ```
-(defn update-my-document!
-  []
-  (update-document! "my_collection" {:namespace/id "MyObjectId"}
-                                    {:namespace/my-keyword  :my-value
-                                     :namespace/your-string "your-value"}))
+(update-document! "my_collection" {:namespace/id "MyObjectId"}
+                                  {:namespace/my-keyword  :my-value
+                                   :namespace/your-string "your-value"})
 ```
 
 ```
@@ -212,11 +194,9 @@ function updates the first document in the collection found by the given query.
   [document]
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(defn update-my-document!
-  []
-  (update-document! "my_collection" {:namespace/id "MyObjectId"}
-                                    {:namespace/my-keyword :my-value}
-                                    {:prepare-f my-prepare-f}))
+(update-document! "my_collection" {:namespace/id "MyObjectId"}
+                                  {:namespace/my-keyword :my-value}
+                                  {:prepare-f my-prepare-f})
 ```
 
 ### How to update more than one document?
@@ -230,10 +210,8 @@ function updates documents in the collection found by the given query.
 - In case of successfully updating, the return value will be `TRUE`.
 
 ```
-(defn update-my-documents!
-  []
-  (update-documents! "my_collection" {:namespace/id "MyObjectId"}
-                                     {:namespace/my-keyword :my-value}))
+(update-documents! "my_collection" {:namespace/id "MyObjectId"}
+                                   {:namespace/my-keyword :my-value})
 ```
 
 ### How to upsert a document?
@@ -249,11 +227,9 @@ otherwise inserts it as a new document to the end of the collection.
 - In case of successfully upserting, the return value will be `TRUE`.
 
 ```
-(defn upsert-my-document!
-  []
-  (upsert-document! "my_collection" {:namespace/id "MyObjectId"}
-                                    {:namespace/my-keyword  :my-value
-                                     :namespace/your-string "your-value"}))
+(upsert-document! "my_collection" {:namespace/id "MyObjectId"}
+                                  {:namespace/my-keyword  :my-value
+                                   :namespace/your-string "your-value"})
 ```
 
 ```
@@ -261,11 +237,9 @@ otherwise inserts it as a new document to the end of the collection.
   [document]
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(defn upsert-my-document!
-  []
-  (upsert-document! "my_collection" {:namespace/id "MyObjectId"}
-                                    {:namespace/my-keyword :my-value}
-                                    {:prepare-f my-prepare-f}))
+(upsert-document! "my_collection" {:namespace/id "MyObjectId"}
+                                  {:namespace/my-keyword :my-value}
+                                  {:prepare-f my-prepare-f})
 ```
 
 ### How to upsert more than one document?
@@ -280,10 +254,8 @@ inserts it as a new document to the end of the collection.
 - In case of successfully upserting, the return value will be `TRUE`.
 
 ```
-(defn upsert-my-documents!
-  []
-  (upsert-documents! "my_collection" {:namespace/id "MyObjectId"}
-                                     {:namespace/my-keyword :my-value}))
+(upsert-documents! "my_collection" {:namespace/id "MyObjectId"}
+                                   {:namespace/my-keyword :my-value})
 ```
 
 ### How to apply a function on a document?
@@ -300,9 +272,7 @@ function applies the given function on a document found by the given id.
   [document]
   (assoc document :namespace/my-keyword :my-value))
 
-(defn apply-on-my-document!
-  []
-  (apply-on-document! "my_collection" "MyObjectId" my-modifier-f))
+(apply-on-document! "my_collection" "MyObjectId" my-modifier-f)
 ```
 
 ```
@@ -320,11 +290,9 @@ function applies the given function on a document found by the given id.
   [document]
   (assoc document :namespace/my-keyword :my-value))
 
-(defn apply-on-my-document!
-  []
-  (apply-on-document! "my_collection" "MyObjectId" my-modifier-f
-                                      {:prepare-f  my-prepare-f
-                                       :postpare-f my-postpare-f}))
+(apply-on-document! "my_collection" "MyObjectId" my-modifier-f
+                                    {:prepare-f  my-prepare-f
+                                     :postpare-f my-postpare-f})
 ```
 
 ### How to apply a function on a collection?
@@ -342,9 +310,7 @@ function applies the given function on all documents in a collection.
   [document]
   (assoc document :namespace/my-keyword :my-value))
 
-(defn apply-on-my-collection!
-  []
-  (apply-on-collection! "my_collection" my-modifier-f))
+(apply-on-collection! "my_collection" my-modifier-f)
 ```
 
 ### How to remove a document?
@@ -360,15 +326,11 @@ function removes the document found by the given id.
   removed document.
 
 ```
-(defn remove-my-document!
-  []
-  (remove-document! "my_collection" "MyObjectId")
+(remove-document! "my_collection" "MyObjectId")
 ```
 
 ```
-(defn remove-my-document!
-  []
-  (remove-document! "my_collection" "MyObjectId" {:ordered? true}))
+(remove-document! "my_collection" "MyObjectId" {:ordered? true})
 ```
 
 ### How to remove more than one document?
@@ -383,9 +345,7 @@ function removes documents from the collection found by the given id-s.
   removed documents' id-s.
 
 ```
-(defn remove-my-documents!
-  []
-  (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"]))
+(remove-documents! "my_collection" ["MyObjectId" "YourObjectId"])
 ```
 
 ### How to remove all documents of a collection?
@@ -394,9 +354,7 @@ The [`mongo-db.api/remove-all-documents!`](documentation/clj/mongo-db/API.md#rem
 function removes all documents of a collection.
 
 ```
-(defn remove-all-of-my-documents!
-  []
-  (remove-all-documents! "my_collection"))
+(remove-all-documents! "my_collection")
 ```
 
 ### How to duplicate a document?
@@ -418,9 +376,7 @@ function duplicates the document found by the given id.
 - In case of successfully duplicating, the return value will be the copy document.
 
 ```
-(defn duplicate-my-document!
-  []
-  (duplicate-document! "my_collection" "MyObjectId")
+(duplicate-document! "my_collection" "MyObjectId")
 ```
 
 ```
@@ -436,13 +392,11 @@ function duplicates the document found by the given id.
   ; and updated label, and the changes merged into it.
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(defn duplicate-my-document!
-  []
-  (duplicate-document! "my_collection" "MyObjectId" {:changes    {:namespace/your-string "I'm changed!"}
-                                                     :label-key  :namespace/label
-                                                     :ordered?   true
-                                                     :prepare-f  my-prepare-f
-                                                     :postpare-f my-postpare-f}))
+(duplicate-document! "my_collection" "MyObjectId" {:changes    {:namespace/your-string "I'm changed!"}
+                                                   :label-key  :namespace/label
+                                                   :ordered?   true
+                                                   :prepare-f  my-prepare-f
+                                                   :postpare-f my-postpare-f})
 ```
 
 ### How to duplicate more than one document?
@@ -454,9 +408,7 @@ function duplicates the documents found by the given id-s.
   copy documents.
 
 ```
-(defn duplicate-my-documents!
-  []
-  (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"])
+(duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"]
 ```
 
 ### How to reorder documents?
@@ -473,9 +425,7 @@ found by the given id-s.
   documents' id-s and their updated positions.
 
 ```
-(defn reorder-my-documents!
-  []
-  (reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]])
+(reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]]
 ```
 
 ### How to check whether the database is connected?
