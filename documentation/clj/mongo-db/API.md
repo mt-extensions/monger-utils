@@ -5,11 +5,9 @@
 
 ### Index
 
-- [add-fields-query](#add-fields-query)
+- [apply-on-collection!](#apply-on-collection)
 
-- [apply-document!](#apply-document)
-
-- [apply-documents!](#apply-documents)
+- [apply-on-document!](#apply-on-document)
 
 - [collection-empty?](#collection-empty)
 
@@ -24,8 +22,6 @@
 - [duplicate-document!](#duplicate-document)
 
 - [duplicate-documents!](#duplicate-documents)
-
-- [filter-query](#filter-query)
 
 - [generate-id](#generate-id)
 
@@ -71,12 +67,6 @@
 
 - [save-documents!](#save-documents)
 
-- [search-query](#search-query)
-
-- [sort-query](#sort-query)
-
-- [unset-query](#unset-query)
-
 - [update-document!](#update-document)
 
 - [update-documents!](#update-documents)
@@ -85,105 +75,7 @@
 
 - [upsert-documents!](#upsert-documents)
 
-### add-fields-query
-
-```
-@param (map) field-pattern
-```
-
-```
-@example
-(add-fields-query {:namespace/name  {:$concat [:$namespace/first-name " " :$namespace/last-name]}
-                   :namespace/total {:$sum     :$namespace/all-result}})
-=>
-{"namespace/name"  {"$concat" ["$namespace/first-name" " " "$namespace/last-name"]}
- "namespace/total" {"$sum"     "$namespace/all-result"}}}
-```
-
-```
-@return (map)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn add-fields-query
-  [field-pattern]
-  (map/->>kv field-pattern json/unkeywordize-key json/unkeywordize-key))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [add-fields-query]]))
-
-(mongo-db.api/add-fields-query ...)
-(add-fields-query              ...)
-```
-
-</details>
-
----
-
-### apply-document!
-
-```
-@param (string) collection-name
-@param (string) document-id
-@param (function) f
-@param (map)(opt) options
-{:postpare-f (function)(opt)
- :prepare-f (function)(opt)}
-```
-
-```
-@usage
-(apply-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
-```
-
-```
-@return (namespaced map)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn apply-document!
-  ([collection-name document-id f]
-   (apply-document! collection-name document-id f {}))
-
-  ([collection-name document-id f options]
-   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
-           (if-let [document (actions.preparing/apply-input collection-name document options)]
-                   (if-let [document (f document)]
-                           (if-let [document (actions.postparing/apply-input collection-name document options)]
-                                   (if-let [document (actions.adaptation/save-input document)]
-                                           (let [result (actions.helpers/save-and-return! collection-name document)]
-                                                (actions.adaptation/save-output result)))))))))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [apply-document!]]))
-
-(mongo-db.api/apply-document! ...)
-(apply-document!              ...)
-```
-
-</details>
-
----
-
-### apply-documents!
+### apply-on-collection!
 
 ```
 @param (string) collection-name
@@ -195,7 +87,7 @@
 
 ```
 @usage
-(apply-document! "my_collection" #(assoc % :namespace/color "Blue") {...})
+(apply-on-collection! "my_collection" #(assoc % :namespace/color "Blue") {...})
 ```
 
 ```
@@ -206,9 +98,9 @@
 <summary>Source code</summary>
 
 ```
-(defn apply-documents!
+(defn apply-on-collection!
   ([collection-name f]
-   (apply-documents! collection-name f {}))
+   (apply-on-collection! collection-name f {}))
 
   ([collection-name f options]
    (if-let [collection (reader.engine/get-collection collection-name)]
@@ -226,10 +118,64 @@
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [mongo-db.api :refer [apply-documents!]]))
+(ns my-namespace (:require [mongo-db.api :refer [apply-on-collection!]]))
 
-(mongo-db.api/apply-documents! ...)
-(apply-documents!              ...)
+(mongo-db.api/apply-on-collection! ...)
+(apply-on-collection!              ...)
+```
+
+</details>
+
+---
+
+### apply-on-document!
+
+```
+@param (string) collection-name
+@param (string) document-id
+@param (function) f
+@param (map)(opt) options
+{:postpare-f (function)(opt)
+ :prepare-f (function)(opt)}
+```
+
+```
+@usage
+(apply-on-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
+```
+
+```
+@return (namespaced map)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn apply-on-document!
+  ([collection-name document-id f]
+   (apply-on-document! collection-name document-id f {}))
+
+  ([collection-name document-id f options]
+   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
+           (if-let [document (actions.preparing/apply-input collection-name document options)]
+                   (if-let [document (f document)]
+                           (if-let [document (actions.postparing/apply-input collection-name document options)]
+                                   (if-let [document (actions.adaptation/save-input document)]
+                                           (let [result (actions.helpers/save-and-return! collection-name document)]
+                                                (actions.adaptation/save-output result)))))))))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [apply-on-document!]]))
+
+(mongo-db.api/apply-on-document! ...)
+(apply-on-document!              ...)
 ```
 
 </details>
@@ -470,6 +416,7 @@
   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
  :ordered? (boolean)(opt)
   Default: false
+ :postpare-f (function)(opt)
  :prepare-f (function)(opt)}
 ```
 
@@ -573,56 +520,6 @@
 
 ---
 
-### filter-query
-
-```
-@param (map) filter-pattern
-{:$or (maps in vector)(opt)
- :$and (maps in vector)(opt)
-```
-
-```
-@example
-(filter-query {:namespace/my-keyword :my-value
-               :$or  [{:namespace/my-boolean   false}
-                      {:namespace/my-boolean   nil}]
-               :$and [{:namespace/your-boolean true}]})
-=>
-{"namespace/my-keyword" "*:my-value"
- "$or"  [{"namespace/my-boolean"   false}
-         {"namespace/my-boolean"   nil}]
- "$and" [{"namespace/your-boolean" true}]}
-```
-
-```
-@return (map)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn filter-query
-  [filter-pattern]
-  (aggregation.adaptation/filter-query filter-pattern))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [filter-query]]))
-
-(mongo-db.api/filter-query ...)
-(filter-query              ...)
-```
-
-</details>
-
----
-
 ### generate-id
 
 ```
@@ -720,9 +617,8 @@
 
 ```
 @example
-(get-collection "my_collection"
-                {:projection {:namespace/id          1
-                              :namespace/your-string 1}})
+(get-collection "my_collection" {:projection {:namespace/id          1
+                                              :namespace/your-string 1}})
 =>
 [{:namespace/id          "MyObjectId"
   :namespace/your-string "Your value"}]
@@ -730,15 +626,13 @@
 
 ```
 @example
-(get-collection "my_collection"
-                {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))}})
+(get-collection "my_collection" {:prototype-f :namespace/my-string}})
 =>
-[{:namespace/id        "MyObjectId"
-  :namespace/my-string "My value"}]
+["MY value" "Your value"]
 ```
 
 ```
-@return (maps in vector)
+@return (namespaced maps or * in vector)
 [{:namespace/id (string)}]
 ```
 
@@ -885,15 +779,13 @@
 
 ```
 @example
-(get-document-by-id "my_collection" "MyObjectId"
-                    {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+(get-document-by-id "my_collection" "MyObjectId" {:prototype-f :namespace/my-string})
 =>
-{:namespace/id        "MyObjectId"
- :namespace/my-string "My value"}
+"My value"
 ```
 
 ```
-@return (namespaced map)
+@return (namespaced map or *)
 {:namespace/id (string)}
 ```
 
@@ -959,8 +851,8 @@
 ```
 @example
 (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-                       {:projection {:namespace/id          1
-                                     :namespace/your-string 1}})
+                                       {:projection {:namespace/id          1
+                                                     :namespace/your-string 1}})
 =>
 {:namespace/id          "MyObjectId"
  :namespace/your-string "Your value"}
@@ -969,15 +861,13 @@
 ```
 @example
 (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-                       {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+                                       {:prototype-f :namespace/my-string})
 =>
-{:namespace/id         "MyObjectId"
- :namespace/my-keyword :my-value
- :namespace/my-string  "My value"}
+"My value"
 ```
 
 ```
-@return (namespaced map)
+@return (namespaced map or *)
 {:namespace/id (string)}
 ```
 
@@ -1076,7 +966,8 @@
 @param (map)(opt) options
 {:locale (string)(opt)
   Default: "en"
-  https://www.mongodb.com/docs/manual/reference/collation-locales-defaults}
+  https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
+ :prototype-f (function)(opt)}
 ```
 
 ```
@@ -1095,7 +986,12 @@
 ```
 
 ```
-@return (namespaced maps in vector)
+@usage
+(get-documents-by-pipeline "my_collection" [...] {:prototype-f :namespace/my-string})
+```
+
+```
+@return (namespaced maps or * in vector)
 ```
 
 <details>
@@ -1108,7 +1004,9 @@
 
   ([collection-name pipeline options]
    (if-let [documents (aggregation.engine/process collection-name pipeline options)]
-           (vector/->items documents #(reader.adaptation/find-output %))
+           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
+                                                  (reader.prototyping/find-output % options)))]
+                  (vector/->items documents f))
            (return []))))
 ```
 
@@ -1151,8 +1049,8 @@
 ```
 @example
 (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-                        {:projection {:namespace/id          1
-                                      :namespace/your-string 1}})
+                                        {:projection {:namespace/id          1
+                                                      :namespace/your-string 1}})
 =>
 [{:namespace/id          "MyObjectId"
   :namespace/my-keyword  :my-value
@@ -1162,15 +1060,13 @@
 ```
 @example
 (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-                        {:prototype-f (fn [document] (assoc document :namespace/my-string "My value"))})
+                                        {:prototype-f :namespace/my-string})
 =>
-[{:namespace/id           "MyObjectId"
-  :namespace/my-string    "My value"
-  :namespace/your-keyword :my-value}]
+["My value" "Your value"]
 ```
 
 ```
-@return (namespaced maps in vector)
+@return (namespaced maps or * in vector)
 [{:namespace/id (string)}]
 ```
 
@@ -1213,6 +1109,8 @@
 
 ```
 @param (string) collection-name
+@param (map)(opt) options
+{:prototype-f (function)(opt)}
 ```
 
 ```
@@ -1221,7 +1119,12 @@
 ```
 
 ```
-@return (namespaced map)
+@usage
+(get-first-document "my_collection" {:prototype-f :namespace/my-string})
+```
+
+```
+@return (namespaced map or *)
 ```
 
 <details>
@@ -1262,7 +1165,12 @@
 ```
 
 ```
-@return (namespaced map)
+@usage
+(get-last-document "my_collection" {:prototype-f :namespace/my-string})
+```
+
+```
+@return (namespaced map or *)
 ```
 
 <details>
@@ -1810,140 +1718,6 @@ Default: some?
 
 (mongo-db.api/save-documents! ...)
 (save-documents!              ...)
-```
-
-</details>
-
----
-
-### search-query
-
-```
-@param (map) search-pattern
-{:$and (maps in vector)(opt)
- :$or (maps in vector)(opt)}
-```
-
-```
-@example
-(search-query {:$or [{:namespace/my-string   "My value"}
-                     {:namespace/your-string "Your value"}]})
-=>
-{"$or" [{"namespace/my-string"   {"$regex" "My value" "$options" "i"}}
-        {"namespace/your-string" {"$regex" "Your value" "$options" "i"}}]}
-```
-
-```
-@return (map)
-{"$and" (maps in vector)
- "$or" (maps in vector)}
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn search-query
-  [{:keys [$and $or]}]
-  (cond-> {} $and (assoc "$and" (vector/->items $and #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))
-             $or  (assoc "$or"  (vector/->items $or  #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [search-query]]))
-
-(mongo-db.api/search-query ...)
-(search-query              ...)
-```
-
-</details>
-
----
-
-### sort-query
-
-```
-@param (map) sort-pattern
-```
-
-```
-@example
-(sort-query {:namespace/my-string -1 ...})
-=>
-{"namespace/my-string" -1 ...}
-```
-
-```
-@return (map)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn sort-query
-  [sort-pattern]
-  (-> sort-pattern (core.helpers/id->_id)
-                   (map/->keys json/unkeywordize-key)))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [sort-query]]))
-
-(mongo-db.api/sort-query ...)
-(sort-query              ...)
-```
-
-</details>
-
----
-
-### unset-query
-
-```
-@param (namespaced keywords in vector) unset-pattern
-```
-
-```
-@example
-(unset-query [:namespace/my-string :namespace/your-string])
-=>
-["namespace/my-string" "namespace/your-string"]
-```
-
-```
-@return (strings in vector)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn unset-query
-  [unset-pattern]
-  (vector/->items unset-pattern json/unkeywordize-key))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [unset-query]]))
-
-(mongo-db.api/unset-query ...)
-(unset-query              ...)
 ```
 
 </details>
