@@ -49,7 +49,7 @@ You can track the changes of the <strong>mongo-db-api</strong> library [here](CH
 - [How to duplicate more than one document?](#how-to-duplicate-more-than-one-document)
 - [How to reorder documents?](#how-to-reorder-documents)
 - [How to check whether the database is connected?](#how-to-reorder-documents)
-- [How to generate a compatible document id?](#how-to-reorder-documents)
+- [How to generate a compatible document ID?](#how-to-reorder-documents)
 - [How to make a pipeline for getting documents?](#how-to-make-a-pipeline-for-getting-documents)
 - [How to make a pipeline for counting documents?](#how-to-make-a-pipeline-for-counting-documents)
 - [How to get the names of collections?](#how-get-the-names-of-collections)
@@ -61,7 +61,7 @@ You can track the changes of the <strong>mongo-db-api</strong> library [here](CH
 - [How to get all the documents of a collection?](#how-to-get-all-the-documents-of-a-collection)
 - [How to get a document by query?](#how-to-get-a-document-by-query)
 - [How to get documents by query?](#how-to-get-documents-by-query)
-- [How to get a document by id?](#how-to-get-document-by-id)
+- [How to get a document by ID?](#how-to-get-document-by-id)
 - [How to get documents by pipeline?](#how-to-get-documents-by-pipeline)
 - [How to check whether a document exists?](#how-to-check-whether-a-document-exists)
 - [How to collect the values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
@@ -75,10 +75,10 @@ You can track the changes of the <strong>mongo-db-api</strong> library [here](CH
 ### How to insert a document?
 
 The [`mongo-db.api/insert-document!`](documentation/clj/mongo-db/API.md#insert-document)
-function inserts the given document to the end of the collection.
+function inserts the given document at the end of the collection.
 
 - If the given document doesn't have the `:namespace/id` key, the function will
-  generate it.
+  generate an ID for it.
 - If the collection has a document with the same `:namespace/id` value, the function
   will ignore the inserting!
 - If the `{:ordered? true}` setting passed, the inserted document will get the
@@ -108,7 +108,7 @@ function inserts the given document to the end of the collection.
 ### How to insert more than one document?
 
 The [`mongo-db.api/insert-documents!`](documentation/clj/mongo-db/API.md#insert-documents)
-function inserts the given documents to the end of the collection.
+function inserts the given documents at the end of the collection.
 
 > The `insert-documents!` function applies the `insert-document!` function.
   You can find more information in the previous section.
@@ -121,14 +121,14 @@ function inserts the given documents to the end of the collection.
                                     {:namespace/my-keyword :your-value}])
 ```
 
-### How to save a document? (upserting by id)
+### How to save a document? (upserting by ID)
 
 The [`mongo-db.api/save-document!`](documentation/clj/mongo-db/API.md#save-document)
 function updates the given document if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts it to the end of the collection.
+`:namespace/id` value, otherwise it inserts it at the end of the collection.
 
 - If the given document doesn't have the `:namespace/id` key, the function will
-  generate it.
+  generate an ID for it.
 - If the collection has a document with the same `:namespace/id` value, the
   function will update it!
 - If the `{:ordered? true}` setting passed and the document not existed before,
@@ -158,8 +158,8 @@ function updates the given document if it exists in the collection with the same
 ### How to save more than one document?
 
 The [`mongo-db.api/save-documents!`](documentation/clj/mongo-db/API.md#save-documents)
-function updates the given documents if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts them to the end of the collection.
+function updates each of the given documents if it exists in the collection with the
+same `:namespace/id` value, otherwise it inserts them at the end of the collection.
 
 > The `insert-documents!` function applies the `insert-document!` function.
   You can find more information in the previous section.
@@ -218,10 +218,10 @@ function updates documents in the collection found by the given query.
 
 The [`mongo-db.api/upsert-document!`](documentation/clj/mongo-db/API.md#upsert-document)
 function updates the first document in the collection found by the given query,
-otherwise inserts it as a new document to the end of the collection.
+otherwise inserts it as a new document at the end of the collection.
 
 - If the function cannot find a document in the collection by the given query,
-  it will insert it as a new document to the end of the collection!
+  it will insert it as a new document at the end of the collection!
 - The given query can contains the `:namespace/id` key.
 - The given document cannot contains the `:namespace/id` key!
 - In case of successfully upserting, the return value will be `TRUE`.
@@ -246,7 +246,7 @@ otherwise inserts it as a new document to the end of the collection.
 
 The [`mongo-db.api/upsert-documents!`](documentation/clj/mongo-db/API.md#upsert-documents)
 function updates documents in the collection found by the given query, otherwise
-inserts it as a new document to the end of the collection.
+inserts it as a new document at the end of the collection.
 
 > The `upsert-documents!` function applies the `upsert-document!` function.
   You can find more information in the previous section.
@@ -261,9 +261,9 @@ inserts it as a new document to the end of the collection.
 ### How to apply a function on a document?
 
 The [`mongo-db.api/apply-on-document!`](documentation/clj/mongo-db/API.md#apply-on-document)
-function applies the given function on a document found by the given id.
+function applies the given function on a document found by the given ID.
 
-- If the function cannot find a document in the collection by the given id,
+- If the function cannot find a document in the collection by the given ID,
   it will ignore the applying!
 - In case of successfully applying, the return value will be the modified document.
 
@@ -316,13 +316,13 @@ function applies the given function on all documents in a collection.
 ### How to remove a document?
 
 The [`mongo-db.api/remove-document!`](documentation/clj/mongo-db/API.md#remove-document)
-function removes the document found by the given id.
+function removes the document found by the given ID.
 
-- If the function cannot find a document in the collection by the given id,
+- If the function cannot find a document in the collection by the given ID,
   it will ignore the removing!
 - If the `{:ordered? true}` setting passed, the function will update the
   `:namespace/order` value of the documents which come after the removed document.
-- In case of successfully removing, the return value will be the id of the
+- In case of successfully removing, the return value will be the ID of the
   removed document.
 
 ```
@@ -336,13 +336,13 @@ function removes the document found by the given id.
 ### How to remove more than one document?
 
 The [`mongo-db.api/remove-documents!`](documentation/clj/mongo-db/API.md#remove-documents)
-function removes documents from the collection found by the given id-s.
+function removes documents from the collection found by the given IDs.
 
 > The `remove-documents!` function applies the `remove-document!` function.
   You can find more information in the previous section.
 
 - In case of successfully removing, the return value will be a vector of the
-  removed documents' id-s.
+  removed documents' IDs.
 
 ```
 (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"])
@@ -360,9 +360,9 @@ function removes all documents of a collection.
 ### How to duplicate a document?
 
 The [`mongo-db.api/duplicate-document!`](documentation/clj/mongo-db/API.md#duplicate-document)
-function duplicates the document found by the given id.
+function duplicates the document found by the given ID.
 
-- If the function cannot find a document in the collection by the given id,
+- If the function cannot find a document in the collection by the given ID,
   it will ignore the duplicating!
 - If the `{:ordered? true}` setting passed, the copy document will get the
   next position in the collection and the function updates the `:namespace/order`
@@ -371,7 +371,7 @@ function duplicates the document found by the given id.
   `"#2"` suffix on its label. In case of the second copy label (`"My label #2"`)
   is not available, the suffix will contain the next available number.
 - If the `{:changes {...}}` setting passed, the given changes will be merged into
-  the copy document. If the changes map contains the id of the original document,
+  the copy document. If the changes map contains the ID of the original document,
   the function will remove it before the changes merged into the copy document.
 - In case of successfully duplicating, the return value will be the copy document.
 
@@ -402,7 +402,7 @@ function duplicates the document found by the given id.
 ### How to duplicate more than one document?
 
 The [`mongo-db.api/duplicate-documents!`](documentation/clj/mongo-db/API.md#duplicate-documents)
-function duplicates the documents found by the given id-s.
+function duplicates the documents found by the given IDs.
 
 - In case of successfully duplicating, the return value will be a vector of the
   copy documents.
@@ -415,14 +415,14 @@ function duplicates the documents found by the given id-s.
 
 The [`mongo-db.api/reorder-documents!`](documentation/clj/mongo-db/API.md#reorder-documents)
 function updates the `:namespace/order` value with the given values of the documents
-found by the given id-s.
+found by the given IDs.
 
-- If the function cannot find a document in the collection by a given id,
+- If the function cannot find a document in the collection by a given ID,
   it will ignore that certain updating!
 - Not necessarry to update all documents in one time, this function can updates
   only certain documents of the collection.
 - In case of successfully updating, the return value will be a vector of the updated
-  documents' id-s and their updated positions.
+  documents' IDs and their updated positions.
 
 ```
 (reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]]
@@ -432,7 +432,7 @@ found by the given id-s.
 
 ...
 
-### How to generate a compatible document id?
+### How to generate a compatible document ID?
 
 ...
 
@@ -480,7 +480,7 @@ found by the given id-s.
 
 ...
 
-### How to get a document by id?
+### How to get a document by ID?
 
 ...
 
