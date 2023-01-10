@@ -1,8 +1,7 @@
 
-
 # mongo-db-api documentation
 
-Documentation of the [mongo-db-api](https://github.com/bithandshake-hq/mongo-db-api) Clojure library
+Documentation of the [mongo-db-api](https://github.com/bithandshake/mongo-db-api) Clojure library
 
 ##### [README](../README.md) > DOCUMENTATION
 
