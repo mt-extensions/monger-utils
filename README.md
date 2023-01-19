@@ -9,7 +9,7 @@ The <strong>mongo-db-api</strong> is a MongoDB implementation for Clojure projec
 based on the [michaelklishin / monger] library with some extra features such as
 error handling, input checking, output checking, order handling, prototype handling, etc.
 
-> This libary designed for working with namespaced documents!
+> This library designed for working with namespaced documents!
 
 ### deps.edn
 
