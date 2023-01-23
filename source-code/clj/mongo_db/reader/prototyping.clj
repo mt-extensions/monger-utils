@@ -1,6 +1,6 @@
 
 (ns mongo-db.reader.prototyping
-    (:require [candy.api :refer [return]]))
+    (:require [noop.api :refer [return]]))
 
 ;; -- Find document -----------------------------------------------------------
 ;; ----------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 
 (ns mongo-db.actions.engine
-    (:require [candy.api                   :refer [return]]
-              [keyword.api                 :as keyword]
+    (:require [keyword.api                 :as keyword]
               [map.api                     :as map]
               [monger.result               :as mrt]
               [mongo-db.actions.checking   :as actions.checking]
@@ -13,6 +12,7 @@
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.core.errors        :as core.errors]
               [mongo-db.reader.engine      :as reader.engine]
+              [noop.api                    :refer [return]]
               [vector.api                  :as vector]))
 
 ;; -- Reordering following documents ------------------------------------------

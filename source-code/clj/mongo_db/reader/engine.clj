@@ -1,7 +1,6 @@
 
 (ns mongo-db.reader.engine
     (:require monger.joda-time
-              [candy.api                   :refer [return]]
               [map.api                     :as map]
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
@@ -9,6 +8,7 @@
               [mongo-db.reader.checking    :as reader.checking]
               [mongo-db.reader.helpers     :as reader.helpers]
               [mongo-db.reader.prototyping :as reader.prototyping]
+              [noop.api                    :refer [return]]
               [re-frame.api                :as r]
               [vector.api                  :as vector]))
 

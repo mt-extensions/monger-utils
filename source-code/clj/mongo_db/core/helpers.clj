@@ -1,12 +1,12 @@
 
 (ns mongo-db.core.helpers
     (:import  org.bson.types.ObjectId)
-    (:require [candy.api            :refer [return]]
-              [keyword.api          :as keyword]
+    (:require [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]
               [monger.core          :as mcr]
               [mongo-db.core.errors :as core.errors]
+              [noop.api             :refer [return]]
               [re-frame.api         :as r]))
 
 ;; ----------------------------------------------------------------------------

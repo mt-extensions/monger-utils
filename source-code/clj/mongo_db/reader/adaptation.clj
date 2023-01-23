@@ -1,10 +1,10 @@
 
 (ns mongo-db.reader.adaptation
-    (:import  org.bson.types.ObjectId)
-    (:require [candy.api             :refer [return]]
-              [json.api              :as json]
+    (:import org.bson.types.ObjectId)
+    (:require [json.api              :as json]
               [map.api               :as map]
               [mongo-db.core.helpers :as core.helpers]
+              [noop.api              :refer [return]]
               [time.api              :as time]))
 
 ;; ----------------------------------------------------------------------------

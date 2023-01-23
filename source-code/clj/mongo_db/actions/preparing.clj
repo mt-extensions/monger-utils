@@ -1,12 +1,12 @@
 
 (ns mongo-db.actions.preparing
-    (:require [candy.api              :refer [return]]
-              [gestures.api           :as gestures]
+    (:require [gestures.api           :as gestures]
               [keyword.api            :as keyword]
               [map.api                :as map]
               [mongo-db.core.errors   :as core.errors]
               [mongo-db.core.helpers  :as core.helpers]
-              [mongo-db.reader.engine :as reader.engine]))
+              [mongo-db.reader.engine :as reader.engine]
+              [noop.api               :refer [return]]))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------

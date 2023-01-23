@@ -1,11 +1,11 @@
 
 (ns mongo-db.aggregation.pipelines
-    (:require [candy.api                       :refer [param]]
-              [json.api                        :as json]
+    (:require [json.api                        :as json]
               [map.api                         :as map]
               [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.aggregation.checking   :as aggregation.checking]
               [mongo-db.core.helpers           :as core.helpers]
+              [noop.api                        :refer [param]]
               [vector.api                      :as vector]))
 
 ;; ----------------------------------------------------------------------------

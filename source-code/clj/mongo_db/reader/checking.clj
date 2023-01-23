@@ -1,7 +1,7 @@
 
 (ns mongo-db.reader.checking
-    (:require [candy.api            :refer [return]]
-              [mongo-db.core.errors :as core.errors]))
+    (:require [mongo-db.core.errors :as core.errors]
+              [noop.api             :refer [return]]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

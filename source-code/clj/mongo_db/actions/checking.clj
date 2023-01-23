@@ -1,9 +1,9 @@
 
 (ns mongo-db.actions.checking
-    (:require [candy.api                :refer [return]]
-              [map.api                  :as map]
+    (:require [map.api                  :as map]
               [mongo-db.core.errors     :as core.errors]
-              [mongo-db.reader.checking :as reader.checking]))
+              [mongo-db.reader.checking :as reader.checking]
+              [noop.api                 :refer [return]]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
