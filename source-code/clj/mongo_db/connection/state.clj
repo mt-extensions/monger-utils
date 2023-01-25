@@ -1,10 +1,10 @@
 
-(ns mongo-db.core.config)
+(ns mongo-db.connection.state)
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 ; @ignore
 ;
-; @constant (string)
-(def DEFAULT-LOCALE "en")
+; @atom (com.mongodb.DB object)
+(def REFERENCE (atom nil))

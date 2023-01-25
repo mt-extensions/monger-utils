@@ -1,32 +1,18 @@
 
-(ns mongo-db.core.helpers
+(ns mongo-db.core.utils
     (:import  org.bson.types.ObjectId)
     (:require [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]
-              [monger.core          :as mcr]
               [mongo-db.core.errors :as core.errors]
-              [noop.api             :refer [return]]
-              [re-frame.api         :as r]))
-
-;; ----------------------------------------------------------------------------
-;; ----------------------------------------------------------------------------
-
-(defn command
-  ; @param (map) options
-  ;  {:warn? (boolean)(opt)
-  ;    Default: true}
-  ;
-  ; @return (DBObject)
-  [{:keys [warn?] :or {warn? true} :as options}]
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (try (mcr/command database options)
-            (catch Exception e (if warn? (println (str e "\n" {:options options})))))))
+              [noop.api             :refer [return]]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn operator?
+  ; @ignore
+  ;
   ; @param (*) n
   ;
   ; @example
@@ -37,9 +23,11 @@
   ; @return (boolean)
   [n]
   (and (keyword? n)
-       (->       n second str (= "$"))))
+       (-> n second str (= "$"))))
 
 (defn document?
+  ; @ignore
+  ;
   ; @param (*) n
   ;
   ; @example
@@ -60,6 +48,8 @@
                (get n (keyword/add-namespace namespace :id)))))
 
 (defn DBObject->edn
+  ; @ignore
+  ;
   ; @param (DBObject) n
   ;
   ; @return (map)
@@ -72,13 +62,15 @@
 
 (defn generate-id
   ; @usage
-  ; (mongo-db/generate-id)
+  ; (generate-id)
   ;
   ; @return (string)
   []
   (str (ObjectId.)))
 
 (defn assoc-id
+  ; @ignore
+  ;
   ; @param (map) n
   ;
   ; @example
@@ -94,6 +86,8 @@
           (return n)))
 
 (defn dissoc-id
+  ; @ignore
+  ;
   ; @param (map) n
   ; {:namespace/id (string)(opt)}
   ;
@@ -109,6 +103,8 @@
           (return n)))
 
 (defn id->_id
+  ; @ignore
+  ;
   ; @param (map) n
   ; {:namespace/id (*)(opt)}
   ; @param (map)(opt) options
@@ -144,6 +140,8 @@
            (return n))))
 
 (defn _id->id
+  ; @ignore
+  ;
   ; @param (map) n
   ; {:_id (*)(opt)}
   ; @param (map)(opt) options
@@ -174,6 +172,8 @@
            (return n))))
 
 (defn id->>_id
+  ; @ignore
+  ;
   ; @param (*) n
   ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
@@ -199,6 +199,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn document->order
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example

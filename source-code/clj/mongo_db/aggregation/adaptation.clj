@@ -2,21 +2,25 @@
 (ns mongo-db.aggregation.adaptation
     (:require [json.api                   :as json]
               [map.api                    :as map]
-              [mongo-db.core.helpers      :as core.helpers]
+              [mongo-db.core.utils        :as core.utils]
               [mongo-db.reader.adaptation :as reader.adaptation]))
 
 ;; -- Aggregating documents ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn aggregation-output
+  ; @ignore
+  ;
   ; @param (DBObject) n
   ;
   ; @return (maps in vector)
   [n]
-  (try (-> n core.helpers/DBObject->edn (get-in [:cursor :firstBatch]))
+  (try (-> n core.utils/DBObject->edn (get-in [:cursor :firstBatch]))
        (catch Exception e (println (str e "\n" {:aggregation-output n})))))
 
 (defn filter-query
+  ; @ignore
+  ;
   ; @param (map) query
   ; {:$or (maps in vector)(opt)
   ;  :$and (maps in vector)(opt)
@@ -37,6 +41,8 @@
   (reader.adaptation/find-query query))
 
 (defn search-query
+  ; @ignore
+  ;
   ; @param (namespaced map) query
   ;
   ; @example

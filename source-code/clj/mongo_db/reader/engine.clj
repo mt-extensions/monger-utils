@@ -4,12 +4,12 @@
               [map.api                     :as map]
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
+              [mongo-db.connection.state   :as connection.state]
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.reader.checking    :as reader.checking]
-              [mongo-db.reader.helpers     :as reader.helpers]
+              [mongo-db.reader.env         :as reader.env]
               [mongo-db.reader.prototyping :as reader.prototyping]
               [noop.api                    :refer [return]]
-              [re-frame.api                :as r]
               [vector.api                  :as vector]))
 
 ;; -- Collection functions ----------------------------------------------------
@@ -21,8 +21,7 @@
   ;
   ; @return (strings in vector)
   []
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (-> database mdb/get-collection-names vec)))
+  (-> @connection.state/REFERENCE mdb/get-collection-names vec))
 
 (defn get-collection-namespace
   ; @param (string) collection-name
@@ -32,7 +31,7 @@
   ;
   ; @return (keyword)
   [collection-name]
-  (let [collection (reader.helpers/find-maps collection-name {})]
+  (let [collection (reader.env/find-maps collection-name {})]
        (-> collection first map/get-namespace)))
 
 (defn get-all-document-count
@@ -43,7 +42,7 @@
   ;
   ; @return (integer)
   [collection-name]
-  (reader.helpers/count-documents collection-name))
+  (reader.env/count-documents collection-name))
 
 (defn collection-empty?
   ; @param (string) collection-name
@@ -53,7 +52,7 @@
   ;
   ; @return (boolean)
   [collection-name]
-  (= 0 (reader.helpers/count-documents collection-name)))
+  (= 0 (reader.env/count-documents collection-name)))
 
 (defn get-document-count-by-query
   ; @param (string) collection-name
@@ -72,7 +71,7 @@
   ; @return (integer)
   [collection-name query]
   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-          (reader.helpers/count-documents-by-query collection-name query)))
+          (reader.env/count-documents-by-query collection-name query)))
 
 (defn get-collection
   ; @param (string) collection-name
@@ -101,12 +100,12 @@
   ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
   ([collection-name]
-   (if-let [collection (reader.helpers/find-maps collection-name {})]
+   (if-let [collection (reader.env/find-maps collection-name {})]
            (vector/->items collection #(reader.adaptation/find-output %))))
 
   ([collection-name {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
-           (if-let [collection (reader.helpers/find-maps collection-name {} projection)]
+           (if-let [collection (reader.env/find-maps collection-name {} projection)]
                    (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                           (reader.prototyping/find-output % options)))]
                           (vector/->items collection f))))))
@@ -143,13 +142,13 @@
   ; [{:namespace/id (string)}]
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [documents (reader.helpers/find-maps collection-name query)]
+           (if-let [documents (reader.env/find-maps collection-name query)]
                    (vector/->items documents #(reader.adaptation/find-output %)))))
 
   ([collection-name query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [documents (reader.helpers/find-maps collection-name query projection)]
+                   (if-let [documents (reader.env/find-maps collection-name query projection)]
                            (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                                   (reader.prototyping/find-output % options)))]
                                   (vector/->items documents f)))))))
@@ -191,13 +190,13 @@
   ; {:namespace/id (string)}
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [document (reader.helpers/find-one-as-map collection-name query)]
+           (if-let [document (reader.env/find-one-as-map collection-name query)]
                    (reader.adaptation/find-output document))))
 
   ([collection-name query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.helpers/find-one-as-map collection-name query projection)]
+                   (if-let [document (reader.env/find-one-as-map collection-name query projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 
@@ -231,13 +230,13 @@
   ; {:namespace/id (string)}
   ([collection-name document-id]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
-           (if-let [document (reader.helpers/find-map-by-id collection-name document-id)]
+           (if-let [document (reader.env/find-map-by-id collection-name document-id)]
                    (reader.adaptation/find-output document))))
 
   ([collection-name document-id {:keys [projection] :as options}]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.helpers/find-map-by-id collection-name document-id projection)]
+                   (if-let [document (reader.env/find-map-by-id collection-name document-id projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 
@@ -281,7 +280,7 @@
   ; @return (boolean)
   [collection-name document-id]
   (boolean (if-let [document-id (reader.adaptation/document-id-input document-id)]
-                   (reader.helpers/find-map-by-id collection-name document-id))))
+                   (reader.env/find-map-by-id collection-name document-id))))
 
 ;; -- Advanced DB functions ---------------------------------------------------
 ;; ----------------------------------------------------------------------------

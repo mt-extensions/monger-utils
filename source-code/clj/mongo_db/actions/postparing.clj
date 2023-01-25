@@ -6,6 +6,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn apply-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -21,6 +23,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn duplicate-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options

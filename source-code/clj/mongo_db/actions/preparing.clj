@@ -4,7 +4,7 @@
               [keyword.api            :as keyword]
               [map.api                :as map]
               [mongo-db.core.errors   :as core.errors]
-              [mongo-db.core.helpers  :as core.helpers]
+              [mongo-db.core.utils    :as core.utils]
               [mongo-db.reader.engine :as reader.engine]
               [noop.api               :refer [return]]))
 
@@ -12,6 +12,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- ordered-insert-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; {:namespace/order (integer)(opt)}
@@ -30,6 +32,8 @@
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
 
 (defn insert-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -48,6 +52,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -64,6 +70,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -79,6 +87,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -93,6 +103,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn apply-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -106,6 +118,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn- changed-duplicate-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -119,6 +133,8 @@
   (merge document changes))
 
 (defn- labeled-duplicate-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -133,6 +149,8 @@
        (assoc document label-key copy-label)))
 
 (defn- ordered-duplicate-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -148,6 +166,8 @@
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
 
 (defn duplicate-input
+  ; @ignore
+  ;
   ; @param (string) collection-name
   ; @param (namespaced map) document
   ; @param (map) options
@@ -166,5 +186,5 @@
                         (if-not ordered?  % (ordered-duplicate-input collection-name % options))
                         ; A dokumentum a changes térképpel való összefésülés után kapja meg a másolat azonosítóját,
                         ; így nem okoz hibát, ha a changes térkép tartalmazza az eredeti azonosítót
-                        (core.helpers/assoc-id %))
+                        (core.utils/assoc-id %))
        (catch Exception e (println (str e "\n" {:collection-name collection-name :document document :options options})))))

@@ -9,6 +9,8 @@
 
 - [apply-on-document!](#apply-on-document)
 
+- [build-connection!](#build-connection)
+
 - [collection-empty?](#collection-empty)
 
 - [connected?](#connected)
@@ -162,7 +164,7 @@
                    (if-let [document (f document)]
                            (if-let [document (actions.postparing/apply-input collection-name document options)]
                                    (if-let [document (actions.adaptation/save-input document)]
-                                           (let [result (actions.helpers/save-and-return! collection-name document)]
+                                           (let [result (actions.side-effects/save-and-return! collection-name document)]
                                                 (actions.adaptation/save-output result)))))))))
 ```
 
@@ -176,6 +178,48 @@
 
 (mongo-db.api/apply-on-document! ...)
 (apply-on-document!              ...)
+```
+
+</details>
+
+---
+
+### build-connection!
+
+```
+@param (string) database-name
+@param (string) database-host
+@param (integer) database-port
+```
+
+```
+@usage
+(build-connection! "my-database" "0.0.0.1" 4200)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn build-connection!
+  [database-name database-host database-port]
+  (let [^MongoOptions  mongo-options  (mcr/mongo-options {:threads-allowed-to-block-for-connection-multiplier 300})
+        ^ServerAddress server-address (mcr/server-address database-host  database-port)
+                       connection     (mcr/connect        server-address mongo-options)
+                       reference      (mcr/get-db         connection     database-name)]
+       (reset! connection.state/REFERENCE reference)))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [build-connection!]]))
+
+(mongo-db.api/build-connection! ...)
+(build-connection!              ...)
 ```
 
 </details>
@@ -203,7 +247,7 @@
 ```
 (defn collection-empty?
   [collection-name]
-  (= 0 (reader.helpers/count-documents collection-name)))
+  (= 0 (reader.env/count-documents collection-name)))
 ```
 
 </details>
@@ -239,7 +283,7 @@
 ```
 (defn connected?
   []
-  (core.helpers/command {:ping 1 :warn? false}))
+  (core.env/command {:ping 1 :warn? false}))
 ```
 
 </details>
@@ -386,7 +430,7 @@
 (defn document-exists?
   [collection-name document-id]
   (boolean (if-let [document-id (reader.adaptation/document-id-input document-id)]
-                   (reader.helpers/find-map-by-id collection-name document-id))))
+                   (reader.env/find-map-by-id collection-name document-id))))
 ```
 
 </details>
@@ -524,7 +568,7 @@
 
 ```
 @usage
-(mongo-db/generate-id)
+(generate-id)
 ```
 
 ```
@@ -577,7 +621,7 @@
 ```
 (defn get-all-document-count
   [collection-name]
-  (reader.helpers/count-documents collection-name))
+  (reader.env/count-documents collection-name))
 ```
 
 </details>
@@ -642,12 +686,12 @@
 ```
 (defn get-collection
   ([collection-name]
-   (if-let [collection (reader.helpers/find-maps collection-name {})]
+   (if-let [collection (reader.env/find-maps collection-name {})]
            (vector/->items collection #(reader.adaptation/find-output %))))
 
   ([collection-name {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
-           (if-let [collection (reader.helpers/find-maps collection-name {} projection)]
+           (if-let [collection (reader.env/find-maps collection-name {} projection)]
                    (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                           (reader.prototyping/find-output % options)))]
                           (vector/->items collection f))))))
@@ -686,8 +730,7 @@
 ```
 (defn get-collection-names
   []
-  (let [database @(r/subscribe [:mongo-db/get-connection])]
-       (-> database mdb/get-collection-names vec)))
+  (-> @connection.state/REFERENCE mdb/get-collection-names vec))
 ```
 
 </details>
@@ -727,7 +770,7 @@
 ```
 (defn get-collection-namespace
   [collection-name]
-  (let [collection (reader.helpers/find-maps collection-name {})]
+  (let [collection (reader.env/find-maps collection-name {})]
        (-> collection first map/get-namespace)))
 ```
 
@@ -796,13 +839,13 @@
 (defn get-document-by-id
   ([collection-name document-id]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
-           (if-let [document (reader.helpers/find-map-by-id collection-name document-id)]
+           (if-let [document (reader.env/find-map-by-id collection-name document-id)]
                    (reader.adaptation/find-output document))))
 
   ([collection-name document-id {:keys [projection] :as options}]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.helpers/find-map-by-id collection-name document-id projection)]
+                   (if-let [document (reader.env/find-map-by-id collection-name document-id projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 ```
@@ -878,13 +921,13 @@
 (defn get-document-by-query
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [document (reader.helpers/find-one-as-map collection-name query)]
+           (if-let [document (reader.env/find-one-as-map collection-name query)]
                    (reader.adaptation/find-output document))))
 
   ([collection-name query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.helpers/find-one-as-map collection-name query projection)]
+                   (if-let [document (reader.env/find-one-as-map collection-name query projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 ```
@@ -939,7 +982,7 @@
 (defn get-document-count-by-query
   [collection-name query]
   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-          (reader.helpers/count-documents-by-query collection-name query)))
+          (reader.env/count-documents-by-query collection-name query)))
 ```
 
 </details>
@@ -1077,13 +1120,13 @@
 (defn get-documents-by-query
   ([collection-name query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [documents (reader.helpers/find-maps collection-name query)]
+           (if-let [documents (reader.env/find-maps collection-name query)]
                    (vector/->items documents #(reader.adaptation/find-output %)))))
 
   ([collection-name query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [documents (reader.helpers/find-maps collection-name query projection)]
+                   (if-let [documents (reader.env/find-maps collection-name query projection)]
                            (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                                   (reader.prototyping/find-output % options)))]
                                   (vector/->items documents f)))))))
@@ -1354,7 +1397,7 @@ Default: some?
    (if-let [document (as-> document % (actions.checking/insert-input %)
                                       (actions.preparing/insert-input collection-name % options)
                                       (actions.adaptation/insert-input %))]
-           (if-let [result (actions.helpers/insert-and-return! collection-name document)]
+           (if-let [result (actions.side-effects/insert-and-return! collection-name document)]
                    (actions.adaptation/insert-output result)))))
 ```
 
@@ -1447,7 +1490,7 @@ Default: some?
 ```
 (defn remove-all-documents!
   [collection-name]
-  (actions.helpers/drop! collection-name))
+  (actions.side-effects/drop! collection-name))
 ```
 
 </details>
@@ -1593,8 +1636,8 @@ Default: some?
         order-key (keyword/add-namespace namespace :order)]
        (letfn [(f [[document-id document-dex]]
                   (if-let [document-id (actions.adaptation/document-id-input document-id)]
-                          (let [result (actions.helpers/update! collection-name {:_id document-id}
-                                                                {"$set" {order-key document-dex}})]
+                          (let [result (actions.side-effects/update! collection-name {:_id document-id}
+                                                                     {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
                                    (return [document-id document-dex])))))]
               (vector/->items document-order f))))
@@ -1652,7 +1695,7 @@ Default: some?
    (if-let [document (as-> document % (actions.checking/save-input %)
                                       (actions.preparing/save-input collection-name % options)
                                       (actions.adaptation/save-input %))]
-           (if-let [result (actions.helpers/save-and-return! collection-name document)]
+           (if-let [result (actions.side-effects/save-and-return! collection-name document)]
                    (actions.adaptation/save-output result)))))
 ```
 
@@ -1767,7 +1810,7 @@ Default: some?
                                                (actions.preparing/update-input collection-name % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.helpers/update! collection-name query document {:multi false :upsert false})]
+                            (let [result (actions.side-effects/update! collection-name query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1830,7 +1873,7 @@ Default: some?
                                                (actions.preparing/update-input collection-name % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.helpers/update! collection-name query document {:multi true :upsert false})]
+                            (let [result (actions.side-effects/update! collection-name query document {:multi true :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1894,7 +1937,7 @@ Default: some?
                                                (actions.preparing/upsert-input collection-name % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.helpers/upsert! collection-name query document {:multi false})]
+                            (let [result (actions.side-effects/upsert! collection-name query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
 ```
 
@@ -1957,7 +2000,7 @@ Default: some?
                                                (actions.preparing/upsert-input collection-name % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.helpers/upsert! collection-name query document {:multi true})]
+                            (let [result (actions.side-effects/upsert! collection-name query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 ```
 

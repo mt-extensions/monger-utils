@@ -6,6 +6,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn find-output
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ; @param (map) options
   ; {:prototype-f (function)(opt)}

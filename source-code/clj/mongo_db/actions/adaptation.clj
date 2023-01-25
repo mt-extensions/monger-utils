@@ -2,7 +2,7 @@
 (ns mongo-db.actions.adaptation
     (:import  org.bson.types.ObjectId)
     (:require [json.api                   :as json]
-              [mongo-db.core.helpers      :as core.helpers]
+              [mongo-db.core.utils        :as core.utils]
               [mongo-db.reader.adaptation :as reader.adaptation]
               [time.api                   :as time]))
 
@@ -10,6 +10,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn document-id-input
+  ; @ignore
+  ;
   ; @param (string) document-id
   ;
   ; @example
@@ -22,6 +24,8 @@
   (reader.adaptation/document-id-input document-id))
 
 (defn document-id-output
+  ; @ignore
+  ;
   ; @param (org.bson.types.ObjectId object) document-id
   ;
   ; @example
@@ -37,6 +41,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn insert-input
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -56,10 +62,12 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.helpers/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn insert-output
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -79,13 +87,15 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.helpers/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Saving document ---------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -105,10 +115,12 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.helpers/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn save-output
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -128,13 +140,15 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.helpers/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Updating document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -154,6 +168,8 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
+  ; @ignore
+  ;
   ; @param (map) query
   ;
   ; @return (map)
@@ -164,6 +180,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -183,6 +201,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn duplicate-input
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -202,10 +222,12 @@
   ;    A dokumentum string típusú azonosítójának átalakítása objektum típusra
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.helpers/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn duplicate-output
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @example
@@ -225,5 +247,5 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.helpers/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))

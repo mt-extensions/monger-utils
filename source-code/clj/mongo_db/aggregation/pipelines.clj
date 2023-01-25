@@ -4,7 +4,7 @@
               [map.api                         :as map]
               [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.aggregation.checking   :as aggregation.checking]
-              [mongo-db.core.helpers           :as core.helpers]
+              [mongo-db.core.utils             :as core.utils]
               [noop.api                        :refer [param]]
               [vector.api                      :as vector]))
 
@@ -24,6 +24,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn add-fields-query
+  ; @ignore
+  ;
   ; @param (map) field-pattern
   ;
   ; @example
@@ -41,6 +43,8 @@
   (map/->>kv field-pattern json/unkeywordize-key json/unkeywordize-key))
 
 (defn filter-query
+  ; @ignore
+  ;
   ; @param (map) filter-pattern
   ; {:$or (maps in vector)(opt)
   ;  :$and (maps in vector)(opt)
@@ -61,6 +65,8 @@
   (aggregation.adaptation/filter-query filter-pattern))
 
 (defn search-query
+  ; @ignore
+  ;
   ; @param (map) search-pattern
   ; {:$and (maps in vector)(opt)
   ;  :$or (maps in vector)(opt)}
@@ -80,6 +86,8 @@
              $or  (assoc "$or"  (vector/->items $or  #(-> % aggregation.checking/search-query aggregation.adaptation/search-query)))))
 
 (defn sort-query
+  ; @ignore
+  ;
   ; @param (map) sort-pattern
   ;
   ; @example
@@ -95,10 +103,12 @@
   ;
   ; https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#sort-cursor-stable-sorting
   ; To achieve a consistent sort, add a field which contains exclusively unique values to the sort.
-  (-> sort-pattern (core.helpers/id->_id)
+  (-> sort-pattern (core.utils/id->_id)
                    (map/->keys json/unkeywordize-key)))
 
 (defn unset-query
+  ; @ignore
+  ;
   ; @param (namespaced keywords in vector) unset-pattern
   ;
   ; @example

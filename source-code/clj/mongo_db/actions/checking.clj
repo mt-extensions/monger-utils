@@ -9,6 +9,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn insert-input
+  ; @ignore
+  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -22,6 +24,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn save-input
+  ; @ignore
+  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -35,6 +39,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn update-input
+  ; @ignore
+  ;
   ; @param (*) document
   ;
   ; @return (*)
@@ -48,6 +54,8 @@
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
+  ; @ignore
+  ;
   ; @param (*) query
   ;
   ; @return (*)
@@ -58,6 +66,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn upsert-input
+  ; @ignore
+  ;
   ; @param (*) document
   ;
   ; @return (*)

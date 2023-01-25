@@ -1,16 +1,18 @@
 
 (ns mongo-db.reader.adaptation
     (:import org.bson.types.ObjectId)
-    (:require [json.api              :as json]
-              [map.api               :as map]
-              [mongo-db.core.helpers :as core.helpers]
-              [noop.api              :refer [return]]
-              [time.api              :as time]))
+    (:require [json.api            :as json]
+              [map.api             :as map]
+              [mongo-db.core.utils :as core.utils]
+              [noop.api            :refer [return]]
+              [time.api            :as time]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn document-id-input
+  ; @ignore
+  ;
   ; @param (string) document-id
   ;
   ; @example
@@ -34,6 +36,8 @@
 ;; ----------------------------------------------------------------------------
 
 (defn find-output
+  ; @ignore
+  ;
   ; @param (namespaced map) document
   ;
   ; @return (namespaced map)
@@ -41,10 +45,12 @@
   ; 1. A dokumentumban használt string típusra alakított értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  (try (-> document json/keywordize-values time/unparse-date-time (core.helpers/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn find-query
+  ; @ignore
+  ;
   ; @param (map) query
   ;
   ; @example
@@ -67,12 +73,14 @@
       ;    A query térképben található string típusú azonosítók átalakítása objektum típusra
       ; 2. A query térképben használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
       ; 3. A query térképben string típusként tárolt dátumok és idők átalakítása objektum típusra
-      (try (-> query (core.helpers/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+      (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
            (catch Exception e (println (str e "\n" {:query query}))))
       ; A query térképként lehetséges üres térképet is átadni.
       (return {})))
 
 (defn find-projection
+  ; @ignore
+  ;
   ; @param (namespaced map) projection
   ;
   ; @example
@@ -97,6 +105,6 @@
   ; A mongo-db.reader névtér függvényei abban az esetben is alkalmazzák a find-projection
   ; függvényt, ha a projection értéke nil, emiatt szükségess az (if projection ...)
   ; függvény alkalmazása!
-  (if projection (try (-> projection (core.helpers/id->_id {:parse? false}) json/unkeywordize-keys)
+  (if projection (try (-> projection (core.utils/id->_id {:parse? false}) json/unkeywordize-keys)
                       (catch Exception e (println (str e "\n" {:projection projection}))))
                  (return {})))

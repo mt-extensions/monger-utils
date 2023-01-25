@@ -1,6 +1,6 @@
 
-(ns mongo-db.connection.helpers
-    (:require [mongo-db.core.helpers :as core.helpers]))
+(ns mongo-db.connection.env
+    (:require [mongo-db.core.env :as core.env]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -11,4 +11,4 @@
   ;
   ; @return (boolean)
   []
-  (core.helpers/command {:ping 1 :warn? false}))
+  (core.env/command {:ping 1 :warn? false}))

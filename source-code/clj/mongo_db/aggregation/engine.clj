@@ -2,7 +2,7 @@
 (ns mongo-db.aggregation.engine
     (:require [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.core.config            :as core.config]
-              [mongo-db.core.helpers           :as core.helpers]))
+              [mongo-db.core.env               :as core.env]))
 
 ;; -- Aggregation functions ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -19,8 +19,8 @@
    (process collection-name pipeline {}))
 
   ([collection-name pipeline {:keys [locale] :or {locale core.config/DEFAULT-LOCALE}}]
-   (if-let [db-object (core.helpers/command {:aggregate collection-name
-                                             :pipeline  pipeline
-                                             :collation {:locale locale :numericOrdering true}
-                                             :cursor    {}})]
+   (if-let [db-object (core.env/command {:aggregate collection-name
+                                         :pipeline  pipeline
+                                         :collation {:locale locale :numericOrdering true}
+                                         :cursor    {}})]
            (aggregation.adaptation/aggregation-output db-object))))
