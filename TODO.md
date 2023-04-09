@@ -1,9 +1,4 @@
 
-# Live without Re-Frame
-
-- A mongo-db-api könyvtárat függetleníteni a re-frame-api könyvtártól.
-  Egyszerű atomok használata is elégséges.
-
 # mongo-db.actions
 
 - {create? true} beállítás, azokhoz a függvényekhez, amelyek ignorálják a műveletet,

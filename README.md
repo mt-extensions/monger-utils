@@ -1,11 +1,11 @@
 
-# mongo-db-api
+# clj-mongo-db
 
 > "Think, think, think." – Winnie the Pooh
 
 ### Overview
 
-The <strong>mongo-db-api</strong> is a MongoDB implementation for Clojure projects
+The <strong>clj-mongo-db</strong> is a MongoDB implementation for Clojure projects
 based on the [michaelklishin / monger] library with some extra features such as
 error handling, input checking, output checking, order handling, prototype handling, etc.
 
@@ -14,21 +14,21 @@ error handling, input checking, output checking, order handling, prototype handl
 ### deps.edn
 
 ```
-{:deps {bithandshake/mongo-db-api {:git/url "https://github.com/bithandshake/mongo-db-api"
+{:deps {bithandshake/clj-mongo-db {:git/url "https://github.com/bithandshake/clj-mongo-db"
                                    :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
 ```
 
 ### Current version
 
-Check out the latest commit on the [release branch](https://github.com/bithandshake/mongo-db-api/tree/release).
+Check out the latest commit on the [release branch](https://github.com/bithandshake/clj-mongo-db/tree/release).
 
 ### Documentation
 
-The <strong>mongo-db-api</strong> functional documentation is [available here](documentation/COVER.md).
+The <strong>clj-mongo-db</strong> functional documentation is [available here](documentation/COVER.md).
 
 ### Changelog
 
-You can track the changes of the <strong>mongo-db-api</strong> library [here](CHANGES.md).
+You can track the changes of the <strong>clj-mongo-db</strong> library [here](CHANGES.md).
 
 ### Index
 
@@ -64,7 +64,7 @@ You can track the changes of the <strong>mongo-db-api</strong> library [here](CH
 - [How to get a document by id?](#how-to-get-document-by-id)
 - [How to get documents by pipeline?](#how-to-get-documents-by-pipeline)
 - [How to check whether a document exists?](#how-to-check-whether-a-document-exists)
-- [How to collect the values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
+- [How to collect values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
 
 # Usage
 
@@ -492,6 +492,6 @@ found by the given id-s.
 
 ...
 
-### How to collect the values of specific keys from all documents in a collection?
+### How to collect values of specific keys from all documents in a collection?
 
 ...
