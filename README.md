@@ -30,47 +30,79 @@ The <strong>clj-mongo-db</strong> functional documentation is [available here](d
 
 You can track the changes of the <strong>clj-mongo-db</strong> library [here](CHANGES.md).
 
+# Usage
+
+> Some parameters of the following functions and some other functions won't be discussed.
+  To learn more about the available functionality, check out the
+  [functional documentation](documentation/COVER.md)!
+
 ### Index
 
 - [How to insert a document?](#how-to-insert-a-document)
+
 - [How to insert more than one document?](#how-to-insert-more-than-one-document)
+
 - [How to save a document?](#how-to-save-a-document-upserting-by-id)
+
 - [How to save more than one document?](#how-to-save-more-than-one-document)
+
 - [How to update a document?](#how-to-update-a-document)
+
 - [How to update more than one document?](#how-to-update-more-than-one-document)
+
 - [How to upsert a document?](#how-to-upsert-a-document)
+
 - [How to upsert more than one document?](#how-to-upsert-more-than-one-document)
+
 - [How to apply a function on a document?](#how-to-apply-a-function-on-a-document)
+
 - [How to apply a function on a collection?](#how-to-apply-a-function-on-a-collection)
+
 - [How to remove a document?](#how-to-remove-a-document)
+
 - [How to remove more than one document?](#how-to-remove-more-than-one-document)
+
 - [How to remove all documents of a collection?](#how-to-remove-all-documents-of-a-collection)
+
 - [How to duplicate a document?](#how-to-duplicate-a-document)
+
 - [How to duplicate more than one document?](#how-to-duplicate-more-than-one-document)
+
 - [How to reorder documents?](#how-to-reorder-documents)
+
 - [How to check whether the database is connected?](#how-to-reorder-documents)
+
 - [How to generate a compatible document id?](#how-to-reorder-documents)
+
 - [How to make a pipeline for getting documents?](#how-to-make-a-pipeline-for-getting-documents)
+
 - [How to make a pipeline for counting documents?](#how-to-make-a-pipeline-for-counting-documents)
+
 - [How to get the names of collections?](#how-get-the-names-of-collections)
+
 - [How to get the namespace of a collection?](#how-to-the-namespace-of-a-collection)
+
 - [How to check whether a collection is empty?](#how-to-check-whether-a-collection-is-empty)
+
 - [How to count all the documents in a collection?](#how-to-count-all-the-documents-in-a-collection)
+
 - [How to count documents by pipeline?](#how-to-count-document-by-pipeline)
+
 - [How to count documents by query?](#how-to-count-documents-by-query)
+
 - [How to get all the documents of a collection?](#how-to-get-all-the-documents-of-a-collection)
+
 - [How to get a document by query?](#how-to-get-a-document-by-query)
+
 - [How to get documents by query?](#how-to-get-documents-by-query)
+
 - [How to get a document by id?](#how-to-get-document-by-id)
+
 - [How to get documents by pipeline?](#how-to-get-documents-by-pipeline)
+
 - [How to check whether a document exists?](#how-to-check-whether-a-document-exists)
+
 - [How to collect values of specific keys from all documents in a collection?](#how-to-collect-the-values-of-specific-keys-from-all-documents-in-a-collection)
-
-# Usage
-
-> Some functions and some parameters of the following functions won't be discussed.
-  To learn more about the available functionality, check out the
-  [functional documentation](documentation/COVER.md)!
 
 ### How to insert a document?
 
