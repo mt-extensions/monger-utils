@@ -1,6 +1,4 @@
 
-# temp
-
 # mongo-db.actions
 
 - {create? true} beállítás, azokhoz a függvényekhez, amelyek ignorálják a műveletet,
