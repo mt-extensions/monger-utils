@@ -7,6 +7,7 @@
               [mongo-db.actions.adaptation   :as actions.adaptation]
               [mongo-db.actions.postparing   :as actions.postparing]
               [mongo-db.actions.preparing    :as actions.preparing]
+              [mongo-db.actions.prototyping  :as actions.prototyping]
               [mongo-db.actions.side-effects :as actions.side-effects]
               [mongo-db.reader.checking      :as reader.checking]
               [mongo-db.reader.adaptation    :as reader.adaptation]
@@ -55,11 +56,16 @@
 (defn insert-document!
   ; @param (string) collection-path
   ; @param (namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on the input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -75,7 +81,12 @@
    (insert-document! collection-path document {}))
 
   ([collection-path document options]
-   (if-let [document (as-> document % (actions.checking/insert-input %)
+   ; XXX#7100
+   ; Checking function must be applied before preparing function because document
+   ; preparing requires documents as namespaced maps and the checking function
+   ; checks whether a document is a namespaced map!
+   (if-let [document (as-> document % (actions.prototyping/insert-input collection-path % options)
+                                      (actions.checking/insert-input %)
                                       (actions.preparing/insert-input collection-path % options)
                                       (actions.adaptation/insert-input %))]
            (if-let [result (actions.side-effects/insert-and-return! collection-path document)]
@@ -87,11 +98,16 @@
 (defn insert-documents!
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
+  ; No need to be namespaced maps if using a prototype function that converts it!
   ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on each input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
@@ -115,11 +131,16 @@
 (defn save-document!
   ; @param (string) collection-path
   ; @param (namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on the input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -135,7 +156,9 @@
    (save-document! collection-path document {}))
 
   ([collection-path document options]
-   (if-let [document (as-> document % (actions.checking/save-input %)
+   ; XXX#7100
+   (if-let [document (as-> document % (actions.prototyping/save-input collection-path % options)
+                                      (actions.checking/save-input %)
                                       (actions.preparing/save-input collection-path % options)
                                       (actions.adaptation/save-input %))]
            (if-let [result (actions.side-effects/save-and-return! collection-path document)]
@@ -147,11 +170,16 @@
 (defn save-documents!
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
+  ; No need to be namespaced maps if using a prototype function that converts it!
   ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on each input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
@@ -177,8 +205,13 @@
   ; @param (map) query
   ; {:namespace/id (string)(opt)}
   ; @param (map or namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; @param (map)(opt) options
-  ; {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)
+  ;   This function is applied on the input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -194,7 +227,9 @@
    (update-document! collection-path query document {}))
 
   ([collection-path query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+   ; XXX#7100
+   (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
+                                               (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -209,8 +244,13 @@
   ; @param (map) query
   ; {:namespace/id (string)(opt)}
   ; @param (namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; @param (map)(opt) options
-  ; {:prepare-f (function)(opt)}
+  ; {:prepare-f (function)(opt)
+  ;   This function is applied on each input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -226,7 +266,9 @@
    (update-documents! collection-path query document {}))
 
   ([collection-path query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
+   ; XXX#7100
+   (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
+                                               (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -242,10 +284,15 @@
   ; @param (string) collection-path
   ; @param (map) query
   ; @param (map or namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on the input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -261,7 +308,9 @@
    (upsert-document! collection-path query document {}))
 
   ([collection-path query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+   ; XXX#7100
+   (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
+                                               (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -275,9 +324,14 @@
   ; @param (string) collection-path
   ; @param (map) query
   ; @param (namespaced map) document
+  ; No need to be a namespaced map if using a prototype function that converts it!
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
-  ;  :prepare-f (function)(opt)}
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on each input document right before writing.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -293,7 +347,9 @@
    (upsert-documents! collection-path query document {}))
 
   ([collection-path query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
+   ; XXX#7100
+   (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
+                                               (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
@@ -311,7 +367,11 @@
   ; @param (function) f
   ; @param (map)(opt) options
   ; {:postpare-f (function)(opt)
-  ;  :prepare-f (function)(opt)}
+  ;   This function is applied on the input document right AFTER the passed 'f'
+  ;   function is being applied and right before writing.
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on the input document right BEFORE the passed 'f'
+  ;   function is being applied.}
   ;
   ; @usage
   ; (apply-on-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
@@ -321,8 +381,6 @@
    (apply-on-document! collection-path document-id f {}))
 
   ([collection-path document-id f options]
-   ; The prepare-f function will be applied before the f function.
-   ; The postpare-f function will be applied after the f function.
    (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
            (if-let [document (actions.preparing/apply-input collection-path document options)]
                    (if-let [document (f document)]
@@ -339,7 +397,11 @@
   ; @param (function) f
   ; @param (map)(opt) options
   ; {:postpare-f (function)(opt)
-  ;  :prepare-f (function)(opt)}
+  ;   This function is applied on each input document right AFTER the passed 'f'
+  ;   function is being applied and right before writing.
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on each input document right BEFORE the passed 'f'
+  ;   function is being applied.}
   ;
   ; @usage
   ; (apply-on-collection! "my_collection" #(assoc % :namespace/color "Blue") {...})
@@ -486,11 +548,13 @@
   ; @param (map)(opt) options
   ; {:changes (namespaced map)(opt)
   ;  :label-key (namespaced keyword)(opt)
-  ;   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  ;   Which key of the document gets the copy marker appended to its value.
   ;  :ordered? (boolean)(opt)
   ;   Default: false
   ;  :postpare-f (function)(opt)
-  ;  :prepare-f (function)(opt)}
+  ;   This function is applied on the copy document right before writing.
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on the copy document right after it is derived from the original document.}
   ;
   ; @usage
   ; (duplicate-document! "my_collection" "MyObjectId" {...})
@@ -522,10 +586,16 @@
   ; @param (strings in vector) document-ids
   ; @param (map)(opt) options
   ; {:label-key (namespaced keyword)(opt)
-  ;   A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  ;   Which key of the documents gets the copy marker appended to its value.
   ;  :ordered? (boolean)(opt)
   ;   Default: false
-  ;  :prepare-f (function)(opt)}
+  ;  :postpare-f (function)(opt)
+  ;   This function is applied on each copy document right before writing.
+  ;  :prepare-f (function)(opt)
+  ;   This function is applied on each copy document right after they are derived from the original documents.
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each input document first before any checking
+  ;   or preparing. Must returns a namespaced map!}
   ;
   ; @usage
   ; (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
@@ -556,8 +626,9 @@
   ;
   ; @return (vectors in vector)
   [collection-path document-order]
-  ; What if a document got a new position which is still used by another document?
-  (let [namespace (reader.engine/get-collection-pathspace collection-path)
+  ; WARNING
+  ; What if a document got a new position that is still used by another document?
+  (let [namespace (reader.engine/get-collection-namespace collection-path)
         order-key (keyword/add-namespace namespace :order)]
        (letfn [(f [[document-id document-dex]]
                   (if-let [document-id (actions.adaptation/document-id-input document-id)]

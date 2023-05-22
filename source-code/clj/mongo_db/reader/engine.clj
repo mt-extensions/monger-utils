@@ -5,6 +5,8 @@
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
               [mongo-db.connection.state   :as connection.state]
+              [mongo-db.connection.utils   :as connection.utils]
+              [mongo-db.core.errors        :as core.errors]
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.reader.checking    :as reader.checking]
               [mongo-db.reader.env         :as reader.env]
@@ -27,11 +29,13 @@
   ; @return (strings in vector)
   ([]
    (let [database-name (connection.utils/default-database-name)]
-        (get-collation-names database-name)))
+        (get-collection-names database-name)))
 
   ([database-name]
-   (let [database-reference (get @connection.state/REFERENCES database-name)]
-        (-> database-reference mdb/get-collection-names vec))))
+   (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+           (-> database-reference mdb/get-collection-names vec)
+           (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 (defn get-collection-namespace
   ; @param (string) collection-path
@@ -87,7 +91,8 @@
   ; @param (string) collection-path
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
-  ;  :prototype-f (function)(opt)}
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each output document.}
   ;
   ; @usage
   ; (get-collection "my_collection")
@@ -116,8 +121,8 @@
   ([collection-path {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
            (if-let [collection (reader.env/find-maps collection-path {} projection)]
-                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                          (reader.prototyping/find-output % options)))]
+                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                          (reader.prototyping/find-output collection-path % options)))]
                           (vector/->items collection f))))))
 
 (defn get-documents-by-query
@@ -125,7 +130,8 @@
   ; @param (map) query
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
-  ;  :prototype-f (function)(opt)}
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on each output document.}
   ;
   ; @usage
   ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value})
@@ -159,8 +165,8 @@
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
                    (if-let [documents (reader.env/find-maps collection-path query projection)]
-                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                                  (reader.prototyping/find-output % options)))]
+                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                                  (reader.prototyping/find-output collection-path % options)))]
                                   (vector/->items documents f)))))))
 
 ;; -- Document functions ------------------------------------------------------
@@ -171,7 +177,8 @@
   ; @param (map) query
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
-  ;  :prototype-f (function)(opt)}
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the output document.}
   ;
   ; @usage
   ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value})
@@ -207,15 +214,16 @@
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
                    (if-let [document (reader.env/find-one-as-map collection-path query projection)]
-                           (as-> document % (reader.adaptation/find-output  %)
-                                            (reader.prototyping/find-output % options)))))))
+                           (as-> document % (reader.adaptation/find-output %)
+                                            (reader.prototyping/find-output collection-path % options)))))))
 
 (defn get-document-by-id
   ; @param (string) collection-path
   ; @param (string) document-id
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
-  ;  :prototype-f (function)(opt)}
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the output document.}
   ;
   ; @usage
   ; (get-document-by-id "my_collection" "MyObjectId")
@@ -247,13 +255,14 @@
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
            (if-let [projection (reader.adaptation/find-projection projection)]
                    (if-let [document (reader.env/find-map-by-id collection-path document-id projection)]
-                           (as-> document % (reader.adaptation/find-output  %)
-                                            (reader.prototyping/find-output % options)))))))
+                           (as-> document % (reader.adaptation/find-output %)
+                                            (reader.prototyping/find-output collection-path % options)))))))
 
 (defn get-first-document
   ; @param (string) collection-path
   ; @param (map)(opt) options
-  ; {:prototype-f (function)(opt)}
+  ; {:prototype-f (function)(opt)
+  ;   This function is applied on the output document.}
   ;
   ; @usage
   ; (get-first-document "my_collection")
@@ -302,7 +311,8 @@
   ; {:locale (string)(opt)
   ;   Default: "en"
   ;   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
-  ;  :prototype-f (function)(opt)}
+  ;  :prototype-f (function)(opt)
+  ;   This function is applied on the output document.}
   ;
   ; @usage
   ; (get-documents-by-pipeline "my_collection" [...])
@@ -322,8 +332,8 @@
 
   ([collection-path pipeline options]
    (if-let [documents (aggregation.engine/process collection-path pipeline options)]
-           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                  (reader.prototyping/find-output % options)))]
+           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                  (reader.prototyping/find-output collection-path % options)))]
                   (vector/->items documents f))
            (return []))))
 

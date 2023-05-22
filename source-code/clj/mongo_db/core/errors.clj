@@ -63,3 +63,8 @@
 ;
 ; @constant (string)
 (def MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR "Missing database name and cannot assume default database name if more than one database connection estabilished")
+
+; @ignore
+;
+; @constant (string)
+(def NO-DATABASE-REFERENCE-FOUND-ERROR "No connected database reference found")

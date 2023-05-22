@@ -2,7 +2,8 @@
 (ns mongo-db.core.env
     (:require [monger.core               :as mcr]
               [mongo-db.connection.state :as connection.state]
-              [mongo-db.connection.utils :as connection.utils]))
+              [mongo-db.connection.utils :as connection.utils]
+              [mongo-db.core.errors      :as core.errors]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -19,6 +20,8 @@
         (command database-name options)))
 
   ([database-name {:keys [warn?] :or {warn? true} :as options}]
-   (let [database-reference (get @connection.state/REFERENCES database-name)]
-        (try (mcr/command database-reference options)
-             (catch Exception e (if warn? (println (str e "\n" {:options options}))))))))
+   (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+           (try (mcr/command database-reference options)
+                (catch Exception e (if warn? (println (str e "\n" {:options options})))))
+           (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (catch Exception e (println (str e "\n" {:database-name database-name})))))))

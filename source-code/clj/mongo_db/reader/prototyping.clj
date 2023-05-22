@@ -8,12 +8,13 @@
 (defn find-output
   ; @ignore
   ;
+  ; @param (string) collection-path
   ; @param (namespaced map) document
   ; @param (map) options
   ; {:prototype-f (function)(opt)}
   ;
-  ; @return (namespaced map)
-  [document {:keys [prototype-f] :as options}]
+  ; @return (*)
+  [collection-path document {:keys [prototype-f] :as options}]
   (try (if prototype-f (prototype-f document)
                        (return      document))
-       (catch Exception e (println (str e "\n" {:document document :options options})))))
+       (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
