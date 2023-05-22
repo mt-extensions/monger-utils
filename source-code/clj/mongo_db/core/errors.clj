@@ -42,7 +42,7 @@
 ; @ignore
 ;
 ; @constant (string)
-(def REORDER-DOCUMENTS-FAILED "Reordering documents failed")
+(def REORDERING-DOCUMENTS-FAILED "Reordering documents failed")
 
 ; @ignore
 ;
@@ -53,3 +53,13 @@
 ;
 ; @constant (string)
 (def APPLYING-FUNCTION-FAILED "Applying function failed")
+
+; @ignore
+;
+; @constant (string)
+(def MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR "Missing database name and cannot assume default database name if no database connection estabilished yet")
+
+; @ignore
+;
+; @constant (string)
+(def MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR "Missing database name and cannot assume default database name if more than one database connection estabilished")

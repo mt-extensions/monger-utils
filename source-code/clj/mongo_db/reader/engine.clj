@@ -16,46 +16,56 @@
 ;; ----------------------------------------------------------------------------
 
 (defn get-collection-names
+  ; @param (string)(opt) database-name
+  ;
   ; @usage
   ; (get-collection-names)
   ;
+  ; @usage
+  ; (get-collection-names "my-database")
+  ;
   ; @return (strings in vector)
-  []
-  (-> @connection.state/REFERENCE mdb/get-collection-names vec))
+  ([]
+   (let [database-name (connection.utils/default-database-name)]
+        (get-collation-names database-name)))
+
+  ([database-name]
+   (let [database-reference (get @connection.state/REFERENCES database-name)]
+        (-> database-reference mdb/get-collection-names vec))))
 
 (defn get-collection-namespace
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ;
   ; @usage
   ; (get-collection-namespace "my_collection")
   ;
   ; @return (keyword)
-  [collection-name]
-  (let [collection (reader.env/find-maps collection-name {})]
+  [collection-path]
+  (let [collection (reader.env/find-maps collection-path {})]
        (-> collection first map/get-namespace)))
 
 (defn get-all-document-count
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ;
   ; @usage
   ; (get-all-document-count "my_collection")
   ;
   ; @return (integer)
-  [collection-name]
-  (reader.env/count-documents collection-name))
+  [collection-path]
+  (reader.env/count-documents collection-path))
 
 (defn collection-empty?
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ;
   ; @usage
   ; (collection-empty? "my_collection")
   ;
   ; @return (boolean)
-  [collection-name]
-  (= 0 (reader.env/count-documents collection-name)))
+  [collection-path]
+  (= 0 (reader.env/count-documents collection-path)))
 
 (defn get-document-count-by-query
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (map) query
   ;
   ; @usage
@@ -69,12 +79,12 @@
   ;                                               :namespace/your-string "Your value"})
   ;
   ; @return (integer)
-  [collection-name query]
+  [collection-path query]
   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-          (reader.env/count-documents-by-query collection-name query)))
+          (reader.env/count-documents-by-query collection-path query)))
 
 (defn get-collection
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
   ;  :prototype-f (function)(opt)}
@@ -99,19 +109,19 @@
   ;
   ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
-  ([collection-name]
-   (if-let [collection (reader.env/find-maps collection-name {})]
+  ([collection-path]
+   (if-let [collection (reader.env/find-maps collection-path {})]
            (vector/->items collection #(reader.adaptation/find-output %))))
 
-  ([collection-name {:keys [projection] :as options}]
+  ([collection-path {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
-           (if-let [collection (reader.env/find-maps collection-name {} projection)]
+           (if-let [collection (reader.env/find-maps collection-path {} projection)]
                    (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                           (reader.prototyping/find-output % options)))]
                           (vector/->items collection f))))))
 
 (defn get-documents-by-query
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (map) query
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
@@ -140,15 +150,15 @@
   ;
   ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
-  ([collection-name query]
+  ([collection-path query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [documents (reader.env/find-maps collection-name query)]
+           (if-let [documents (reader.env/find-maps collection-path query)]
                    (vector/->items documents #(reader.adaptation/find-output %)))))
 
-  ([collection-name query {:keys [projection] :as options}]
+  ([collection-path query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [documents (reader.env/find-maps collection-name query projection)]
+                   (if-let [documents (reader.env/find-maps collection-path query projection)]
                            (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                                   (reader.prototyping/find-output % options)))]
                                   (vector/->items documents f)))))))
@@ -157,7 +167,7 @@
 ;; ----------------------------------------------------------------------------
 
 (defn get-document-by-query
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (map) query
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
@@ -188,20 +198,20 @@
   ;
   ; @return (namespaced map or *)
   ; {:namespace/id (string)}
-  ([collection-name query]
+  ([collection-path query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [document (reader.env/find-one-as-map collection-name query)]
+           (if-let [document (reader.env/find-one-as-map collection-path query)]
                    (reader.adaptation/find-output document))))
 
-  ([collection-name query {:keys [projection] :as options}]
+  ([collection-path query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.env/find-one-as-map collection-name query projection)]
+                   (if-let [document (reader.env/find-one-as-map collection-path query projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 
 (defn get-document-by-id
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (string) document-id
   ; @param (map)(opt) options
   ; {:projection (namespaced map)(opt)
@@ -228,20 +238,20 @@
   ;
   ; @return (namespaced map or *)
   ; {:namespace/id (string)}
-  ([collection-name document-id]
+  ([collection-path document-id]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
-           (if-let [document (reader.env/find-map-by-id collection-name document-id)]
+           (if-let [document (reader.env/find-map-by-id collection-path document-id)]
                    (reader.adaptation/find-output document))))
 
-  ([collection-name document-id {:keys [projection] :as options}]
+  ([collection-path document-id {:keys [projection] :as options}]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.env/find-map-by-id collection-name document-id projection)]
+                   (if-let [document (reader.env/find-map-by-id collection-path document-id projection)]
                            (as-> document % (reader.adaptation/find-output  %)
                                             (reader.prototyping/find-output % options)))))))
 
 (defn get-first-document
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (map)(opt) options
   ; {:prototype-f (function)(opt)}
   ;
@@ -252,12 +262,12 @@
   ; (get-first-document "my_collection" {:prototype-f :namespace/my-string})
   ;
   ; @return (namespaced map or *)
-  [collection-name]
-  (let [collection (get-collection collection-name)]
+  [collection-path]
+  (let [collection (get-collection collection-path)]
        (first collection)))
 
 (defn get-last-document
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ;
   ; @usage
   ; (get-last-document "my_collection")
@@ -266,27 +276,27 @@
   ; (get-last-document "my_collection" {:prototype-f :namespace/my-string})
   ;
   ; @return (namespaced map or *)
-  [collection-name]
-  (let [collection (get-collection collection-name)]
+  [collection-path]
+  (let [collection (get-collection collection-path)]
        (last collection)))
 
 (defn document-exists?
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (string) document-id
   ;
   ; @usage
   ; (document-exists? "my_collection" "MyObjectId")
   ;
   ; @return (boolean)
-  [collection-name document-id]
+  [collection-path document-id]
   (boolean (if-let [document-id (reader.adaptation/document-id-input document-id)]
-                   (reader.env/find-map-by-id collection-name document-id))))
+                   (reader.env/find-map-by-id collection-path document-id))))
 
 ;; -- Advanced DB functions ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn get-documents-by-pipeline
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (maps in vector) pipeline
   ; @param (map)(opt) options
   ; {:locale (string)(opt)
@@ -307,18 +317,18 @@
   ; (get-documents-by-pipeline "my_collection" [...] {:prototype-f :namespace/my-string})
   ;
   ; @return (namespaced maps or * in vector)
-  ([collection-name pipeline]
-   (get-documents-by-pipeline collection-name pipeline {}))
+  ([collection-path pipeline]
+   (get-documents-by-pipeline collection-path pipeline {}))
 
-  ([collection-name pipeline options]
-   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
+  ([collection-path pipeline options]
+   (if-let [documents (aggregation.engine/process collection-path pipeline options)]
            (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
                                                   (reader.prototyping/find-output % options)))]
                   (vector/->items documents f))
            (return []))))
 
 (defn count-documents-by-pipeline
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (maps in vector) pipeline
   ; @param (map)(opt) options
   ; {:locale (string)(opt)
@@ -332,11 +342,11 @@
   ; (count-documents-by-pipeline "my_collection" (count-pipeline {...}))
   ;
   ; @return (integer)
-  ([collection-name pipeline]
-   (count-documents-by-pipeline collection-name pipeline {}))
+  ([collection-path pipeline]
+   (count-documents-by-pipeline collection-path pipeline {}))
 
-  ([collection-name pipeline options]
-   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
+  ([collection-path pipeline options]
+   (if-let [documents (aggregation.engine/process collection-path pipeline options)]
            (count  documents)
            (return 0))))
 
@@ -344,7 +354,7 @@
 ;; ----------------------------------------------------------------------------
 
 (defn get-specified-values
-  ; @param (string) collection-name
+  ; @param (string) collection-path
   ; @param (keywords in vector) specified-keys
   ; @param (function)(opt) test-f
   ; Default: some?
@@ -356,10 +366,10 @@
   ;  :your-key ["..." "..."]}
   ;
   ; @return (map)
-  ([collection-name specified-keys]
-   (get-specified-values collection-name specified-keys some?))
+  ([collection-path specified-keys]
+   (get-specified-values collection-path specified-keys some?))
 
-  ([collection-name specified-keys test-f]
+  ([collection-path specified-keys test-f]
    (letfn [(f [result document]
               (letfn [(f [result k]
                          (let [v (get document k)]
@@ -367,5 +377,5 @@
                                   (update result k vector/conj-item-once v)
                                   (return result))))]
                      (reduce f result specified-keys)))]
-          (let [collection (get-collection collection-name)]
+          (let [collection (get-collection collection-path)]
                (reduce f {} collection)))))

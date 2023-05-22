@@ -19,4 +19,4 @@
         ^ServerAddress server-address (mcr/server-address database-host  database-port)
                        connection     (mcr/connect        server-address mongo-options)
                        reference      (mcr/get-db         connection     database-name)]
-       (reset! connection.state/REFERENCE reference)))
+       (swap! connection.state/REFERENCES assoc database-name reference)))

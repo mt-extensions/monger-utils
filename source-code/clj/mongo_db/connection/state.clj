@@ -6,5 +6,6 @@
 
 ; @ignore
 ;
-; @atom (com.mongodb.DB object)
-(def REFERENCE (atom nil))
+; @atom (map)
+; {"my-database" (com.mongodb.DB object)}
+(def REFERENCES (atom {}))
