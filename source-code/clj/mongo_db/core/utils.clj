@@ -45,7 +45,7 @@
   [n]
   (and (-> n map?)
        (if-let [namespace (map/get-namespace n)]
-               (get n (keyword/add-namespace namespace :id)))))
+               (get n (keyword/add-namespace :id namespace)))))
 
 (defn DBObject->edn
   ; @ignore
@@ -82,7 +82,7 @@
   [n]
   (if-let [namespace (map/get-namespace n)]
           (let [document-id (generate-id)]
-               (assoc n (keyword/add-namespace namespace :id) document-id))
+               (assoc n (keyword/add-namespace :id namespace) document-id))
           (return n)))
 
 (defn dissoc-id
@@ -99,7 +99,7 @@
   ; @return (map)
   [n]
   (if-let [namespace (map/get-namespace n)]
-          (dissoc n (keyword/add-namespace namespace :id))
+          (dissoc n (keyword/add-namespace :id namespace))
           (return n)))
 
 (defn id->_id
@@ -129,7 +129,7 @@
   ([n {:keys [parse?]}]
    ; The n map (given as a parameter) doesn't have to contain the :namespace/id key!
    (if-let [namespace (map/get-namespace n)]
-           (let [id-key (keyword/add-namespace namespace :id)]
+           (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n id-key)]
                         (if parse? (let [object-id (ObjectId. value)]
                                         (-> n (assoc  :_id object-id)
@@ -161,7 +161,7 @@
   ([n {:keys [unparse?]}]
    ; The n map (given as a parameter) doesn't have to contain the :_id key!
    (if-let [namespace (map/get-namespace n)]
-           (let [id-key (keyword/add-namespace namespace :id)]
+           (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n :_id)]
                         (if unparse? (let [document-id (str value)]
                                           (-> n (assoc  id-key document-id)
@@ -211,5 +211,5 @@
   ; @return (integer)
   [document]
   (if-let [namespace (map/get-namespace document)]
-          (get document (keyword/add-namespace namespace :order))
+          (get document (keyword/add-namespace :order namespace))
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))

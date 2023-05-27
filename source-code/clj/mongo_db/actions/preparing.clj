@@ -26,7 +26,7 @@
   ; a dokumentum előkészítésére ezért ha a dokumentum már rendelkezik namespace/order
   ; értékkel, akkor nem változtat rajta.
   (if-let [namespace (map/get-namespace document)]
-          (let [order-key  (keyword/add-namespace namespace :order)
+          (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
                (merge {order-key last-order} document))
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
@@ -159,7 +159,7 @@
   ; {:namespace/order (integer)}
   [_ document _]
   (if-let [namespace (map/get-namespace document)]
-          (let [order-key (keyword/add-namespace namespace :order)]
+          (let [order-key (keyword/add-namespace :order namespace)]
                (if-let [order (get document order-key)]
                        (update document order-key inc)
                        (throw (Exception. core.errors/MISSING-DOCUMENT-ORDER-ERROR))))

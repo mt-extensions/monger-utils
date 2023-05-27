@@ -30,14 +30,14 @@
   ;
   ; @return (namespaced map)
   [collection-path document-id {:keys [operation]}]
-  ; Egy rendezett kollekcióból történő dokumentum eltávolítása a dokumentum után sorrendben
-  ; következő többi dokumentum pozíciójának csökkentését teszi szükségessé.
-  ;
-  ; Egy rendezett kollekcióba történő dokumentum beszúrása a dokumentum után sorrendben következő
-  ; többi dokumentum pozíciójának növelését teszi szükségessé.
+  ; In an ordered collection ...
+  ; ... removing a document requires to update (decrease) the position of documents
+  ;     that are follow (in order) the just removed document.
+  ; ... inserting a document requires to update (increase) the position of documents
+  ;     that are follow (in order) the just inserted document.
   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
-          (let [namespace    (map/get-namespace     document)
-                order-key    (keyword/add-namespace namespace :order)
+          (let [namespace    (map/get-namespace document)
+                order-key    (keyword/add-namespace :order namespace)
                 document-dex (get document order-key)
                 query        {order-key {:$gt document-dex}}
                 document     (case operation :increase {:$inc {order-key  1}}
@@ -629,7 +629,7 @@
   ; WARNING
   ; What if a document got a new position that is still used by another document?
   (let [namespace (reader.engine/get-collection-namespace collection-path)
-        order-key (keyword/add-namespace namespace :order)]
+        order-key (keyword/add-namespace :order namespace)]
        (letfn [(f [[document-id document-dex]]
                   (if-let [document-id (actions.adaptation/document-id-input document-id)]
                           (let [result (actions.side-effects/update! collection-path {:_id document-id}
