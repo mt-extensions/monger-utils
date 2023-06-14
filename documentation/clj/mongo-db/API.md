@@ -80,11 +80,15 @@
 ### apply-on-collection!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (function) f
 @param (map)(opt) options
 {:postpare-f (function)(opt)
- :prepare-f (function)(opt)}
+  This function is applied on each input document right AFTER the passed 'f'
+  function is being applied and right before writing.
+ :prepare-f (function)(opt)
+  This function is applied on each input document right BEFORE the passed 'f'
+  function is being applied.}
 ```
 
 ```
@@ -101,14 +105,14 @@
 
 ```
 (defn apply-on-collection!
-  ([collection-name f]
-   (apply-on-collection! collection-name f {}))
+  ([collection-path f]
+   (apply-on-collection! collection-path f {}))
 
-  ([collection-name f options]
-   (if-let [collection (reader.engine/get-collection collection-name)]
+  ([collection-path f options]
+   (if-let [collection (reader.engine/get-collection collection-path)]
            (letfn [(fi [result document]
                        (if-let [document (f document)]
-                               (let [document (save-document! collection-name document options)]
+                               (let [document (save-document! collection-path document options)]
                                     (conj result document))
                                (return result)))]
                   (reduce fi [] collection)))))
@@ -133,12 +137,16 @@
 ### apply-on-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (string) document-id
 @param (function) f
 @param (map)(opt) options
 {:postpare-f (function)(opt)
- :prepare-f (function)(opt)}
+  This function is applied on the input document right AFTER the passed 'f'
+  function is being applied and right before writing.
+ :prepare-f (function)(opt)
+  This function is applied on the input document right BEFORE the passed 'f'
+  function is being applied.}
 ```
 
 ```
@@ -155,16 +163,16 @@
 
 ```
 (defn apply-on-document!
-  ([collection-name document-id f]
-   (apply-on-document! collection-name document-id f {}))
+  ([collection-path document-id f]
+   (apply-on-document! collection-path document-id f {}))
 
-  ([collection-name document-id f options]
-   (if-let [document (reader.engine/get-document-by-id collection-name document-id)]
-           (if-let [document (actions.preparing/apply-input collection-name document options)]
+  ([collection-path document-id f options]
+   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
+           (if-let [document (actions.preparing/apply-input collection-path document options)]
                    (if-let [document (f document)]
-                           (if-let [document (actions.postparing/apply-input collection-name document options)]
+                           (if-let [document (actions.postparing/apply-input collection-path document options)]
                                    (if-let [document (actions.adaptation/save-input document)]
-                                           (let [result (actions.side-effects/save-and-return! collection-name document)]
+                                           (let [result (actions.side-effects/save-and-return! collection-path document)]
                                                 (actions.adaptation/save-output result)))))))))
 ```
 
@@ -207,7 +215,7 @@
         ^ServerAddress server-address (mcr/server-address database-host  database-port)
                        connection     (mcr/connect        server-address mongo-options)
                        reference      (mcr/get-db         connection     database-name)]
-       (reset! connection.state/REFERENCE reference)))
+       (swap! connection.state/REFERENCES assoc database-name reference)))
 ```
 
 </details>
@@ -229,7 +237,7 @@
 ### collection-empty?
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 ```
 
 ```
@@ -246,8 +254,8 @@
 
 ```
 (defn collection-empty?
-  [collection-name]
-  (= 0 (reader.env/count-documents collection-name)))
+  [collection-path]
+  (= 0 (reader.env/count-documents collection-path)))
 ```
 
 </details>
@@ -269,8 +277,23 @@
 ### connected?
 
 ```
+@description
+Checks whether a specific database has active connection.
+If no database name passed it checks the only stored database reference.
+```
+
+```
+@param (string)(opt) database-name
+```
+
+```
 @usage
 (connected?)
+```
+
+```
+@usage
+(connected? "my-database")
 ```
 
 ```
@@ -282,8 +305,12 @@
 
 ```
 (defn connected?
-  []
-  (core.env/command {:ping 1 :warn? false}))
+  ([]
+   (let [database-name (connection.utils/default-database-name)]
+        (connected? database-name)))
+
+  ([database-name]
+   (core.env/command database-name {:ping 1 :warn? false})))
 ```
 
 </details>
@@ -294,8 +321,8 @@
 ```
 (ns my-namespace (:require [mongo-db.api :refer [connected?]]))
 
-(mongo-db.api/connected?)
-(connected?)
+(mongo-db.api/connected? ...)
+(connected?              ...)
 ```
 
 </details>
@@ -305,7 +332,7 @@
 ### count-documents-by-pipeline
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (maps in vector) pipeline
 @param (map)(opt) options
 {:locale (string)(opt)
@@ -332,11 +359,11 @@
 
 ```
 (defn count-documents-by-pipeline
-  ([collection-name pipeline]
-   (count-documents-by-pipeline collection-name pipeline {}))
+  ([collection-path pipeline]
+   (count-documents-by-pipeline collection-path pipeline {}))
 
-  ([collection-name pipeline options]
-   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
+  ([collection-path pipeline options]
+   (if-let [documents (aggregation.engine/process collection-path pipeline options)]
            (count  documents)
            (return 0))))
 ```
@@ -410,7 +437,7 @@
 ### document-exists?
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (string) document-id
 ```
 
@@ -428,9 +455,9 @@
 
 ```
 (defn document-exists?
-  [collection-name document-id]
+  [collection-path document-id]
   (boolean (if-let [document-id (reader.adaptation/document-id-input document-id)]
-                   (reader.env/find-map-by-id collection-name document-id))))
+                   (reader.env/find-map-by-id collection-path document-id))))
 ```
 
 </details>
@@ -452,16 +479,23 @@
 ### duplicate-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (string) document-id
 @param (map)(opt) options
 {:changes (namespaced map)(opt)
  :label-key (namespaced keyword)(opt)
-  A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  Which key of the document gets the copy marker appended to its value.
  :ordered? (boolean)(opt)
   Default: false
  :postpare-f (function)(opt)
- :prepare-f (function)(opt)}
+  This function is applied on the copy document right before writing.
+ :prepare-f (function)(opt)
+  This function is applied on the copy document right after it is derived from the original document.}
+```
+
+```
+@usage
+(duplicate-document! "my_collection" "MyObjectId" {...})
 ```
 
 ```
@@ -488,12 +522,12 @@
 
 ```
 (defn duplicate-document!
-  ([collection-name document-id]
-   (duplicate-document! collection-name document-id {}))
+  ([collection-path document-id]
+   (duplicate-document! collection-path document-id {}))
 
-  ([collection-name document-id {:keys [ordered?] :as options}]
-   (if ordered? (duplicate-ordered-document!   collection-name document-id options)
-                (duplicate-unordered-document! collection-name document-id options))))
+  ([collection-path document-id {:keys [ordered?] :as options}]
+   (if ordered? (duplicate-ordered-document!   collection-path document-id options)
+                (duplicate-unordered-document! collection-path document-id options))))
 ```
 
 </details>
@@ -515,14 +549,25 @@
 ### duplicate-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (strings in vector) document-ids
 @param (map)(opt) options
 {:label-key (namespaced keyword)(opt)
-  A dokumentum melyik kulcsának értékéhez fűzze hozzá a "#..." kifejezést
+  Which key of the documents gets the copy marker appended to its value.
  :ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :postpare-f (function)(opt)
+  This function is applied on each copy document right before writing.
+ :prepare-f (function)(opt)
+  This function is applied on each copy document right after they are derived from the original documents.
+ :prototype-f (function)(opt)
+  This function is applied on each input document first before any checking
+  or preparing. Must returns a namespaced map!}
+```
+
+```
+@usage
+(duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
 ```
 
 ```
@@ -541,11 +586,11 @@
 
 ```
 (defn duplicate-documents!
-  ([collection-name document-ids]
-   (duplicate-documents! collection-name document-ids {}))
+  ([collection-path document-ids]
+   (duplicate-documents! collection-path document-ids {}))
 
-  ([collection-name document-ids options]
-   (vector/->items document-ids #(duplicate-document! collection-name % options))))
+  ([collection-path document-ids options]
+   (vector/->items document-ids #(duplicate-document! collection-path % options))))
 ```
 
 </details>
@@ -603,7 +648,7 @@
 ### get-all-document-count
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 ```
 
 ```
@@ -620,8 +665,8 @@
 
 ```
 (defn get-all-document-count
-  [collection-name]
-  (reader.env/count-documents collection-name))
+  [collection-path]
+  (reader.env/count-documents collection-path))
 ```
 
 </details>
@@ -643,10 +688,11 @@
 ### get-collection
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map)(opt) options
 {:projection (namespaced map)(opt)
- :prototype-f (function)(opt)}
+ :prototype-f (function)(opt)
+  This function is applied on each output document.}
 ```
 
 ```
@@ -685,15 +731,15 @@
 
 ```
 (defn get-collection
-  ([collection-name]
-   (if-let [collection (reader.env/find-maps collection-name {})]
+  ([collection-path]
+   (if-let [collection (reader.env/find-maps collection-path {})]
            (vector/->items collection #(reader.adaptation/find-output %))))
 
-  ([collection-name {:keys [projection] :as options}]
+  ([collection-path {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
-           (if-let [collection (reader.env/find-maps collection-name {} projection)]
-                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                          (reader.prototyping/find-output % options)))]
+           (if-let [collection (reader.env/find-maps collection-path {} projection)]
+                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                          (reader.prototyping/find-output collection-path % options)))]
                           (vector/->items collection f))))))
 ```
 
@@ -716,8 +762,17 @@
 ### get-collection-names
 
 ```
+@param (string)(opt) database-name
+```
+
+```
 @usage
 (get-collection-names)
+```
+
+```
+@usage
+(get-collection-names "my-database")
 ```
 
 ```
@@ -729,8 +784,15 @@
 
 ```
 (defn get-collection-names
-  []
-  (-> @connection.state/REFERENCE mdb/get-collection-names vec))
+  ([]
+   (let [database-name (connection.utils/default-database-name)]
+        (get-collection-names database-name)))
+
+  ([database-name]
+   (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+           (-> database-reference mdb/get-collection-names vec)
+           (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 ```
 
 </details>
@@ -741,8 +803,8 @@
 ```
 (ns my-namespace (:require [mongo-db.api :refer [get-collection-names]]))
 
-(mongo-db.api/get-collection-names)
-(get-collection-names)
+(mongo-db.api/get-collection-names ...)
+(get-collection-names              ...)
 ```
 
 </details>
@@ -752,7 +814,7 @@
 ### get-collection-namespace
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 ```
 
 ```
@@ -769,8 +831,8 @@
 
 ```
 (defn get-collection-namespace
-  [collection-name]
-  (let [collection (reader.env/find-maps collection-name {})]
+  [collection-path]
+  (let [collection (reader.env/find-maps collection-path {})]
        (-> collection first map/get-namespace)))
 ```
 
@@ -793,11 +855,12 @@
 ### get-document-by-id
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (string) document-id
 @param (map)(opt) options
 {:projection (namespaced map)(opt)
- :prototype-f (function)(opt)}
+ :prototype-f (function)(opt)
+  This function is applied on the output document.}
 ```
 
 ```
@@ -837,17 +900,17 @@
 
 ```
 (defn get-document-by-id
-  ([collection-name document-id]
+  ([collection-path document-id]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
-           (if-let [document (reader.env/find-map-by-id collection-name document-id)]
+           (if-let [document (reader.env/find-map-by-id collection-path document-id)]
                    (reader.adaptation/find-output document))))
 
-  ([collection-name document-id {:keys [projection] :as options}]
+  ([collection-path document-id {:keys [projection] :as options}]
    (if-let [document-id (reader.adaptation/document-id-input document-id)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.env/find-map-by-id collection-name document-id projection)]
-                           (as-> document % (reader.adaptation/find-output  %)
-                                            (reader.prototyping/find-output % options)))))))
+                   (if-let [document (reader.env/find-map-by-id collection-path document-id projection)]
+                           (as-> document % (reader.adaptation/find-output %)
+                                            (reader.prototyping/find-output collection-path % options)))))))
 ```
 
 </details>
@@ -869,11 +932,12 @@
 ### get-document-by-query
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 @param (map)(opt) options
 {:projection (namespaced map)(opt)
- :prototype-f (function)(opt)}
+ :prototype-f (function)(opt)
+  This function is applied on the output document.}
 ```
 
 ```
@@ -919,17 +983,17 @@
 
 ```
 (defn get-document-by-query
-  ([collection-name query]
+  ([collection-path query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [document (reader.env/find-one-as-map collection-name query)]
+           (if-let [document (reader.env/find-one-as-map collection-path query)]
                    (reader.adaptation/find-output document))))
 
-  ([collection-name query {:keys [projection] :as options}]
+  ([collection-path query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [document (reader.env/find-one-as-map collection-name query projection)]
-                           (as-> document % (reader.adaptation/find-output  %)
-                                            (reader.prototyping/find-output % options)))))))
+                   (if-let [document (reader.env/find-one-as-map collection-path query projection)]
+                           (as-> document % (reader.adaptation/find-output %)
+                                            (reader.prototyping/find-output collection-path % options)))))))
 ```
 
 </details>
@@ -951,7 +1015,7 @@
 ### get-document-count-by-query
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 ```
 
@@ -980,9 +1044,9 @@
 
 ```
 (defn get-document-count-by-query
-  [collection-name query]
+  [collection-path query]
   (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-          (reader.env/count-documents-by-query collection-name query)))
+          (reader.env/count-documents-by-query collection-path query)))
 ```
 
 </details>
@@ -1004,13 +1068,14 @@
 ### get-documents-by-pipeline
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (maps in vector) pipeline
 @param (map)(opt) options
 {:locale (string)(opt)
   Default: "en"
   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
- :prototype-f (function)(opt)}
+ :prototype-f (function)(opt)
+  This function is applied on the output document.}
 ```
 
 ```
@@ -1042,13 +1107,13 @@
 
 ```
 (defn get-documents-by-pipeline
-  ([collection-name pipeline]
-   (get-documents-by-pipeline collection-name pipeline {}))
+  ([collection-path pipeline]
+   (get-documents-by-pipeline collection-path pipeline {}))
 
-  ([collection-name pipeline options]
-   (if-let [documents (aggregation.engine/process collection-name pipeline options)]
-           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                  (reader.prototyping/find-output % options)))]
+  ([collection-path pipeline options]
+   (if-let [documents (aggregation.engine/process collection-path pipeline options)]
+           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                  (reader.prototyping/find-output collection-path % options)))]
                   (vector/->items documents f))
            (return []))))
 ```
@@ -1072,11 +1137,12 @@
 ### get-documents-by-query
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 @param (map)(opt) options
 {:projection (namespaced map)(opt)
- :prototype-f (function)(opt)}
+ :prototype-f (function)(opt)
+  This function is applied on each output document.}
 ```
 
 ```
@@ -1118,17 +1184,17 @@
 
 ```
 (defn get-documents-by-query
-  ([collection-name query]
+  ([collection-path query]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-           (if-let [documents (reader.env/find-maps collection-name query)]
+           (if-let [documents (reader.env/find-maps collection-path query)]
                    (vector/->items documents #(reader.adaptation/find-output %)))))
 
-  ([collection-name query {:keys [projection] :as options}]
+  ([collection-path query {:keys [projection] :as options}]
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
-                   (if-let [documents (reader.env/find-maps collection-name query projection)]
-                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output  %)
-                                                                  (reader.prototyping/find-output % options)))]
+                   (if-let [documents (reader.env/find-maps collection-path query projection)]
+                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
+                                                                  (reader.prototyping/find-output collection-path % options)))]
                                   (vector/->items documents f)))))))
 ```
 
@@ -1151,9 +1217,10 @@
 ### get-first-document
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map)(opt) options
-{:prototype-f (function)(opt)}
+{:prototype-f (function)(opt)
+  This function is applied on the output document.}
 ```
 
 ```
@@ -1175,8 +1242,8 @@
 
 ```
 (defn get-first-document
-  [collection-name]
-  (let [collection (get-collection collection-name)]
+  [collection-path]
+  (let [collection (get-collection collection-path)]
        (first collection)))
 ```
 
@@ -1199,7 +1266,7 @@
 ### get-last-document
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 ```
 
 ```
@@ -1221,8 +1288,8 @@
 
 ```
 (defn get-last-document
-  [collection-name]
-  (let [collection (get-collection collection-name)]
+  [collection-path]
+  (let [collection (get-collection collection-path)]
        (last collection)))
 ```
 
@@ -1307,7 +1374,7 @@
 ### get-specified-values
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (keywords in vector) specified-keys
 @param (function)(opt) test-f
 Default: some?
@@ -1330,10 +1397,10 @@ Default: some?
 
 ```
 (defn get-specified-values
-  ([collection-name specified-keys]
-   (get-specified-values collection-name specified-keys some?))
+  ([collection-path specified-keys]
+   (get-specified-values collection-path specified-keys some?))
 
-  ([collection-name specified-keys test-f]
+  ([collection-path specified-keys test-f]
    (letfn [(f [result document]
               (letfn [(f [result k]
                          (let [v (get document k)]
@@ -1341,7 +1408,7 @@ Default: some?
                                   (update result k vector/conj-item-once v)
                                   (return result))))]
                      (reduce f result specified-keys)))]
-          (let [collection (get-collection collection-name)]
+          (let [collection (get-collection collection-path)]
                (reduce f {} collection)))))
 ```
 
@@ -1364,13 +1431,23 @@ Default: some?
 ### insert-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 {:namespace/id (string)(opt)}
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on the input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on the input document first before any checking
+  or preparing. Must returns a namespaced map!}
+```
+
+```
+@usage
+(insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
 ```
 
 ```
@@ -1390,14 +1467,15 @@ Default: some?
 
 ```
 (defn insert-document!
-  ([collection-name document]
-   (insert-document! collection-name document {}))
+  ([collection-path document]
+   (insert-document! collection-path document {}))
 
-  ([collection-name document options]
-   (if-let [document (as-> document % (actions.checking/insert-input %)
-                                      (actions.preparing/insert-input collection-name % options)
+  ([collection-path document options]
+   (if-let [document (as-> document % (actions.prototyping/insert-input collection-path % options)
+                                      (actions.checking/insert-input %)
+                                      (actions.preparing/insert-input collection-path % options)
                                       (actions.adaptation/insert-input %))]
-           (if-let [result (actions.side-effects/insert-and-return! collection-name document)]
+           (if-let [result (actions.side-effects/insert-and-return! collection-path document)]
                    (actions.adaptation/insert-output result)))))
 ```
 
@@ -1420,13 +1498,23 @@ Default: some?
 ### insert-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (namespaced maps in vector) documents
+No need to be namespaced maps if using a prototype function that converts it!
 [{:namespace/id (string)(opt)}]
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on each input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on each input document first before any checking
+  or preparing. Must returns a namespaced map!}
+```
+
+```
+@usage
+(insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
 ```
 
 ```
@@ -1446,11 +1534,11 @@ Default: some?
 
 ```
 (defn insert-documents!
-  ([collection-name documents]
-   (insert-documents! collection-name documents {}))
+  ([collection-path documents]
+   (insert-documents! collection-path documents {}))
 
-  ([collection-name documents options]
-   (vector/->items documents #(insert-document! collection-name % options))))
+  ([collection-path documents options]
+   (vector/->items documents #(insert-document! collection-path % options))))
 ```
 
 </details>
@@ -1472,7 +1560,7 @@ Default: some?
 ### remove-all-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 ```
 
 ```
@@ -1489,8 +1577,8 @@ Default: some?
 
 ```
 (defn remove-all-documents!
-  [collection-name]
-  (actions.side-effects/drop! collection-name))
+  [collection-path]
+  (actions.side-effects/drop! collection-path))
 ```
 
 </details>
@@ -1512,11 +1600,16 @@ Default: some?
 ### remove-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (string) document-id
 @param (map)(opt) options
 {:ordered? (boolean)
   Default: false}
+```
+
+```
+@usage
+(remove-document "my_collection" "MyObjectId" {...})
 ```
 
 ```
@@ -1535,12 +1628,12 @@ Default: some?
 
 ```
 (defn remove-document!
-  ([collection-name document-id]
-   (remove-document! collection-name document-id {}))
+  ([collection-path document-id]
+   (remove-document! collection-path document-id {}))
 
-  ([collection-name document-id {:keys [ordered?] :as options}]
-   (if ordered? (remove-ordered-document!   collection-name document-id options)
-                (remove-unordered-document! collection-name document-id options))))
+  ([collection-path document-id {:keys [ordered?] :as options}]
+   (if ordered? (remove-ordered-document!   collection-path document-id options)
+                (remove-unordered-document! collection-path document-id options))))
 ```
 
 </details>
@@ -1562,11 +1655,16 @@ Default: some?
 ### remove-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (strings in vector) document-ids
 @param (map)(opt) options
 {:ordered? (boolean)
   Default: false}
+```
+
+```
+@usage
+(remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
 ```
 
 ```
@@ -1585,11 +1683,11 @@ Default: some?
 
 ```
 (defn remove-documents!
-  ([collection-name document-ids]
-   (remove-documents! collection-name document-ids {}))
+  ([collection-path document-ids]
+   (remove-documents! collection-path document-ids {}))
 
-  ([collection-name document-ids options]
-   (vector/->items document-ids #(remove-document! collection-name % options))))
+  ([collection-path document-ids options]
+   (vector/->items document-ids #(remove-document! collection-path % options))))
 ```
 
 </details>
@@ -1611,7 +1709,7 @@ Default: some?
 ### reorder-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (vectors in vector) document-order
 [[(string) document-id
   (integer) document-dex]]
@@ -1631,12 +1729,12 @@ Default: some?
 
 ```
 (defn reorder-documents!
-  [collection-name document-order]
-  (let [namespace (reader.engine/get-collection-namespace collection-name)
-        order-key (keyword/add-namespace namespace :order)]
+  [collection-path document-order]
+  (let [namespace (reader.engine/get-collection-namespace collection-path)
+        order-key (keyword/add-namespace :order namespace)]
        (letfn [(f [[document-id document-dex]]
                   (if-let [document-id (actions.adaptation/document-id-input document-id)]
-                          (let [result (actions.side-effects/update! collection-name {:_id document-id}
+                          (let [result (actions.side-effects/update! collection-path {:_id document-id}
                                                                      {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
                                    (return [document-id document-dex])))))]
@@ -1662,13 +1760,23 @@ Default: some?
 ### save-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 {:namespace/id (string)(opt)}
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on the input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on the input document first before any checking
+  or preparing. Must returns a namespaced map!}
+```
+
+```
+@usage
+(save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
 ```
 
 ```
@@ -1688,14 +1796,15 @@ Default: some?
 
 ```
 (defn save-document!
-  ([collection-name document]
-   (save-document! collection-name document {}))
+  ([collection-path document]
+   (save-document! collection-path document {}))
 
-  ([collection-name document options]
-   (if-let [document (as-> document % (actions.checking/save-input %)
-                                      (actions.preparing/save-input collection-name % options)
+  ([collection-path document options]
+   (if-let [document (as-> document % (actions.prototyping/save-input collection-path % options)
+                                      (actions.checking/save-input %)
+                                      (actions.preparing/save-input collection-path % options)
                                       (actions.adaptation/save-input %))]
-           (if-let [result (actions.side-effects/save-and-return! collection-name document)]
+           (if-let [result (actions.side-effects/save-and-return! collection-path document)]
                    (actions.adaptation/save-output result)))))
 ```
 
@@ -1718,13 +1827,23 @@ Default: some?
 ### save-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (namespaced maps in vector) documents
+No need to be namespaced maps if using a prototype function that converts it!
 [{:namespace/id (string)(opt)}]
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on each input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on each input document first before any checking
+  or preparing. Must returns a namespaced map!}
+```
+
+```
+@usage
+(save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
 ```
 
 ```
@@ -1744,11 +1863,11 @@ Default: some?
 
 ```
 (defn save-documents!
-  ([collection-name documents]
-   (save-documents! collection-name documents {}))
+  ([collection-path documents]
+   (save-documents! collection-path documents {}))
 
-  ([collection-name documents options]
-   (vector/->items documents #(save-document! collection-name % options))))
+  ([collection-path documents options]
+   (vector/->items documents #(save-document! collection-path % options))))
 ```
 
 </details>
@@ -1770,12 +1889,17 @@ Default: some?
 ### update-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 {:namespace/id (string)(opt)}
 @param (map or namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 @param (map)(opt) options
-{:prepare-f (function)(opt)}
+{:prepare-f (function)(opt)
+  This function is applied on the input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on the input document first before any checking
+  or preparing. Must returns a namespaced map!}
 ```
 
 ```
@@ -1802,15 +1926,16 @@ Default: some?
 
 ```
 (defn update-document!
-  ([collection-name query document]
-   (update-document! collection-name query document {}))
+  ([collection-path query document]
+   (update-document! collection-path query document {}))
 
-  ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
-                                               (actions.preparing/update-input collection-name % options)
+  ([collection-path query document options]
+   (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
+                                               (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-path % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.side-effects/update! collection-name query document {:multi false :upsert false})]
+                            (let [result (actions.side-effects/update! collection-path query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1833,12 +1958,17 @@ Default: some?
 ### update-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 {:namespace/id (string)(opt)}
 @param (namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 @param (map)(opt) options
-{:prepare-f (function)(opt)}
+{:prepare-f (function)(opt)
+  This function is applied on each input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on each input document first before any checking
+  or preparing. Must returns a namespaced map!}
 ```
 
 ```
@@ -1865,15 +1995,16 @@ Default: some?
 
 ```
 (defn update-documents!
-  ([collection-name query document]
-   (update-documents! collection-name query document {}))
+  ([collection-path query document]
+   (update-documents! collection-path query document {}))
 
-  ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/update-input %)
-                                               (actions.preparing/update-input collection-name % options)
+  ([collection-path query document options]
+   (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
+                                               (actions.checking/update-input %)
+                                               (actions.preparing/update-input collection-path % options)
                                                (actions.adaptation/update-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.side-effects/update! collection-name query document {:multi true :upsert false})]
+                            (let [result (actions.side-effects/update! collection-path query document {:multi true :upsert false})]
                                  (mrt/updated-existing? result)))))))
 ```
 
@@ -1896,13 +2027,18 @@ Default: some?
 ### upsert-document!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 @param (map or namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
   Default: false
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on the input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on the input document first before any checking
+  or preparing. Must returns a namespaced map!}
 ```
 
 ```
@@ -1929,15 +2065,16 @@ Default: some?
 
 ```
 (defn upsert-document!
-  ([collection-name query document]
-   (upsert-document! collection-name query document {}))
+  ([collection-path query document]
+   (upsert-document! collection-path query document {}))
 
-  ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
-                                               (actions.preparing/upsert-input collection-name % options)
+  ([collection-path query document options]
+   (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
+                                               (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-path % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.side-effects/upsert! collection-name query document {:multi false})]
+                            (let [result (actions.side-effects/upsert! collection-path query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
 ```
 
@@ -1960,12 +2097,17 @@ Default: some?
 ### upsert-documents!
 
 ```
-@param (string) collection-name
+@param (string) collection-path
 @param (map) query
 @param (namespaced map) document
+No need to be a namespaced map if using a prototype function that converts it!
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
- :prepare-f (function)(opt)}
+ :prepare-f (function)(opt)
+  This function is applied on each input document right before writing.
+ :prototype-f (function)(opt)
+  This function is applied on each input document first before any checking
+  or preparing. Must returns a namespaced map!}
 ```
 
 ```
@@ -1992,15 +2134,16 @@ Default: some?
 
 ```
 (defn upsert-documents!
-  ([collection-name query document]
-   (upsert-documents! collection-name query document {}))
+  ([collection-path query document]
+   (upsert-documents! collection-path query document {}))
 
-  ([collection-name query document options]
-   (boolean (if-let [document (as-> document % (actions.checking/upsert-input %)
-                                               (actions.preparing/upsert-input collection-name % options)
+  ([collection-path query document options]
+   (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
+                                               (actions.checking/upsert-input %)
+                                               (actions.preparing/upsert-input collection-path % options)
                                                (actions.adaptation/upsert-input %))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
-                            (let [result (actions.side-effects/upsert! collection-name query document {:multi true})]
+                            (let [result (actions.side-effects/upsert! collection-path query document {:multi true})]
                                  (mrt/acknowledged? result)))))))
 ```
 
