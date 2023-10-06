@@ -57,6 +57,8 @@
 
 - [insert-documents!](#insert-documents)
 
+- [query<-namespace](#query-namespace)
+
 - [remove-all-documents!](#remove-all-documents)
 
 - [remove-document!](#remove-document)
@@ -610,6 +612,11 @@ If no database name passed it checks the only stored database reference.
 ---
 
 ### generate-id
+
+```
+@description
+Returns a randomly generated ObjectId for documents.
+```
 
 ```
 @usage
@@ -1551,6 +1558,75 @@ No need to be namespaced maps if using a prototype function that converts it!
 
 (mongo-db.api/insert-documents! ...)
 (insert-documents!              ...)
+```
+
+</details>
+
+---
+
+### query<-namespace
+
+```
+@description
+Recursively applies the given namespace on every key in the given query
+except for operator keys.
+```
+
+```
+@param (map) query
+@param (keyword) namespace
+```
+
+```
+@usage
+(query<-namespace {:id         "MyObjectId"
+                   :my-keyword :my-value
+                   :$or        [{:id "YourObjectId"}]}
+                  :my-namespace)
+```
+
+```
+@usage
+{:my-namespace/id         "MyObjectId"
+ :my-namespace/my-keyword :my-value
+ :$or                     [{:my-namespace/id "YourObjectId"}]}
+```
+
+```
+@example
+(query<-namespace {:id         "MyObjectId"
+                   :my-keyword :my-value
+                   :$or        [{:id "YourObjectId"}]}
+                  :my-namespace)
+=>
+```
+
+```
+@return (namespaced map)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn query<-namespace
+  [query namespace]
+  (letfn [(f [k] (if (operator?             k)
+                     (return                k)
+                     (keyword/add-namespace k namespace)))]
+         (map/->>keys query f)))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [query<-namespace]]))
+
+(mongo-db.api/query<-namespace ...)
+(query<-namespace              ...)
 ```
 
 </details>

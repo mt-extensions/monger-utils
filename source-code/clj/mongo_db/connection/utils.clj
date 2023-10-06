@@ -11,11 +11,15 @@
 (defn default-database-name
   ; @ignore
   ;
+  ; @description
+  ; Returns the only connected database's name as default database name in case
+  ; of only one database connected, otherwise it throws an error.
+  ;
   ; @return (string)
   []
   (let [connection-count (-> @connection.state/REFERENCES keys count)]
-       (case connection-count 0 (throw (Exception. core.errors/MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR))
-                              1 (-> @connection.state/REFERENCES keys first)
+       (case connection-count 1 (-> @connection.state/REFERENCES keys first)
+                              0 (throw (Exception. core.errors/MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR))
                                 (throw (Exception. core.errors/MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR)))))
 
 (defn collection-path->database-name
@@ -33,14 +37,14 @@
   ; (collection-path->database-name "my-database/my_collection")
   ;
   ; @example
-  ; (collection-path->database-name "my_collection")
-  ; =>
-  ; "the-only-connected-database-name"
-  ;
-  ; @example
   ; (collection-path->database-name "my-database/my_collection")
   ; =>
   ; "my-database"
+  ;
+  ; @example
+  ; (collection-path->database-name "my_collection")
+  ; =>
+  ; "the-only-connected-database-name"
   ;
   ; @return (string)
   [collection-path]

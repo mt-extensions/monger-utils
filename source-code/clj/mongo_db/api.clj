@@ -39,7 +39,8 @@
 (def build-connection! connection.side-effects/build-connection!)
 
 ; mongo-db.core.utils
-(def generate-id core.utils/generate-id)
+(def generate-id      core.utils/generate-id)
+(def query<-namespace core.utils/query<-namespace)
 
 ; mongo-db.reader.engine
 (def get-collection-names        reader.engine/get-collection-names)

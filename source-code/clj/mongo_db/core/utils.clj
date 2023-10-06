@@ -23,7 +23,8 @@
   ; @return (boolean)
   [n]
   (and (keyword? n)
-       (-> n second str (= "$"))))
+       ; In Java language only one character long string could be character types!
+       (-> n str second str (= "$"))))
 
 (defn document?
   ; @ignore
@@ -61,6 +62,9 @@
 ;; ----------------------------------------------------------------------------
 
 (defn generate-id
+  ; @description
+  ; Returns a randomly generated ObjectId for documents.
+  ;
   ; @usage
   ; (generate-id)
   ;
@@ -213,3 +217,38 @@
   (if-let [namespace (map/get-namespace document)]
           (get document (keyword/add-namespace :order namespace))
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
+
+;; -- Query -------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
+
+(defn query<-namespace
+  ; @description
+  ; Recursively applies the given namespace on every key in the given query
+  ; except for operator keys.
+  ;
+  ; @param (map) query
+  ; @param (keyword) namespace
+  ;
+  ; @usage
+  ; (query<-namespace {:id         "MyObjectId"
+  ;                    :my-keyword :my-value
+  ;                    :$or        [{:id "YourObjectId"}]}
+  ;                   :my-namespace)
+  ;
+  ; @example
+  ; (query<-namespace {:id         "MyObjectId"
+  ;                    :my-keyword :my-value
+  ;                    :$or        [{:id "YourObjectId"}]}
+  ;                   :my-namespace)
+  ; =>
+  ; @usage
+  ; {:my-namespace/id         "MyObjectId"
+  ;  :my-namespace/my-keyword :my-value
+  ;  :$or                     [{:my-namespace/id "YourObjectId"}]}
+  ;
+  ; @return (namespaced map)
+  [query namespace]
+  (letfn [(f [k] (if (operator?             k)
+                     (return                k)
+                     (keyword/add-namespace k namespace)))]
+         (map/->>keys query f)))
