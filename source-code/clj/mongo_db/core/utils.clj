@@ -223,11 +223,13 @@
 
 (defn query<-namespace
   ; @description
-  ; Recursively applies the given namespace on every key in the given query
-  ; except for operator keys.
+  ; Applies the given namespace on every key in the given query except for operator keys.
   ;
   ; @param (map) query
   ; @param (keyword) namespace
+  ; @param (map)(opt) options
+  ; {:recur? (boolean)(opt)
+  ;   Default: false}
   ;
   ; @usage
   ; (query<-namespace {:id         "MyObjectId"
@@ -241,14 +243,57 @@
   ;                    :$or        [{:id "YourObjectId"}]}
   ;                   :my-namespace)
   ; =>
-  ; @usage
   ; {:my-namespace/id         "MyObjectId"
   ;  :my-namespace/my-keyword :my-value
-  ;  :$or                     [{:my-namespace/id "YourObjectId"}]}
+  ;  :$or                     [{:id "YourObjectId"}]}
+  ;
+  ; @example
+  ; (query<-namespace {:id         "MyObjectId"
+  ;                    :my-keyword :my-value
+  ;                    :my-map     {:id "YourObjectId"}}
+  ;                   :my-namespace
+  ;                   {:recur? true})
+  ; =>
+  ; {:my-namespace/id         "MyObjectId"
+  ;  :my-namespace/my-keyword :my-value
+  ;  :my-namespace/my-map     {:my-namespace/id "YourObjectId"}}
   ;
   ; @return (namespaced map)
-  [query namespace]
-  (letfn [(f [k] (if (operator?             k)
-                     (return                k)
-                     (keyword/add-namespace k namespace)))]
-         (map/->>keys query f)))
+  ([query namespace]
+   (query<-namespace query namespace {}))
+
+  ([query namespace {:keys [recur?]}]
+   (letfn [(f [k] (if (operator?             k)
+                      (return                k)
+                      (keyword/add-namespace k namespace)))]
+          (if recur? (map/->>keys query f)
+                     (map/->keys  query f)))))
+
+(defn flatten-query
+  ; @description
+  ; Flattens the given query by collapsing its nested fields.
+  ;
+  ; @param (map) query
+  ;
+  ; @usage
+  ; (flatten-query {:user {:id "MyObjectId"}})
+  ;
+  ; @example
+  ; (flatten-query {:user {:id "MyObjectId"}})
+  ; =>
+  ; {:user.id "MyObjectId"}
+  ;
+  ; @example
+  ; (flatten-query {:user {:id "MyObjectId"}
+  ;                 :$or [{:user {:id "MyObjectId"}}]})
+  ; =>
+  ; {:user.id "MyObjectId"
+  ;  :$or [{:user.id "MyObjectId"}]}
+  ;
+  ; @return (map)
+  [query]
+  (letfn [(except-f [k _] (operator? k))]
+         (let [collapsed-query (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f})]
+              (if-let [namespace (map/get-namespace query)]
+                      (query<-namespace collapsed-query namespace {:recur? true})
+                      (return           collapsed-query)))))
