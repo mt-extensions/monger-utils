@@ -2,8 +2,8 @@
 {:paths ["source-code/clj"]
  :deps  {com.novemberain/monger    {:mvn/version "3.5.0"}
          bithandshake/cljc-fruits  {:git/url "https://github.com/bithandshake/cljc-fruits"
-                                    :sha     "4fe12063519a4481afaeb2fe0e28efb3b8bcf4f7"}
+                                    :sha     "ed537ecefe71ad66b972ef14fb0827dbe38d943d"}
          bithandshake/re-frame-api {:git/url "https://github.com/bithandshake/re-frame-api"
-                                    :sha     "4613507d409703432bc52d1fa789183a191267c8"}
+                                    :sha     "c1cfe0ab80081728888c24162041eee575053877"}
          bithandshake/time-api     {:git/url "https://github.com/bithandshake/time-api"
                                     :sha     "a29aea7c473eb9bc1636103575dc72501932e488"}}}

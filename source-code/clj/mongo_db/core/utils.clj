@@ -12,6 +12,7 @@
 
 (defn operator?
   ; @ignore
+  ; Checks wheter a value is a keyword representing a MongoDB operator.
   ;
   ; @param (*) n
   ;
@@ -26,30 +27,11 @@
        ; In Java language only one character long string could be character types!
        (-> n str second str (= "$"))))
 
-(defn document?
-  ; @ignore
-  ;
-  ; @param (*) n
-  ;
-  ; @example
-  ; (document? {:namespace/my-key "..."})
-  ; =>
-  ; false
-  ;
-  ; @example
-  ; (document? {:namespace/my-key "..."
-  ;             :namespace/id     "..."})
-  ; =>
-  ; true
-  ;
-  ; @return (boolean)
-  [n]
-  (and (-> n map?)
-       (if-let [namespace (map/get-namespace n)]
-               (get n (keyword/add-namespace :id namespace)))))
-
 (defn DBObject->edn
   ; @ignore
+  ;
+  ; @description
+  ; Converts a MongoDB database object (DBObject) into an EDN map.
   ;
   ; @param (DBObject) n
   ;
@@ -75,6 +57,9 @@
 (defn assoc-id
   ; @ignore
   ;
+  ; @description
+  ; Generates a unique ObjectId and associates it to the document with the appropriate namespace.
+  ;
   ; @param (map) n
   ;
   ; @example
@@ -92,6 +77,9 @@
 (defn dissoc-id
   ; @ignore
   ;
+  ; @description
+  ; Removes the ID associated with a document.
+  ;
   ; @param (map) n
   ; {:namespace/id (string)(opt)}
   ;
@@ -108,6 +96,11 @@
 
 (defn id->_id
   ; @ignore
+  ;
+  ; @description
+  ; Transforms a map that contains an ID within a specified namespace into a map
+  ; with an '_id' field. It optionally parses the ID value as an ObjectId object
+  ; when the 'parse?' option is true.
   ;
   ; @param (map) n
   ; {:namespace/id (*)(opt)}
@@ -146,6 +139,11 @@
 (defn _id->id
   ; @ignore
   ;
+  ; @description
+  ; Transforms a map that contains an '_id' field, into a map with the ID value
+  ; placed within a specified namespace. It optionally unparse the '_id' value
+  ; as a string when the 'unparse?' option is true.
+  ;
   ; @param (map) n
   ; {:_id (*)(opt)}
   ; @param (map)(opt) options
@@ -163,7 +161,7 @@
    (_id->id n {}))
 
   ([n {:keys [unparse?]}]
-   ; The n map (given as a parameter) doesn't have to contain the :_id key!
+   ; The given n map doesn't have to contain the :_id key!
    (if-let [namespace (map/get-namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n :_id)]
@@ -177,6 +175,9 @@
 
 (defn id->>_id
   ; @ignore
+  ;
+  ; @description
+  ; Recursively applies the 'id->_id' function on the given 'n' map.
   ;
   ; @param (*) n
   ; {:namespace/id (string)(opt)}
@@ -196,7 +197,7 @@
 
   ([n options]
    (cond (map?    n) (reduce-kv #(assoc %1 %2 (id->>_id %3 options)) {} (id->_id n options))
-         (vector? n) (reduce    #(conj  %1    (id->>_id %2 options)) []          n)
+         (vector? n) (reduce    #(conj  %1    (id->>_id %2 options)) [] n)
          :return  n)))
 
 ;; -- Document order ----------------------------------------------------------
@@ -204,6 +205,10 @@
 
 (defn document->order
   ; @ignore
+  ;
+  ; @description
+  ; Extracts the order value from a document. It looks for the order value within
+  ; the specified namespace and returns it as an integer.
   ;
   ; @param (namespaced map) document
   ;
@@ -223,7 +228,9 @@
 
 (defn query<-namespace
   ; @description
-  ; Applies the given namespace on every key in the given query except for operator keys.
+  ; Applies the given namespace to every key in the given query excluding keys that are operators.
+  ; It supports optional recursive application of the namespace to nested maps when
+  ; the 'recur?' option is true.
   ;
   ; @param (map) query
   ; @param (keyword) namespace
@@ -271,7 +278,9 @@
 
 (defn flatten-query
   ; @description
-  ; Flattens the given query by collapsing its nested fields.
+  ; Takes a query map as input and flattens it by collapsing nested fields into
+  ; a flat map structure. It returns a new map where nested fields are represented
+  ; using dot notation.
   ;
   ; @param (map) query
   ;

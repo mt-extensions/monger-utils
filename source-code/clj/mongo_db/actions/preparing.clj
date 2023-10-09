@@ -22,9 +22,9 @@
   ; @return (namespaced map)
   ; {:namespace/order (integer)}
   [collection-path document _]
-  ; Az upsert-input, save-input, ... függvények is az insert-input függvényt használják
-  ; a dokumentum előkészítésére ezért ha a dokumentum már rendelkezik namespace/order
-  ; értékkel, akkor nem változtat rajta.
+  ; The 'upsert-input', 'save-input', and other functions also use the 'insert-input'
+  ; function to prepare the given document, so if the document already has a ':namespace/order'
+  ; value, it does not change the value.
   (if-let [namespace (map/get-namespace document)]
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
@@ -127,9 +127,9 @@
   ;
   ; @return (string)
   [_ document {:keys [changes]}]
-  ; Ha a dokumentum kliens-oldali változata esetlegesen el nem mentett változtatásokat tartalmaz,
-  ; akkor a változtatások a {:changes ...} tulajdonság értékeként megadhatók és a dokumentumról
-  ; készülő másolat tartalmazni fogja őket.
+  ; If the client-side version of the document contains unsaved changes,
+  ; these changes can be provided as values of the {:changes ...} property,
+  ; and the copy document will include them.
   (merge document changes))
 
 (defn- labeled-duplicate-input

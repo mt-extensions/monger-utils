@@ -13,6 +13,15 @@
 (defn document-id-input
   ; @ignore
   ;
+  ; @description
+  ; Designed to handle cases where the document ID may come from user input,
+  ; and if the input is not a valid ObjectId, it doesn't raise an exception but
+  ; instead returns NIL.
+  ;
+  ; In some cases, the source of a document ID can be a URL entered into
+  ; the browser's address bar. This URL might contain values that cannot
+  ; be converted into valid ObjectId objects.
+  ;
   ; @param (string) document-id
   ;
   ; @example
@@ -23,13 +32,10 @@
   ; @return (org.bson.types.ObjectId object)
   [document-id]
   (try (ObjectId. document-id)
-      ; A document-id azonosító forrása egyes esetekben a böngésző címsorába írt url lehet,
-      ; ami lehetővé teszi, hogy ObjectId objektummá nem alakítható érték is átadódhat
-      ; a document-id-input függvénynek.
-      ; A document-id-input függvény hibakiíratása azért van kikapcsolva, hogy
-      ; a felhasználóktól érkező lekérésekben lévő esetlegesen hibás document-id azonosítók
-      ; miatt ne jelenítsen meg feleslegesen hibaüzeneteket.
-      ;(catch Exception e (println (str e "\n" {:document-id document-id})))
+       ; By disabling error messages in the function, it prevents unnecessary
+       ; error messages from being displayed in cases where the document ID
+       ; provided is not a valid ObjectId.
+       ; (catch Exception e (println (str e "\n" {:document-id document-id})))
        (catch Exception e nil)))
 
 ;; -- Find document -----------------------------------------------------------

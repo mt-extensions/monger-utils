@@ -312,7 +312,7 @@
   ;   Default: "en"
   ;   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on the output document.}
+  ;   This function is applied on each output document.}
   ;
   ; @usage
   ; (get-documents-by-pipeline "my_collection" [...])

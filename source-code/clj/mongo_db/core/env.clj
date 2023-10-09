@@ -9,6 +9,11 @@
 ;; ----------------------------------------------------------------------------
 
 (defn command
+  ; @description
+  ; Allows you to send commands to a database. It takes an optional database-name.
+  ; If a database reference is found, it attempts to execute the specified command
+  ; with the provided options.
+  ;
   ; @param (string)(opt) database-name
   ; @param (map) options
   ; {:warn? (boolean)(opt)
