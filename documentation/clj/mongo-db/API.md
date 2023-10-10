@@ -25,6 +25,8 @@
 
 - [duplicate-documents!](#duplicate-documents)
 
+- [flatten-query](#flatten-query)
+
 - [generate-id](#generate-id)
 
 - [get-all-document-count](#get-all-document-count)
@@ -82,15 +84,22 @@
 ### apply-on-collection!
 
 ```
+@description
+Applies the given function on every document in a collection.
+You can apply custom functions for preparing and postparing each document.
+Returns the updated documents in a vector.
+```
+
+```
 @param (string) collection-path
 @param (function) f
 @param (map)(opt) options
 {:postpare-f (function)(opt)
-  This function is applied on each input document right AFTER the passed 'f'
-  function is being applied and right before writing.
+  This function is applied on each input document AFTER the passed 'f'
+  function is applied and before the writing.
  :prepare-f (function)(opt)
-  This function is applied on each input document right BEFORE the passed 'f'
-  function is being applied.}
+  This function is applied on each input document BEFORE the passed 'f'
+  function is applied.}
 ```
 
 ```
@@ -139,16 +148,23 @@
 ### apply-on-document!
 
 ```
+@description
+Applies the given function on a document.
+You can apply custom functions for preparing and postparing the document.
+Returns the updated document.
+```
+
+```
 @param (string) collection-path
 @param (string) document-id
 @param (function) f
 @param (map)(opt) options
 {:postpare-f (function)(opt)
-  This function is applied on the input document right AFTER the passed 'f'
-  function is being applied and right before writing.
+  This function is applied on the input document AFTER the passed 'f'
+  function is applied and before the writing.
  :prepare-f (function)(opt)
-  This function is applied on the input document right BEFORE the passed 'f'
-  function is being applied.}
+  This function is applied on the input document BEFORE the passed 'f'
+  function is applied.}
 ```
 
 ```
@@ -481,18 +497,27 @@ If no database name passed it checks the only stored database reference.
 ### duplicate-document!
 
 ```
+@description
+Duplicates a document in a collection.
+Returns the copy document if the duplicating was successful.
+```
+
+```
 @param (string) collection-path
 @param (string) document-id
 @param (map)(opt) options
 {:changes (namespaced map)(opt)
+  The copy document will include the provided changes.
  :label-key (namespaced keyword)(opt)
-  Which key of the document gets the copy marker appended to its value.
+  Which key of the copy document gets the copy marker ("#2", "#3", etc.)
+  appended to its value.
  :ordered? (boolean)(opt)
+  Set to TRUE when duplicating a document in an ordered collection!
   Default: false
  :postpare-f (function)(opt)
-  This function is applied on the copy document right before writing.
+  This function is applied on the copy document before the writing.
  :prepare-f (function)(opt)
-  This function is applied on the copy document right after it is derived from the original document.}
+  This function is applied on the copy document after it is derived from the original document.}
 ```
 
 ```
@@ -551,20 +576,29 @@ If no database name passed it checks the only stored database reference.
 ### duplicate-documents!
 
 ```
+@description
+Duplicates multiple documents in a collection.
+Returns the copy documents in a vector if the duplicating was successful.
+```
+
+```
 @param (string) collection-path
 @param (strings in vector) document-ids
 @param (map)(opt) options
 {:label-key (namespaced keyword)(opt)
-  Which key of the documents gets the copy marker appended to its value.
+  Which key of the copy documents gets the copy marker ("#2", "#3", etc.)
+  appended to its value.
  :ordered? (boolean)(opt)
+  Set to TRUE when duplicating documents in an ordered collection!
   Default: false
  :postpare-f (function)(opt)
-  This function is applied on each copy document right before writing.
+  This function is applied on each copy document before the writing.
  :prepare-f (function)(opt)
-  This function is applied on each copy document right after they are derived from the original documents.
+  This function is applied on each copy document after they are derived from
+  the original documents.
  :prototype-f (function)(opt)
-  This function is applied on each input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  This function is applied on each input document before checking or preparing.
+  Must returns a namespaced map!}
 ```
 
 ```
@@ -605,6 +639,73 @@ If no database name passed it checks the only stored database reference.
 
 (mongo-db.api/duplicate-documents! ...)
 (duplicate-documents!              ...)
+```
+
+</details>
+
+---
+
+### flatten-query
+
+```
+@description
+Takes a query map as input and flattens it by collapsing nested fields into
+a flat map structure. It returns a new map where nested fields are represented
+using dot notation.
+```
+
+```
+@param (map) query
+```
+
+```
+@usage
+(flatten-query {:user {:id "MyObjectId"}})
+```
+
+```
+@example
+(flatten-query {:user {:id "MyObjectId"}})
+=>
+{:user.id "MyObjectId"}
+```
+
+```
+@example
+(flatten-query {:user {:id "MyObjectId"}
+                :$or [{:user {:id "MyObjectId"}}]})
+=>
+{:user.id "MyObjectId"
+ :$or [{:user.id "MyObjectId"}]}
+```
+
+```
+@return (map)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn flatten-query
+  [query]
+  (letfn [(except-f [k _] (operator? k))]
+         (let [collapsed-query (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f})]
+              (if-let [namespace (map/get-namespace query)]
+                      (query<-namespace collapsed-query namespace {:recur? true})
+                      (return           collapsed-query)))))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [flatten-query]]))
+
+(mongo-db.api/flatten-query ...)
+(flatten-query              ...)
 ```
 
 </details>
@@ -1082,7 +1183,7 @@ Returns a randomly generated ObjectId for documents.
   Default: "en"
   https://www.mongodb.com/docs/manual/reference/collation-locales-defaults
  :prototype-f (function)(opt)
-  This function is applied on the output document.}
+  This function is applied on each output document.}
 ```
 
 ```
@@ -1438,12 +1539,21 @@ Default: some?
 ### insert-document!
 
 ```
+@description
+Inserts a document into a collection.
+You can apply custom functions for preparing and prototyping the document.
+Returns the inserted document.
+```
+
+```
 @param (string) collection-path
 @param (namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 {:namespace/id (string)(opt)}
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when inserting a document into an ordered collection!
   Default: false
  :prepare-f (function)(opt)
   This function is applied on the input document right before writing.
@@ -1505,12 +1615,21 @@ No need to be a namespaced map if using a prototype function that converts it!
 ### insert-documents!
 
 ```
+@description
+Inserts multiple documents into a collection.
+You can apply custom functions for preparing and prototyping each document.
+Returns the inserted documents in a vector.
+```
+
+```
 @param (string) collection-path
 @param (namespaced maps in vector) documents
-No need to be namespaced maps if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 [{:namespace/id (string)(opt)}]
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when inserting documents into an ordered collection!
   Default: false
  :prepare-f (function)(opt)
   This function is applied on each input document right before writing.
@@ -1568,13 +1687,17 @@ No need to be namespaced maps if using a prototype function that converts it!
 
 ```
 @description
-Recursively applies the given namespace on every key in the given query
-except for operator keys.
+Applies the given namespace to every key in the given query excluding keys that are operators.
+It supports optional recursive application of the namespace to nested maps when
+the 'recur?' option is true.
 ```
 
 ```
 @param (map) query
 @param (keyword) namespace
+@param (map)(opt) options
+{:recur? (boolean)(opt)
+  Default: false}
 ```
 
 ```
@@ -1583,13 +1706,6 @@ except for operator keys.
                    :my-keyword :my-value
                    :$or        [{:id "YourObjectId"}]}
                   :my-namespace)
-```
-
-```
-@usage
-{:my-namespace/id         "MyObjectId"
- :my-namespace/my-keyword :my-value
- :$or                     [{:my-namespace/id "YourObjectId"}]}
 ```
 
 ```
@@ -1599,6 +1715,22 @@ except for operator keys.
                    :$or        [{:id "YourObjectId"}]}
                   :my-namespace)
 =>
+{:my-namespace/id         "MyObjectId"
+ :my-namespace/my-keyword :my-value
+ :$or                     [{:id "YourObjectId"}]}
+```
+
+```
+@example
+(query<-namespace {:id         "MyObjectId"
+                   :my-keyword :my-value
+                   :my-map     {:id "YourObjectId"}}
+                  :my-namespace
+                  {:recur? true})
+=>
+{:my-namespace/id         "MyObjectId"
+ :my-namespace/my-keyword :my-value
+ :my-namespace/my-map     {:my-namespace/id "YourObjectId"}}
 ```
 
 ```
@@ -1610,11 +1742,15 @@ except for operator keys.
 
 ```
 (defn query<-namespace
-  [query namespace]
-  (letfn [(f [k] (if (operator?             k)
-                     (return                k)
-                     (keyword/add-namespace k namespace)))]
-         (map/->>keys query f)))
+  ([query namespace]
+   (query<-namespace query namespace {}))
+
+  ([query namespace {:keys [recur?]}]
+   (letfn [(f [k] (if (operator?             k)
+                      (return                k)
+                      (keyword/add-namespace k namespace)))]
+          (if recur? (map/->>keys query f)
+                     (map/->keys  query f)))))
 ```
 
 </details>
@@ -1634,6 +1770,12 @@ except for operator keys.
 ---
 
 ### remove-all-documents!
+
+```
+@description
+Removes all documents from a collection.
+Returns the document IDs (?) in a vector if the removal was successful.
+```
 
 ```
 @param (string) collection-path
@@ -1676,10 +1818,17 @@ except for operator keys.
 ### remove-document!
 
 ```
+@description
+Removes a document from a collection.
+Returns the document ID if the removal was successful.
+```
+
+```
 @param (string) collection-path
 @param (string) document-id
 @param (map)(opt) options
 {:ordered? (boolean)
+  Set to TRUE when removing a document from an ordered collection!
   Default: false}
 ```
 
@@ -1731,10 +1880,17 @@ except for operator keys.
 ### remove-documents!
 
 ```
+@description
+Removes multiple documents from a collection.
+Returns the document IDs in a vector if the removal was successful.
+```
+
+```
 @param (string) collection-path
 @param (strings in vector) document-ids
 @param (map)(opt) options
 {:ordered? (boolean)
+  Set to TRUE when removing documents from an ordered collection!
   Default: false}
 ```
 
@@ -1783,6 +1939,12 @@ except for operator keys.
 ---
 
 ### reorder-documents!
+
+```
+@description
+Reorders documents in a collection.
+Returns the (?).
+```
 
 ```
 @param (string) collection-path
@@ -1836,12 +1998,21 @@ except for operator keys.
 ### save-document!
 
 ```
+@description
+Saves a document to a collection.
+You can apply custom functions for preparing and prototyping the document.
+Returns the saved document.
+```
+
+```
 @param (string) collection-path
 @param (namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 {:namespace/id (string)(opt)}
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when saving a document to an ordered collection!
   Default: false
  :prepare-f (function)(opt)
   This function is applied on the input document right before writing.
@@ -1903,12 +2074,21 @@ No need to be a namespaced map if using a prototype function that converts it!
 ### save-documents!
 
 ```
+@description
+Saves multiple documents to a collection.
+You can apply custom functions for preparing and prototyping each document.
+Returns the saved documents in a vector.
+```
+
+```
 @param (string) collection-path
 @param (namespaced maps in vector) documents
-No need to be namespaced maps if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 [{:namespace/id (string)(opt)}]
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when saving documents to an ordered collection!
   Default: false
  :prepare-f (function)(opt)
   This function is applied on each input document right before writing.
@@ -1965,11 +2145,19 @@ No need to be namespaced maps if using a prototype function that converts it!
 ### update-document!
 
 ```
+@description
+Updates a document in a collection found by the given query.
+You can apply custom functions for preparing and prototyping the document.
+Returns a boolean indicating whether the update was successful.
+```
+
+```
 @param (string) collection-path
 @param (map) query
 {:namespace/id (string)(opt)}
 @param (map or namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 @param (map)(opt) options
 {:prepare-f (function)(opt)
   This function is applied on the input document right before writing.
@@ -2034,11 +2222,19 @@ No need to be a namespaced map if using a prototype function that converts it!
 ### update-documents!
 
 ```
+@description
+Updates multiple documents in a collection found by the given query.
+You can apply custom functions for preparing and prototyping each document.
+Returns a boolean indicating whether the update was successful.
+```
+
+```
 @param (string) collection-path
 @param (map) query
 {:namespace/id (string)(opt)}
 @param (namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 @param (map)(opt) options
 {:prepare-f (function)(opt)
   This function is applied on each input document right before writing.
@@ -2103,12 +2299,21 @@ No need to be a namespaced map if using a prototype function that converts it!
 ### upsert-document!
 
 ```
+@description
+Updates or inserts a document in or into a collection found by the given query.
+You can apply custom functions for preparing and prototyping the document.
+Returns a boolean indicating whether the updating/inserting was successful.
+```
+
+```
 @param (string) collection-path
 @param (map) query
 @param (map or namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when upserting a document into an ordered collection!
   Default: false
  :prepare-f (function)(opt)
   This function is applied on the input document right before writing.
@@ -2173,12 +2378,22 @@ No need to be a namespaced map if using a prototype function that converts it!
 ### upsert-documents!
 
 ```
+@description
+Updates or inserts multiple documents in or into a collection found by the
+given query.
+You can apply custom functions for preparing and prototyping each document.
+Returns a boolean indicating whether the updating/inserting was successful.
+```
+
+```
 @param (string) collection-path
 @param (map) query
 @param (namespaced map) document
-No need to be a namespaced map if using a prototype function that converts it!
+No need to be a namespaced map if using a prototype function that converts it
+into a namespaced form!
 @param (map)(opt) options
 {:ordered? (boolean)(opt)
+  Set to TRUE when upserting documents into an ordered collection!
  :prepare-f (function)(opt)
   This function is applied on each input document right before writing.
  :prototype-f (function)(opt)
