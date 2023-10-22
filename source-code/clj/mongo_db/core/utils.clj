@@ -12,7 +12,7 @@
 
 (defn operator?
   ; @ignore
-  ; Checks wheter a value is a keyword representing a MongoDB operator.
+  ; Checks whether a value is a keyword representing a MongoDB operator.
   ;
   ; @param (*) n
   ;
@@ -228,9 +228,22 @@
 
 (defn query<-namespace
   ; @description
-  ; Applies the given namespace to every key in the given query excluding keys that are operators.
-  ; It supports optional recursive application of the namespace to nested maps when
-  ; the 'recur?' option is true.
+  ; Applies the given namespace to every key in the given query excluding keys
+  ; that are operators.
+  ;
+  ; It supports optional recursive application of the namespace to nested maps
+  ; when the 'recur?' option is set to TRUE.
+  ;
+  ; Using the dot notation could lead to multi-namespaced keywords therefore
+  ; this function applies the given namespace by simply prepending it to keys
+  ; without changing the key's structure:
+  ;
+  ; (query<-namespace {:a/b.c/d.e/f "My string"} :my-namespace)
+  ; =>
+  ; {:my-namespace/a/b.c/d.e/f "My string"}
+  ;
+  ; Using multi-namespaced keywords could be a problem with future versions of Clojure!
+  ; https://clojuredocs.org/clojure.core/keyword
   ;
   ; @param (map) query
   ; @param (keyword) namespace
@@ -270,39 +283,57 @@
    (query<-namespace query namespace {}))
 
   ([query namespace {:keys [recur?]}]
-   (letfn [(f [k] (if (operator?             k)
-                      (return                k)
-                      (keyword/add-namespace k namespace)))]
+   (letfn [(f [k] (if (operator? k)
+                      (return    k)
+
+                      ; It prepends the given namespace to the key without changing
+                      ; the key's structure, because it might be a multi-namespaced
+                      ; keyword (using the dot notation could lead to multi-namespaced
+                      ; keywords).
+                      (as-> k % (str  %)
+                                (subs % 1)
+                                (str (name namespace) "/" %))))]
+
           (if recur? (map/->>keys query f)
                      (map/->keys  query f)))))
 
-(defn flatten-query
+(defn apply-dot-notation
   ; @description
-  ; Takes a query map as input and flattens it by collapsing nested fields into
-  ; a flat map structure. It returns a new map where nested fields are represented
-  ; using dot notation.
+  ; Takes a nested query map as input and flattens it by collapsing nested fields
+  ; into a flat map structure that corresponds to the dot notation.
+  ; It returns a new map where nested fields are represented using dot notation.
+  ;
+  ; https://www.mongodb.com/docs/manual/core/document/#dot-notation
   ;
   ; @param (map) query
   ;
   ; @usage
-  ; (flatten-query {:user {:id "MyObjectId"}})
+  ; (apply-dot-notation {:user {:id "MyObjectId"}})
   ;
   ; @example
-  ; (flatten-query {:user {:id "MyObjectId"}})
+  ; (apply-dot-notation {:user {:id "MyObjectId"}})
   ; =>
   ; {:user.id "MyObjectId"}
   ;
   ; @example
-  ; (flatten-query {:user {:id "MyObjectId"}
-  ;                 :$or [{:user {:id "MyObjectId"}}]})
+  ; (apply-dot-notation {:user {:id "MyObjectId"}
+  ;                      :$or [{:user {:id "MyObjectId"}}]})
   ; =>
   ; {:user.id "MyObjectId"
   ;  :$or [{:user.id "MyObjectId"}]}
   ;
   ; @return (map)
   [query]
-  (letfn [(except-f [k _] (operator? k))]
-         (let [collapsed-query (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f})]
-              (if-let [namespace (map/get-namespace query)]
-                      (query<-namespace collapsed-query namespace {:recur? true})
-                      (return           collapsed-query)))))
+  (letfn [; The 'except-f' function provides exception rule for the 'map/collapse'
+          ; function in order to avoid collapsing operator keys in the given query.
+          (except-f [k _] (operator? k))]
+
+         ; The 'map/collapse' function collapses the nested map structure in the
+         ; given query to a flatten map structure where nested keys converted to
+         ; flatten keys separated with "." character.
+         ;
+         ; The output structure corresponds to the dot notation structure:
+         ; (map/collapse {:a {:b {:c "My value"}}} {...})
+         ; =>
+         ; {:a.b.c "My value"}
+         (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f :separator "."})))

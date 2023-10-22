@@ -5,6 +5,8 @@
 
 ### Index
 
+- [apply-dot-notation](#apply-dot-notation)
+
 - [apply-on-collection!](#apply-on-collection)
 
 - [apply-on-document!](#apply-on-document)
@@ -24,8 +26,6 @@
 - [duplicate-document!](#duplicate-document)
 
 - [duplicate-documents!](#duplicate-documents)
-
-- [flatten-query](#flatten-query)
 
 - [generate-id](#generate-id)
 
@@ -80,6 +80,72 @@
 - [upsert-document!](#upsert-document)
 
 - [upsert-documents!](#upsert-documents)
+
+### apply-dot-notation
+
+```
+@description
+Takes a nested query map as input and flattens it by collapsing nested fields
+into a flat map structure that corresponds to the dot notation.
+It returns a new map where nested fields are represented using dot notation.
+https://www.mongodb.com/docs/manual/core/document/#dot-notation
+```
+
+```
+@param (map) query
+```
+
+```
+@usage
+(apply-dot-notation {:user {:id "MyObjectId"}})
+```
+
+```
+@example
+(apply-dot-notation {:user {:id "MyObjectId"}})
+=>
+{:user.id "MyObjectId"}
+```
+
+```
+@example
+(apply-dot-notation {:user {:id "MyObjectId"}
+                     :$or [{:user {:id "MyObjectId"}}]})
+=>
+{:user.id "MyObjectId"
+ :$or [{:user.id "MyObjectId"}]}
+```
+
+```
+@return (map)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn apply-dot-notation
+  [query]
+  (letfn [          (except-f [k _] (operator? k))]
+
+         (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f :separator "."})))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [mongo-db.api :refer [apply-dot-notation]]))
+
+(mongo-db.api/apply-dot-notation ...)
+(apply-dot-notation              ...)
+```
+
+</details>
+
+---
 
 ### apply-on-collection!
 
@@ -598,7 +664,7 @@ Returns the copy documents in a vector if the duplicating was successful.
   the original documents.
  :prototype-f (function)(opt)
   This function is applied on each input document before checking or preparing.
-  Must returns a namespaced map!}
+  Must return a namespaced map!}
 ```
 
 ```
@@ -639,73 +705,6 @@ Returns the copy documents in a vector if the duplicating was successful.
 
 (mongo-db.api/duplicate-documents! ...)
 (duplicate-documents!              ...)
-```
-
-</details>
-
----
-
-### flatten-query
-
-```
-@description
-Takes a query map as input and flattens it by collapsing nested fields into
-a flat map structure. It returns a new map where nested fields are represented
-using dot notation.
-```
-
-```
-@param (map) query
-```
-
-```
-@usage
-(flatten-query {:user {:id "MyObjectId"}})
-```
-
-```
-@example
-(flatten-query {:user {:id "MyObjectId"}})
-=>
-{:user.id "MyObjectId"}
-```
-
-```
-@example
-(flatten-query {:user {:id "MyObjectId"}
-                :$or [{:user {:id "MyObjectId"}}]})
-=>
-{:user.id "MyObjectId"
- :$or [{:user.id "MyObjectId"}]}
-```
-
-```
-@return (map)
-```
-
-<details>
-<summary>Source code</summary>
-
-```
-(defn flatten-query
-  [query]
-  (letfn [(except-f [k _] (operator? k))]
-         (let [collapsed-query (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f})]
-              (if-let [namespace (map/get-namespace query)]
-                      (query<-namespace collapsed-query namespace {:recur? true})
-                      (return           collapsed-query)))))
-```
-
-</details>
-
-<details>
-<summary>Require</summary>
-
-```
-(ns my-namespace (:require [mongo-db.api :refer [flatten-query]]))
-
-(mongo-db.api/flatten-query ...)
-(flatten-query              ...)
 ```
 
 </details>
@@ -1559,7 +1558,7 @@ into a namespaced form!
   This function is applied on the input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on the input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -1635,7 +1634,7 @@ into a namespaced form!
   This function is applied on each input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on each input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -1687,9 +1686,18 @@ into a namespaced form!
 
 ```
 @description
-Applies the given namespace to every key in the given query excluding keys that are operators.
-It supports optional recursive application of the namespace to nested maps when
-the 'recur?' option is true.
+Applies the given namespace to every key in the given query excluding keys
+that are operators.
+It supports optional recursive application of the namespace to nested maps
+when the 'recur?' option is set to TRUE.
+Using the dot notation could lead to multi-namespaced keywords therefore
+this function applies the given namespace by simply prepending it to keys
+without changing the key's structure:
+(query<-namespace {:a/b.c/d.e/f "My string"} :my-namespace)
+=>
+{:my-namespace/a/b.c/d.e/f "My string"}
+Using multi-namespaced keywords could be a problem with future versions of Clojure!
+https://clojuredocs.org/clojure.core/keyword
 ```
 
 ```
@@ -1746,9 +1754,13 @@ the 'recur?' option is true.
    (query<-namespace query namespace {}))
 
   ([query namespace {:keys [recur?]}]
-   (letfn [(f [k] (if (operator?             k)
-                      (return                k)
-                      (keyword/add-namespace k namespace)))]
+   (letfn [(f [k] (if (operator? k)
+                      (return    k)
+
+                      (as-> k % (str  %)
+                                (subs % 1)
+                                (str (name namespace) "/" %))))]
+
           (if recur? (map/->>keys query f)
                      (map/->keys  query f)))))
 ```
@@ -2018,7 +2030,7 @@ into a namespaced form!
   This function is applied on the input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on the input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -2094,7 +2106,7 @@ into a namespaced form!
   This function is applied on each input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on each input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -2163,7 +2175,7 @@ into a namespaced form!
   This function is applied on the input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on the input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -2240,7 +2252,7 @@ into a namespaced form!
   This function is applied on each input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on each input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -2319,7 +2331,7 @@ into a namespaced form!
   This function is applied on the input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on the input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```
@@ -2398,7 +2410,7 @@ into a namespaced form!
   This function is applied on each input document right before writing.
  :prototype-f (function)(opt)
   This function is applied on each input document first before any checking
-  or preparing. Must returns a namespaced map!}
+  or preparing. Must return a namespaced map!}
 ```
 
 ```

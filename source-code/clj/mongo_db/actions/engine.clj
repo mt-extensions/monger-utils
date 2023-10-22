@@ -81,7 +81,7 @@
   ;   This function is applied on the input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -130,7 +130,7 @@
   ;   This function is applied on each input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
@@ -170,7 +170,7 @@
   ;   This function is applied on the input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -216,7 +216,7 @@
   ;   This function is applied on each input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
@@ -254,7 +254,7 @@
   ;   This function is applied on the input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -299,7 +299,7 @@
   ;   This function is applied on each input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -348,7 +348,7 @@
   ;   This function is applied on the input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -395,7 +395,7 @@
   ;   This function is applied on each input document right before writing.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must returns a namespaced map!}
+  ;   or preparing. Must return a namespaced map!}
   ;
   ; @usage
   ; (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -721,7 +721,7 @@
   ;   the original documents.
   ;  :prototype-f (function)(opt)
   ;   This function is applied on each input document before checking or preparing.
-  ;   Must returns a namespaced map!}
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})

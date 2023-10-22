@@ -39,9 +39,9 @@
 (def build-connection! connection.side-effects/build-connection!)
 
 ; mongo-db.core.utils
-(def generate-id      core.utils/generate-id)
-(def query<-namespace core.utils/query<-namespace)
-(def flatten-query    core.utils/flatten-query)
+(def generate-id        core.utils/generate-id)
+(def query<-namespace   core.utils/query<-namespace)
+(def apply-dot-notation core.utils/apply-dot-notation)
 
 ; mongo-db.reader.engine
 (def get-collection-names        reader.engine/get-collection-names)
