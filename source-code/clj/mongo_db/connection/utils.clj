@@ -2,7 +2,6 @@
 (ns mongo-db.connection.utils
     (:require [mongo-db.core.errors      :as core.errors]
               [mongo-db.connection.state :as connection.state]
-              [noop.api                  :refer [return]]
               [string.api                :as string]))
 
 ;; ----------------------------------------------------------------------------
@@ -49,7 +48,7 @@
   ; @return (string)
   [collection-path]
   (if-let [database-name (string/before-first-occurence collection-path "/" {:return? false})]
-          (return database-name)
+          (-> database-name)
           (default-database-name)))
 
 (defn collection-path->collection-name

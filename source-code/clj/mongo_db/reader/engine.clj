@@ -11,7 +11,6 @@
               [mongo-db.reader.checking    :as reader.checking]
               [mongo-db.reader.env         :as reader.env]
               [mongo-db.reader.prototyping :as reader.prototyping]
-              [noop.api                    :refer [return]]
               [vector.api                  :as vector]))
 
 ;; -- Collection functions ----------------------------------------------------
@@ -335,7 +334,7 @@
            (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
                                                   (reader.prototyping/find-output collection-path % options)))]
                   (vector/->items documents f))
-           (return []))))
+           (-> []))))
 
 (defn count-documents-by-pipeline
   ; @param (string) collection-path
@@ -357,8 +356,8 @@
 
   ([collection-path pipeline options]
    (if-let [documents (aggregation.engine/process collection-path pipeline options)]
-           (count  documents)
-           (return 0))))
+           (-> documents count)
+           (-> 0))))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -385,7 +384,7 @@
                          (let [v (get document k)]
                               (if (test-f v)
                                   (update result k vector/conj-item-once v)
-                                  (return result))))]
+                                  (->     result))))]
                      (reduce f result specified-keys)))]
           (let [collection (get-collection collection-path)]
                (reduce f {} collection)))))

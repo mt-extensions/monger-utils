@@ -1,7 +1,6 @@
 
 (ns mongo-db.reader.checking
-    (:require [mongo-db.core.errors :as core.errors]
-              [noop.api             :refer [return]]))
+    (:require [mongo-db.core.errors :as core.errors]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -17,7 +16,7 @@
   ;
   ; @return (*)
   [query]
-  (try (if (map?   query)
-           (return query)
+  (try (if (-> query map?)
+           (-> query)
            (throw (Exception. core.errors/QUERY-MUST-BE-MAP-ERROR)))
        (catch Exception e (println (str e "\n" {:query query})))))

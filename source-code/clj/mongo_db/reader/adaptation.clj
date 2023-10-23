@@ -4,7 +4,6 @@
     (:require [json.api            :as json]
               [map.api             :as map]
               [mongo-db.core.utils :as core.utils]
-              [noop.api            :refer [return]]
               [time.api            :as time]))
 
 ;; ----------------------------------------------------------------------------
@@ -81,8 +80,9 @@
       ; 3. A query térképben string típusként tárolt dátumok és idők átalakítása objektum típusra
       (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
            (catch Exception e (println (str e "\n" {:query query}))))
-      ; A query térképként lehetséges üres térképet is átadni.
-      (return {})))
+
+      ; The 'query' could be an empty map. In this case it returned as-is.
+      (-> query)))
 
 (defn find-projection
   ; @ignore
@@ -108,9 +108,9 @@
   ;
   ; @return (namespaced map)
   [projection]
-  ; A mongo-db.reader névtér függvényei abban az esetben is alkalmazzák a find-projection
-  ; függvényt, ha a projection értéke nil, emiatt szükségess az (if projection ...)
-  ; függvény alkalmazása!
+  ; The functions in the 'mongo-db.reader' namespace apply the 'find-projection' function
+  ; even if the projection value is nil. Therefore, it is necessary to use the '(if projection ...)'
+  ; condition.
   (if projection (try (-> projection (core.utils/id->_id {:parse? false}) json/unkeywordize-keys)
                       (catch Exception e (println (str e "\n" {:projection projection}))))
-                 (return {})))
+                 (-> {})))

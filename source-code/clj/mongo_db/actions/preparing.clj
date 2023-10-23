@@ -5,8 +5,7 @@
               [map.api                :as map]
               [mongo-db.core.errors   :as core.errors]
               [mongo-db.core.utils    :as core.utils]
-              [mongo-db.reader.engine :as reader.engine]
-              [noop.api               :refer [return]]))
+              [mongo-db.reader.engine :as reader.engine]))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -79,8 +78,8 @@
   ;
   ; @return (namespaced map)
   [collection-path document {:keys [prepare-f] :as options}]
-  (try (if prepare-f (prepare-f document)
-                     (return    document))
+  (try (if prepare-f (-> document prepare-f)
+                     (-> document))
        (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
 
 ;; -- Upserting document ------------------------------------------------------

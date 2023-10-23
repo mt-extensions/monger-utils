@@ -5,7 +5,6 @@
               [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.aggregation.checking   :as aggregation.checking]
               [mongo-db.core.utils             :as core.utils]
-              [noop.api                        :refer [param]]
               [vector.api                      :as vector]))
 
 ;; ----------------------------------------------------------------------------
@@ -149,13 +148,13 @@
   [{:keys [field-pattern filter-pattern max-count search-pattern skip sort-pattern unset-pattern]}]
   ; The $addFields operator - which adds virtual fields - has to placed before the $match and the $sort operators!
   ; The $unset operator - which removes virtual fields - has to placed after the $match and the $sort operators!
-  (cond-> [] field-pattern (conj {"$addFields"      (add-fields-query field-pattern)})
+  (cond-> [] field-pattern (conj {"$addFields"     (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query     filter-pattern)
                                                     (search-query     search-pattern)]}})
              sort-pattern  (conj {"$sort"           (sort-query       sort-pattern)})
              unset-pattern (conj {"$unset"          (unset-query      unset-pattern)})
-             skip          (conj {"$skip"           (param            skip)})
-             max-count     (conj {"$limit"          (param            max-count)})))
+             skip          (conj {"$skip"           (->               skip)})
+             max-count     (conj {"$limit"          (->               max-count)})))
 
 (defn count-pipeline
   ; @param (map) pipeline-props
@@ -173,6 +172,6 @@
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern search-pattern]}]
-  (cond-> [] field-pattern (conj {"$addFields"      (add-fields-query field-pattern)})
+  (cond-> [] field-pattern (conj {"$addFields"     (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query filter-pattern)
                                                     (search-query search-pattern)]}})))

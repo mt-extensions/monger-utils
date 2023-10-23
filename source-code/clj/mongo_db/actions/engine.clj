@@ -13,7 +13,6 @@
               [mongo-db.reader.adaptation    :as reader.adaptation]
               [mongo-db.core.errors          :as core.errors]
               [mongo-db.reader.engine        :as reader.engine]
-              [noop.api                      :refer [return]]
               [vector.api                    :as vector]))
 
 ;; -- Reordering following documents ------------------------------------------
@@ -491,7 +490,7 @@
                        (if-let [document (f document)]
                                (let [document (save-document! collection-path document options)]
                                     (conj result document))
-                               (return result)))]
+                               (-> result)))]
                   (reduce fi [] collection)))))
 
 ;; -- Removing document -------------------------------------------------------
@@ -765,5 +764,5 @@
                           (let [result (actions.side-effects/update! collection-path {:_id document-id}
                                                                      {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
-                                   (return [document-id document-dex])))))]
+                                   (-> [document-id document-dex])))))]
               (vector/->items document-order f))))

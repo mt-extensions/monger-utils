@@ -4,8 +4,7 @@
     (:require [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]
-              [mongo-db.core.errors :as core.errors]
-              [noop.api             :refer [return]]))
+              [mongo-db.core.errors :as core.errors]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -72,7 +71,7 @@
   (if-let [namespace (map/get-namespace n)]
           (let [document-id (generate-id)]
                (assoc n (keyword/add-namespace :id namespace) document-id))
-          (return n)))
+          (-> n)))
 
 (defn dissoc-id
   ; @ignore
@@ -92,7 +91,7 @@
   [n]
   (if-let [namespace (map/get-namespace n)]
           (dissoc n (keyword/add-namespace :id namespace))
-          (return n)))
+          (->     n)))
 
 (defn id->_id
   ; @ignore
@@ -133,8 +132,8 @@
                                               (dissoc id-key)))
                                    (-> n (assoc  :_id value)
                                          (dissoc id-key)))
-                        (return n)))
-           (return n))))
+                        (-> n)))
+           (-> n))))
 
 (defn _id->id
   ; @ignore
@@ -170,8 +169,8 @@
                                                 (dissoc :_id)))
                                      (-> n (assoc  id-key value)
                                            (dissoc :_id)))
-                        (return n)))
-           (return n))))
+                        (-> n)))
+           (-> n))))
 
 (defn id->>_id
   ; @ignore
@@ -283,8 +282,8 @@
    (query<-namespace query namespace {}))
 
   ([query namespace {:keys [recur?]}]
-   (letfn [(f [k] (if (operator? k)
-                      (return    k)
+   (letfn [(f [k] (if (-> k operator?)
+                      (-> k)
 
                       ; It prepends the given namespace to the key without changing
                       ; the key's structure, because it might be a multi-namespaced

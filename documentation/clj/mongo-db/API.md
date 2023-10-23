@@ -191,7 +191,7 @@ Returns the updated documents in a vector.
                        (if-let [document (f document)]
                                (let [document (save-document! collection-path document options)]
                                     (conj result document))
-                               (return result)))]
+                               (-> result)))]
                   (reduce fi [] collection)))))
 ```
 
@@ -448,8 +448,8 @@ If no database name passed it checks the only stored database reference.
 
   ([collection-path pipeline options]
    (if-let [documents (aggregation.engine/process collection-path pipeline options)]
-           (count  documents)
-           (return 0))))
+           (-> documents count)
+           (-> 0))))
 ```
 
 </details>
@@ -497,7 +497,7 @@ If no database name passed it checks the only stored database reference.
 ```
 (defn count-pipeline
   [{:keys [field-pattern filter-pattern search-pattern]}]
-  (cond-> [] field-pattern (conj {"$addFields"      (add-fields-query field-pattern)})
+  (cond-> [] field-pattern (conj {"$addFields"     (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query filter-pattern)
                                                     (search-query search-pattern)]}})))
 ```
@@ -1222,7 +1222,7 @@ Returns a randomly generated ObjectId for documents.
            (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
                                                   (reader.prototyping/find-output collection-path % options)))]
                   (vector/->items documents f))
-           (return []))))
+           (-> []))))
 ```
 
 </details>
@@ -1453,13 +1453,13 @@ Returns a randomly generated ObjectId for documents.
 ```
 (defn get-pipeline
   [{:keys [field-pattern filter-pattern max-count search-pattern skip sort-pattern unset-pattern]}]
-  (cond-> [] field-pattern (conj {"$addFields"      (add-fields-query field-pattern)})
+  (cond-> [] field-pattern (conj {"$addFields"     (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query     filter-pattern)
                                                     (search-query     search-pattern)]}})
              sort-pattern  (conj {"$sort"           (sort-query       sort-pattern)})
              unset-pattern (conj {"$unset"          (unset-query      unset-pattern)})
-             skip          (conj {"$skip"           (param            skip)})
-             max-count     (conj {"$limit"          (param            max-count)})))
+             skip          (conj {"$skip"           (->               skip)})
+             max-count     (conj {"$limit"          (->               max-count)})))
 ```
 
 </details>
@@ -1513,7 +1513,7 @@ Default: some?
                          (let [v (get document k)]
                               (if (test-f v)
                                   (update result k vector/conj-item-once v)
-                                  (return result))))]
+                                  (->     result))))]
                      (reduce f result specified-keys)))]
           (let [collection (get-collection collection-path)]
                (reduce f {} collection)))))
@@ -1754,8 +1754,8 @@ https://clojuredocs.org/clojure.core/keyword
    (query<-namespace query namespace {}))
 
   ([query namespace {:keys [recur?]}]
-   (letfn [(f [k] (if (operator? k)
-                      (return    k)
+   (letfn [(f [k] (if (-> k operator?)
+                      (-> k)
 
                       (as-> k % (str  %)
                                 (subs % 1)
@@ -1987,7 +1987,7 @@ Returns the (?).
                           (let [result (actions.side-effects/update! collection-path {:_id document-id}
                                                                      {"$set" {order-key document-dex}})]
                                (if (mrt/acknowledged? result)
-                                   (return [document-id document-dex])))))]
+                                   (-> [document-id document-dex])))))]
               (vector/->items document-order f))))
 ```
 

@@ -1,6 +1,5 @@
 
-(ns mongo-db.actions.prototyping
-    (:require [noop.api :refer [return]]))
+(ns mongo-db.actions.prototyping)
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -15,8 +14,8 @@
   ;
   ; @return (*)
   [collection-path document {:keys [prototype-f] :as options}]
-  (try (if prototype-f (prototype-f document)
-                       (return      document))
+  (try (if prototype-f (-> document prototype-f)
+                       (-> document))
        (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
 
 ;; -- Saving document ---------------------------------------------------------
