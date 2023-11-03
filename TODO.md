@@ -1,16 +1,14 @@
 
 # mongo-db.actions
 
-- {create? true} beállítás, azokhoz a függvényekhez, amelyek ignorálják a műveletet,
-  nem létező dokumentum esetén.
+- {create? true} beállítás, azokhoz a függvényekhez, amelyek ignorálják a műveletet nem létező dokumentum esetén.
 
-- Az apply-*, remove-*, duplicate-* függvények query-t fogadjanak, mert az használható
-  id alapú azonosításhoz is!
+- Az apply-*, remove-*, duplicate-* függvények query-t fogadjanak, mert az használható id alapú azonosításhoz is!
 
 # mongo-db.adaptation
 
 - A mongo-db.adaptation névtér függvényei az egyes térképeken többszörösen iterálnak végig,
-  hogy elvégezzék az adaptálást. Ezen az eljáráson ha szükséges, lehetséges gyorsítani.
+  hogy elvégezzék az adaptálást. Ezen az eljáráson ha szükséges, lehetséges gyorsítani/könnyíteni.
   Elegendő függvényenként egy iteráció, ami elvégzi a kulcsokon és értékeiken a műveleteket.
 
 # mongo-db.pipelines
