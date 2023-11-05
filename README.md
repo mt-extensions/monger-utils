@@ -1,15 +1,13 @@
 
 # clj-mongo-db
 
-> "Think, think, think." – Winnie the Pooh
-
 ### Overview
 
 The <strong>clj-mongo-db</strong> is a MongoDB implementation for Clojure projects
 based on the [michaelklishin / monger] library with some extra features such as
 error handling, input checking, output checking, order handling, prototype handling, etc.
 
-> This library designed for working with namespaced documents!
+> This library is designed for working with namespaced documents!
 
 ### deps.edn
 

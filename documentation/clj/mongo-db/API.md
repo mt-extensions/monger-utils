@@ -339,7 +339,7 @@ Returns the updated document.
 ```
 (defn collection-empty?
   [collection-path]
-  (= 0 (reader.env/count-documents collection-path)))
+  (-> collection-path reader.env/count-documents zero?))
 ```
 
 </details>
@@ -2466,5 +2466,5 @@ into a namespaced form!
 
 ---
 
-This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.
+<sub>This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.</sub>
 

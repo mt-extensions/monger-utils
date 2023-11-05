@@ -65,7 +65,7 @@
   ;
   ; @return (boolean)
   [collection-path]
-  (= 0 (reader.env/count-documents collection-path)))
+  (-> collection-path reader.env/count-documents zero?))
 
 (defn get-document-count-by-query
   ; @param (string) collection-path

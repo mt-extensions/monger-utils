@@ -1,7 +1,11 @@
 
-# clj-mongo-db documentation
+### clj-mongo-db
 
-Documentation of the [clj-mongo-db](https://github.com/bithandshake/clj-mongo-db) Clojure library
+Functional documentation of the [clj-mongo-db](https://github.com/bithandshake/clj-mongo-db) Clojure library
+
+---
+
+
 
 ##### [README](../README.md) > DOCUMENTATION
 
@@ -11,5 +15,5 @@ Documentation of the [clj-mongo-db](https://github.com/bithandshake/clj-mongo-db
 
 ---
 
-This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.
+<sub>This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.</sub>
 
