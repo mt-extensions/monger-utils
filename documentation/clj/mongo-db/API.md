@@ -1,5 +1,9 @@
 
-# mongo-db.api Clojure namespace
+### mongo-db.api
+
+Functional documentation of the mongo-db.api Clojure namespace
+
+---
 
 ##### [README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > mongo-db.api
 
