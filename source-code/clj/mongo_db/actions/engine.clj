@@ -426,20 +426,18 @@
 
 (defn apply-on-document!
   ; @description
-  ; Applies the given function on a document.
-  ; You can apply custom functions for preparing and postparing the document.
-  ; Returns the updated document.
+  ; - Applies the given function on a document.
+  ; - You can apply custom functions for preparing and postparing the document.
+  ; - Returns the updated document.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
   ; @param (function) f
   ; @param (map)(opt) options
   ; {:postpare-f (function)(opt)
-  ;   This function is applied on the input document AFTER the passed 'f'
-  ;   function is applied and before the writing.
+  ;   This function is applied on the input document AFTER the passed 'f' function is applied.
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the input document BEFORE the passed 'f'
-  ;   function is applied.}
+  ;   This function is applied on the input document BEFORE the passed 'f' function is applied.}
   ;
   ; @usage
   ; (apply-on-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
