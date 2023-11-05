@@ -85,6 +85,8 @@ Functional documentation of the mongo-db.api Clojure namespace
 
 - [upsert-documents!](#upsert-documents)
 
+---
+
 ### apply-dot-notation
 
 ```
