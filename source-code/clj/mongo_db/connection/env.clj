@@ -8,8 +8,10 @@
 
 (defn connected?
   ; @description
-  ; Checks whether a specific database has active connection.
-  ; If no database name passed it checks the only stored database reference.
+  ; - Checks whether a specific database has an active connection.
+  ; - If no database name is passed it uses the connected database's name, in case
+  ;   of only one database is connected.
+  ;
   ;
   ; @param (string)(opt) database-name
   ;

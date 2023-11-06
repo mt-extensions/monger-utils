@@ -22,10 +22,10 @@
   ; @ignore
   ;
   ; @description
-  ; Adjusts the order value of documents in a collection by either increasing
-  ; or decreasing the positions of documents following a specified one (in terms
-  ; of updating their ':order' value). It's used to maintain the sequence
-  ; of documents in an ordered collection when items are added or removed.
+  ; - Adjusts the order value of documents in a collection by either increasing
+  ;   or decreasing the positions of documents following a specified one (in terms
+  ;   of updating their ':order' value). It's used to maintain the sequence
+  ;   of documents in an ordered collection when items are added or removed.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -63,9 +63,9 @@
 
 (defn insert-document!
   ; @description
-  ; Inserts a document into a collection.
-  ; You can apply custom functions for preparing and prototyping the document.
-  ; Returns the inserted document.
+  ; - Inserts a document into a collection.
+  ; - You can apply custom functions for preparing and prototyping the document.
+  ; - Returns the inserted document.
   ;
   ; @param (string) collection-path
   ; @param (namespaced map) document
@@ -77,10 +77,10 @@
   ;   Set to TRUE when inserting a document into an ordered collection!
   ;   Default: false
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the input document right before writing.
+  ;   Applied on the input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on the input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (insert-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -112,9 +112,9 @@
 
 (defn insert-documents!
   ; @description
-  ; Inserts multiple documents into a collection.
-  ; You can apply custom functions for preparing and prototyping each document.
-  ; Returns the inserted documents in a vector.
+  ; - Inserts multiple documents into a collection.
+  ; - You can apply custom functions for preparing and prototyping each document.
+  ; - Returns the inserted documents in a vector.
   ;
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
@@ -126,10 +126,10 @@
   ;   Set to TRUE when inserting documents into an ordered collection!
   ;   Default: false
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on each input document right before writing.
+  ;   Applied on each input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on each input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (insert-documents! "my_collection" [{:namespace/id "12ab3cd4efg5h6789ijk0420" ...}] {...})
@@ -152,9 +152,9 @@
 
 (defn save-document!
   ; @description
-  ; Saves a document to a collection.
-  ; You can apply custom functions for preparing and prototyping the document.
-  ; Returns the saved document.
+  ; - Saves a document to a collection.
+  ; - You can apply custom functions for preparing and prototyping the document.
+  ; - Returns the saved document.
   ;
   ; @param (string) collection-path
   ; @param (namespaced map) document
@@ -166,10 +166,10 @@
   ;   Set to TRUE when saving a document to an ordered collection!
   ;   Default: false
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the input document right before writing.
+  ;   Applied on the input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on the input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (save-document! "my_collection" {:namespace/id "MyObjectId" ...} {...})
@@ -198,9 +198,9 @@
 
 (defn save-documents!
   ; @description
-  ; Saves multiple documents to a collection.
-  ; You can apply custom functions for preparing and prototyping each document.
-  ; Returns the saved documents in a vector.
+  ; - Saves multiple documents to a collection.
+  ; - You can apply custom functions for preparing and prototyping each document.
+  ; - Returns the saved documents in a vector.
   ;
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
@@ -212,10 +212,10 @@
   ;   Set to TRUE when saving documents to an ordered collection!
   ;   Default: false
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on each input document right before writing.
+  ;   Applied on each input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on each input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (save-documents! "my_collection" [{:namespace/id "MyObjectId" ...}] {...})
@@ -238,9 +238,9 @@
 
 (defn update-document!
   ; @description
-  ; Updates a document in a collection found by the given query.
-  ; You can apply custom functions for preparing and prototyping the document.
-  ; Returns a boolean indicating whether the update was successful.
+  ; - Updates a document in a collection found by the given query.
+  ; - You can apply custom functions for preparing and prototyping the document.
+  ; - Returns a boolean indicating whether the update was successful.
   ;
   ; @param (string) collection-path
   ; @param (map) query
@@ -250,10 +250,10 @@
   ; into a namespaced form!
   ; @param (map)(opt) options
   ; {:prepare-f (function)(opt)
-  ;   This function is applied on the input document right before writing.
+  ;   Applied on the input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on the input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (update-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -283,9 +283,9 @@
 
 (defn update-documents!
   ; @description
-  ; Updates multiple documents in a collection found by the given query.
-  ; You can apply custom functions for preparing and prototyping each document.
-  ; Returns a boolean indicating whether the update was successful.
+  ; - Updates multiple documents in a collection found by the given query.
+  ; - You can apply custom functions for preparing and prototyping each document.
+  ; - Returns a boolean indicating whether the update was successful.
   ;
   ; @param (string) collection-path
   ; @param (map) query
@@ -295,10 +295,10 @@
   ; into a namespaced form!
   ; @param (map)(opt) options
   ; {:prepare-f (function)(opt)
-  ;   This function is applied on each input document right before writing.
+  ;   Applied on each input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on each input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (update-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -330,9 +330,9 @@
 
 (defn upsert-document!
   ; @description
-  ; Updates or inserts a document in or into a collection found by the given query.
-  ; You can apply custom functions for preparing and prototyping the document.
-  ; Returns a boolean indicating whether the updating/inserting was successful.
+  ; - Updates or inserts a document in or into a collection found by the given query.
+  ; - You can apply custom functions for preparing and prototyping the document.
+  ; - Returns a boolean indicating whether the updating/inserting was successful.
   ;
   ; @param (string) collection-path
   ; @param (map) query
@@ -344,10 +344,10 @@
   ;   Set to TRUE when upserting a document into an ordered collection!
   ;   Default: false
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the input document right before writing.
+  ;   Applied on the input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on the input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on the input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (upsert-document! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -377,10 +377,9 @@
 
 (defn upsert-documents!
   ; @description
-  ; Updates or inserts multiple documents in or into a collection found by the
-  ; given query.
-  ; You can apply custom functions for preparing and prototyping each document.
-  ; Returns a boolean indicating whether the updating/inserting was successful.
+  ; - Updates or inserts multiple documents in or into a collection found by the given query.
+  ; - You can apply custom functions for preparing and prototyping each document.
+  ; - Returns a boolean indicating whether the updating/inserting was successful.
   ;
   ; @param (string) collection-path
   ; @param (map) query
@@ -391,10 +390,10 @@
   ; {:ordered? (boolean)(opt)
   ;   Set to TRUE when upserting documents into an ordered collection!
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on each input document right before writing.
+  ;   Applied on each input document.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on each input document first before any checking
-  ;   or preparing. Must return a namespaced map!}
+  ;   Applied on each input document before any checking or preparing.
+  ;   Must return a namespaced map!}
   ;
   ; @usage
   ; (upsert-documents! "my_collection" {:namespace/score 100} {:namespace/score 0} {...})
@@ -435,9 +434,9 @@
   ; @param (function) f
   ; @param (map)(opt) options
   ; {:postpare-f (function)(opt)
-  ;   This function is applied on the input document AFTER the passed 'f' function is applied.
+  ;   Applied on the input document AFTER the passed 'f' function is applied.
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the input document BEFORE the passed 'f' function is applied.}
+  ;   Applied on the input document BEFORE the passed 'f' function is applied.}
   ;
   ; @usage
   ; (apply-on-document! "my_collection" "MyObjectId" #(assoc % :namespace/color "Blue") {...})
@@ -460,19 +459,17 @@
 
 (defn apply-on-collection!
   ; @description
-  ; Applies the given function on every document in a collection.
-  ; You can apply custom functions for preparing and postparing each document.
-  ; Returns the updated documents in a vector.
+  ; - Applies the given function on every document in a collection.
+  ; - You can apply custom functions for preparing and postparing each document.
+  ; - Returns the updated documents in a vector.
   ;
   ; @param (string) collection-path
   ; @param (function) f
   ; @param (map)(opt) options
   ; {:postpare-f (function)(opt)
-  ;   This function is applied on each input document AFTER the passed 'f'
-  ;   function is applied and before the writing.
+  ;   Applied on each input document AFTER the passed 'f' function is applied.
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on each input document BEFORE the passed 'f'
-  ;   function is applied.}
+  ;   Applied on each input document BEFORE the passed 'f' function is applied.}
   ;
   ; @usage
   ; (apply-on-collection! "my_collection" #(assoc % :namespace/color "Blue") {...})
@@ -498,8 +495,8 @@
   ; @ignore
   ;
   ; @description
-  ; Removes a document from an unordered collection based on its ID.
-  ; Returns the document ID if the removal was successful.
+  ; - Removes a document from an unordered collection based on its ID.
+  ; - Returns the document ID if the removal was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -516,8 +513,8 @@
   ; @ignore
   ;
   ; @description
-  ; Removes a document from an ordered collection based on its ID.
-  ; Returns the document ID if the removal was successful.
+  ; - Removes a document from an ordered collection based on its ID.
+  ; - Returns the document ID if the removal was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -534,8 +531,8 @@
 
 (defn remove-document!
   ; @description
-  ; Removes a document from a collection.
-  ; Returns the document ID if the removal was successful.
+  ; - Removes a document from a collection.
+  ; - Returns the document ID if the removal was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -565,8 +562,8 @@
 
 (defn remove-documents!
   ; @description
-  ; Removes multiple documents from a collection.
-  ; Returns the document IDs in a vector if the removal was successful.
+  ; - Removes multiple documents from a collection.
+  ; - Returns the document IDs in a vector if the removal was successful.
   ;
   ; @param (string) collection-path
   ; @param (strings in vector) document-ids
@@ -595,8 +592,8 @@
 
 (defn remove-all-documents!
   ; @description
-  ; Removes all documents from a collection.
-  ; Returns the document IDs (?) in a vector if the removal was successful.
+  ; - Removes all documents from a collection.
+  ; - Returns the document IDs (?) in a vector if the removal was successful.
   ;
   ; @param (string) collection-path
   ;
@@ -614,8 +611,8 @@
   ; @ignore
   ;
   ; @description
-  ; Duplicates a document in an unordered collection.
-  ; Returns the copy document if the duplicating was successful.
+  ; - Duplicates a document in an unordered collection.
+  ; - Returns the copy document if the duplicating was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -634,8 +631,8 @@
   ; @ignore
   ;
   ; @description
-  ; Duplicates a document in an ordered collection.
-  ; Returns the copy document if the duplicating was successful.
+  ; - Duplicates a document in an ordered collection.
+  ; - Returns the copy document if the duplicating was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -653,8 +650,8 @@
 
 (defn duplicate-document!
   ; @description
-  ; Duplicates a document in a collection.
-  ; Returns the copy document if the duplicating was successful.
+  ; - Duplicates a document in a collection.
+  ; - Returns the copy document if the duplicating was successful.
   ;
   ; @param (string) collection-path
   ; @param (string) document-id
@@ -668,9 +665,9 @@
   ;   Set to TRUE when duplicating a document in an ordered collection!
   ;   Default: false
   ;  :postpare-f (function)(opt)
-  ;   This function is applied on the copy document before the writing.
+  ;   Applied on the copy document.
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on the copy document after it is derived from the original document.}
+  ;   Applied on the copy document after it is derived from the original document.}
   ;
   ; @usage
   ; (duplicate-document! "my_collection" "MyObjectId" {...})
@@ -699,8 +696,8 @@
 
 (defn duplicate-documents!
   ; @description
-  ; Duplicates multiple documents in a collection.
-  ; Returns the copy documents in a vector if the duplicating was successful.
+  ; - Duplicates multiple documents in a collection.
+  ; - Returns the copy documents in a vector if the duplicating was successful.
   ;
   ; @param (string) collection-path
   ; @param (strings in vector) document-ids
@@ -712,12 +709,11 @@
   ;   Set to TRUE when duplicating documents in an ordered collection!
   ;   Default: false
   ;  :postpare-f (function)(opt)
-  ;   This function is applied on each copy document before the writing.
+  ;   Applied on each copy document.
   ;  :prepare-f (function)(opt)
-  ;   This function is applied on each copy document after they are derived from
-  ;   the original documents.
+  ;   Applied on each copy document after they are derived from the original documents.
   ;  :prototype-f (function)(opt)
-  ;   This function is applied on each input document before checking or preparing.
+  ;   Applied on each input document before any checking or preparing.
   ;   Must return a namespaced map!}
   ;
   ; @usage
@@ -740,8 +736,8 @@
 
 (defn reorder-documents!
   ; @description
-  ; Reorders documents in a collection.
-  ; Returns the (?).
+  ; - Reorders documents in a collection.
+  ; - Returns the (?).
   ;
   ; @param (string) collection-path
   ; @param (vectors in vector) document-order

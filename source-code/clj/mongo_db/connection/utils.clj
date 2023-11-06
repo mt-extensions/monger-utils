@@ -11,8 +11,8 @@
   ; @ignore
   ;
   ; @description
-  ; Returns the only connected database's name as default database name in case
-  ; of only one database connected, otherwise it throws an error.
+  ; - Returns the connected database's name as default database name in case
+  ;   of only one database is connected, otherwise it throws an error.
   ;
   ; @return (string)
   []

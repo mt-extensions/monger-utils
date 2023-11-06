@@ -13,13 +13,10 @@
   ; @ignore
   ;
   ; @description
-  ; Designed to handle cases where the document ID may come from user input,
-  ; and if the input is not a valid ObjectId, it doesn't raise an exception but
-  ; instead returns NIL.
-  ;
-  ; In some cases, the source of a document ID can be a URL entered into
-  ; the browser's address bar. This URL might contain values that cannot
-  ; be converted into valid ObjectId objects.
+  ; - Designed to handle cases where the document ID may come from user input,
+  ;   and if the input is not a valid ObjectId, it doesn't raise an exception but instead returns NIL.
+  ; - In some cases, the source of a document ID can be a URL entered into the browser's address bar.
+  ;   This URL might contain values that cannot be converted into valid ObjectId objects.
   ;
   ; @param (string) document-id
   ;

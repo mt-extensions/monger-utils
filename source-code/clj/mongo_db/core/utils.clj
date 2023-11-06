@@ -227,15 +227,10 @@
 
 (defn query<-namespace
   ; @description
-  ; Applies the given namespace to every key in the given query excluding keys
-  ; that are operators.
-  ;
-  ; It supports optional recursive application of the namespace to nested maps
-  ; when the 'recur?' option is set to TRUE.
-  ;
-  ; Using the dot notation could lead to multi-namespaced keywords therefore
-  ; this function applies the given namespace by simply prepending it to keys
-  ; without changing the key's structure:
+  ; - Applies the given namespace to every key in the given query excluding keys that are operators.
+  ; - It supports optional recursive application of the namespace to nested maps when the 'recur?' option is set to TRUE.
+  ; - Using the dot notation could lead to multi-namespaced keywords therefore this function applies the given namespace
+  ;   by simply prepending it to keys without changing the key's structure:
   ;
   ; (query<-namespace {:a/b.c/d.e/f "My string"} :my-namespace)
   ; =>
@@ -298,9 +293,9 @@
 
 (defn apply-dot-notation
   ; @description
-  ; Takes a nested query map as input and flattens it by collapsing nested fields
-  ; into a flat map structure that corresponds to the dot notation.
-  ; It returns a new map where nested fields are represented using dot notation.
+  ; - Takes a nested query map as input and flattens it by collapsing nested fields
+  ;   into a flat map structure that corresponds to the dot notation.
+  ; - It returns a new map where nested fields are represented using dot notation.
   ;
   ; https://www.mongodb.com/docs/manual/core/document/#dot-notation
   ;
