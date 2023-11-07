@@ -64,7 +64,7 @@
   ; 2. A dokumentumban használt kulcsokból a "." karakterek eltávolítása (BSON syntax requirement)
   ; 3. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 4. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn insert-output
@@ -89,7 +89,7 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-timestamps (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Saving document ---------------------------------------------------------
@@ -118,7 +118,7 @@
   ; 2. A dokumentumban használt kulcsokból a "." karakterek eltávolítása (BSON syntax requirement)
   ; 3. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 4. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn save-output
@@ -143,7 +143,7 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-timestamps (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; -- Updating document -------------------------------------------------------
@@ -168,7 +168,7 @@
   ; 1. A dokumentumban használt kulcsokból a "." karakterek eltávolítása (BSON syntax requirement)
   ; 2. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 3. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query
@@ -227,7 +227,7 @@
   ; 2. A dokumentumban használt kulcsokból a "." karakterek eltávolítása (BSON syntax requirement)
   ; 3. A dokumentumban használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
   ; 4. A dokumentumban string típusként tárolt dátumok és idők átalakítása objektum típusra
-  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+  (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn duplicate-output
@@ -252,5 +252,5 @@
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
   ;    A dokumentum objektum típusú azonosítójának átalakítása string típusra
-  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-keys json/keywordize-values time/unparse-timestamps (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))

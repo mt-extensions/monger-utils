@@ -47,7 +47,7 @@
   ; 1. A dokumentumban használt string típusra alakított értékek átalakítása kulcsszó típusra
   ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
   ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
-  (try (-> document json/keywordize-values time/unparse-date-time (core.utils/_id->id {:unparse? true}))
+  (try (-> document json/keywordize-values time/unparse-timestamps (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn find-query
@@ -75,7 +75,7 @@
       ;    A query térképben található string típusú azonosítók átalakítása objektum típusra
       ; 2. A query térképben használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
       ; 3. A query térképben string típusként tárolt dátumok és idők átalakítása objektum típusra
-      (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-date-time)
+      (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
            (catch Exception e (println (str e "\n" {:query query}))))
 
       ; The 'query' could be an empty map. In this case it returned as-is.
