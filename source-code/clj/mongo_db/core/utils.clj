@@ -4,7 +4,8 @@
     (:require [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]
-              [mongo-db.core.errors :as core.errors]))
+              [mongo-db.core.errors :as core.errors]
+              [string.api           :as string]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -22,9 +23,8 @@
   ;
   ; @return (boolean)
   [n]
-  (and (keyword? n)
-       ; In Java language only one character long string could be character types!
-       (-> n str second str (= "$"))))
+  (and (-> n keyword?)
+       (-> n string/second-character (= "$"))))
 
 (defn DBObject->edn
   ; @ignore
@@ -229,14 +229,14 @@
   ; @description
   ; - Applies the given namespace to every key in the given query excluding keys that are operators.
   ; - It supports optional recursive application of the namespace to nested maps when the 'recur?' option is set to TRUE.
-  ; - Using the dot notation could lead to multi-namespaced keywords therefore this function applies the given namespace
-  ;   by simply prepending it to keys without changing the key's structure:
+  ; - Using the dot notation could lead to accidentally creating multi-namespaced keywords therefore this function applies
+  ;   the given namespace by simply prepending it to keys without changing the key's structure:
   ;
   ; (query<-namespace {:a/b.c/d.e/f "My string"} :my-namespace)
   ; =>
   ; {:my-namespace/a/b.c/d.e/f "My string"}
   ;
-  ; Using multi-namespaced keywords could be a problem with future versions of Clojure!
+  ; Multi-namespaced keywords could be a problem in future versions of Clojure!
   ; https://clojuredocs.org/clojure.core/keyword
   ;
   ; @param (map) query
