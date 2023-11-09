@@ -4,7 +4,7 @@
          bithandshake/cljc-fruits  {:git/url "https://github.com/bithandshake/cljc-fruits"
                                     :sha     "aeab860b3dd44aec44b99c2ddde2feb8b10013df"}
          bithandshake/re-frame-api {:git/url "https://github.com/bithandshake/re-frame-api"
-                                    :sha     "0f856de34ff13f6bc31839e81896f31ca314b153"}
+                                    :sha     "78398b5149abaaffc52cc791d6e642e6bd62bc11"}
          bithandshake/time-api     {:git/url "https://github.com/bithandshake/time-api"
                                     :sha     "a29aea7c473eb9bc1636103575dc72501932e488"}
          org.clojure/clojure       {:mvn/version "1.10.1"}}}
