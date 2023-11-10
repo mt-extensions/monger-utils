@@ -24,7 +24,7 @@
   ; The 'upsert-input', 'save-input', and other functions also use the 'insert-input'
   ; function to prepare the given document, so if the document already has a ':namespace/order'
   ; value, it does not change the value.
-  (if-let [namespace (map/get-namespace document)]
+  (if-let [namespace (map/namespace document)]
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
                (merge {order-key last-order} document))
@@ -157,7 +157,7 @@
   ; @return (namespaced map)
   ; {:namespace/order (integer)}
   [_ document _]
-  (if-let [namespace (map/get-namespace document)]
+  (if-let [namespace (map/namespace document)]
           (let [order-key (keyword/add-namespace :order namespace)]
                (if-let [order (get document order-key)]
                        (update document order-key inc)

@@ -68,7 +68,7 @@
   ;
   ; @return (map)
   [n]
-  (if-let [namespace (map/get-namespace n)]
+  (if-let [namespace (map/namespace n)]
           (let [document-id (generate-id)]
                (assoc n (keyword/add-namespace :id namespace) document-id))
           (-> n)))
@@ -89,7 +89,7 @@
   ;
   ; @return (map)
   [n]
-  (if-let [namespace (map/get-namespace n)]
+  (if-let [namespace (map/namespace n)]
           (dissoc n (keyword/add-namespace :id namespace))
           (->     n)))
 
@@ -124,7 +124,7 @@
 
   ([n {:keys [parse?]}]
    ; The n map (given as a parameter) doesn't have to contain the :namespace/id key!
-   (if-let [namespace (map/get-namespace n)]
+   (if-let [namespace (map/namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n id-key)]
                         (if parse? (let [object-id (ObjectId. value)]
@@ -161,7 +161,7 @@
 
   ([n {:keys [unparse?]}]
    ; The given n map doesn't have to contain the :_id key!
-   (if-let [namespace (map/get-namespace n)]
+   (if-let [namespace (map/namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n :_id)]
                         (if unparse? (let [document-id (str value)]
@@ -218,7 +218,7 @@
   ;
   ; @return (integer)
   [document]
-  (if-let [namespace (map/get-namespace document)]
+  (if-let [namespace (map/namespace document)]
           (get document (keyword/add-namespace :order namespace))
           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
 

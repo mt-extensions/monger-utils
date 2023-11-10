@@ -43,7 +43,7 @@
   ;     of other documents that are follow (in terms of ':order' value) the just
   ;     inserted document.
   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
-          (let [namespace    (map/get-namespace document)
+          (let [namespace    (map/namespace document)
                 order-key    (keyword/add-namespace :order namespace)
                 document-dex (get document order-key)
                 query        {order-key {:$gt document-dex}}

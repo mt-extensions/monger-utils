@@ -45,7 +45,7 @@
   ; @return (keyword)
   [collection-path]
   (let [collection (reader.env/find-maps collection-path {})]
-       (-> collection first map/get-namespace)))
+       (-> collection first map/namespace)))
 
 (defn get-all-document-count
   ; @param (string) collection-path

@@ -14,7 +14,7 @@
   ;
   ; @return (*)
   [document]
-  (try (if-let [namespace (map/get-namespace document)]
+  (try (if-let [namespace (map/namespace document)]
                (-> document)
                (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
@@ -29,7 +29,7 @@
   ;
   ; @return (*)
   [document]
-  (try (if-let [namespace (map/get-namespace document)]
+  (try (if-let [namespace (map/namespace document)]
                (-> document)
                (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
