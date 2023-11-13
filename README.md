@@ -435,7 +435,7 @@ function duplicates the document found by the given ID.
   next position in the collection and the function updates the `:namespace/order`
   value of the documents which come after the original document.
 - If the `{:label-key ...}` setting passed, the copy document will get the
-  `"#2"` suffix on its label. In case of the second copy label (`"My label #2"`)
+  `"#2"` suffix on its label. In case the second copy label (`"My label #2"`)
   is not available, the suffix will contain the next available number.
 - If the `{:changes {...}}` setting passed, the given changes will be merged into
   the copy document. If the changes map contains the ID of the original document,
