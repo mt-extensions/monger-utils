@@ -28,9 +28,8 @@
   ; @return (org.bson.types.ObjectId object)
   [document-id]
   (try (ObjectId. document-id)
-       ; By disabling error messages in the function, it prevents unnecessary
-       ; error messages from being displayed in cases where the document ID
-       ; provided is not a valid ObjectId.
+       ; It prevents (unnecessary) error messages being printed,
+       ; in cases when the document ID provided as not a valid ObjectId.
        ; (catch Exception e (println (str e "\n" {:document-id document-id})))
        (catch Exception e nil)))
 

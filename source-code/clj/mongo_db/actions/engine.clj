@@ -753,10 +753,10 @@
   ; What if a document got a new position that is still used by another document?
   (let [namespace (reader.engine/get-collection-namespace collection-path)
         order-key (keyword/add-namespace :order namespace)]
-       (letfn [(f [[document-id document-dex]]
-                  (if-let [document-id (actions.adaptation/document-id-input document-id)]
-                          (let [result (actions.side-effects/update! collection-path {:_id document-id}
-                                                                     {"$set" {order-key document-dex}})]
-                               (if (mrt/acknowledged? result)
-                                   (-> [document-id document-dex])))))]
-              (vector/->items document-order f))))
+       (letfn [(f0 [[document-id document-dex]]
+                   (if-let [document-id (actions.adaptation/document-id-input document-id)]
+                           (let [result (actions.side-effects/update! collection-path {:_id document-id}
+                                                                      {"$set" {order-key document-dex}})]
+                                (if (mrt/acknowledged? result)
+                                    (-> [document-id document-dex])))))]
+              (vector/->items document-order f0))))

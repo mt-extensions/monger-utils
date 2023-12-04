@@ -1,6 +1,6 @@
 
 (ns mongo-db.reader.engine
-    (:require monger.joda-time
+    (:require [monger.joda-time]
               [map.api                     :as map]
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
@@ -120,9 +120,9 @@
   ([collection-path {:keys [projection] :as options}]
    (if-let [projection (reader.adaptation/find-projection projection)]
            (if-let [collection (reader.env/find-maps collection-path {} projection)]
-                   (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
-                                                          (reader.prototyping/find-output collection-path % options)))]
-                          (vector/->items collection f))))))
+                   (letfn [(f0 [document] (as-> document % (reader.adaptation/find-output %)
+                                                           (reader.prototyping/find-output collection-path % options)))]
+                          (vector/->items collection f0))))))
 
 (defn get-documents-by-query
   ; @param (string) collection-path
@@ -164,9 +164,9 @@
    (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
            (if-let [projection (reader.adaptation/find-projection projection)]
                    (if-let [documents (reader.env/find-maps collection-path query projection)]
-                           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
-                                                                  (reader.prototyping/find-output collection-path % options)))]
-                                  (vector/->items documents f)))))))
+                           (letfn [(f0 [document] (as-> document % (reader.adaptation/find-output %)
+                                                                   (reader.prototyping/find-output collection-path % options)))]
+                                  (vector/->items documents f0)))))))
 
 ;; -- Document functions ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -331,9 +331,9 @@
 
   ([collection-path pipeline options]
    (if-let [documents (aggregation.engine/process collection-path pipeline options)]
-           (letfn [(f [document] (as-> document % (reader.adaptation/find-output %)
-                                                  (reader.prototyping/find-output collection-path % options)))]
-                  (vector/->items documents f))
+           (letfn [(f0 [document] (as-> document % (reader.adaptation/find-output %)
+                                                   (reader.prototyping/find-output collection-path % options)))]
+                  (vector/->items documents f0))
            (-> []))))
 
 (defn count-documents-by-pipeline
@@ -379,12 +379,12 @@
    (get-specified-values collection-path specified-keys some?))
 
   ([collection-path specified-keys test-f]
-   (letfn [(f [result document]
-              (letfn [(f [result k]
-                         (let [v (get document k)]
-                              (if (test-f v)
-                                  (update result k vector/conj-item-once v)
-                                  (->     result))))]
-                     (reduce f result specified-keys)))]
+   (letfn [(f0 [result document]
+               (letfn [(f1 [result k]
+                           (let [v (get document k)]
+                                (if (test-f v)
+                                    (update result k vector/conj-item-once v)
+                                    (->     result))))]
+                      (reduce f1 result specified-keys)))]
           (let [collection (get-collection collection-path)]
-               (reduce f {} collection)))))
+               (reduce f0 {} collection)))))

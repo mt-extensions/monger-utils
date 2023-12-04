@@ -277,19 +277,19 @@
    (query<-namespace query namespace {}))
 
   ([query namespace {:keys [recur?]}]
-   (letfn [(f [k] (if (-> k operator?)
-                      (-> k)
+   (letfn [(f0 [k] (if (-> k operator?)
+                       (-> k)
 
-                      ; It prepends the given namespace to the key without changing
-                      ; the key's structure, because it might be a multi-namespaced
-                      ; keyword (using the dot notation could lead to multi-namespaced
-                      ; keywords).
-                      (as-> k % (str  %)
-                                (subs % 1)
-                                (str (name namespace) "/" %))))]
+                       ; It prepends the given namespace to the key without changing
+                       ; the key's structure, because it might be a multi-namespaced
+                       ; keyword (using the dot notation could lead to multi-namespaced
+                       ; keywords).
+                       (as-> k % (str  %)
+                                 (subs % 1)
+                                 (str (name namespace) "/" %))))]
 
-          (if recur? (map/->>keys query f)
-                     (map/->keys  query f)))))
+          (if recur? (map/->>keys query f0)
+                     (map/->keys  query f0)))))
 
 (defn apply-dot-notation
   ; @description
