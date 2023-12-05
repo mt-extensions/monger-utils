@@ -36,9 +36,9 @@
   ;
   ; @return (map)
   [field-pattern]
-  ; The add-fields-query function instead of aplying the json/unkeywordize-value
-  ; on values it applies the json/unkeywordize-key on both the keys and values,
-  ; because the json/unkeywordize-value function uses prefix on values!
+  ; The 'add-fields-query' function instead of applying the 'json/unkeywordize-value'
+  ; on values, it applies the 'json/unkeywordize-key' on both the keys and the values,
+  ; because the 'json/unkeywordize-value' function would prepend a prefix to the values!
   (map/->>kv field-pattern json/unkeywordize-key json/unkeywordize-key))
 
 (defn filter-query
@@ -146,8 +146,8 @@
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern max-count search-pattern skip sort-pattern unset-pattern]}]
-  ; The $addFields operator - which adds virtual fields - has to placed before the $match and the $sort operators!
-  ; The $unset operator - which removes virtual fields - has to placed after the $match and the $sort operators!
+  ; The '$addFields' operator - which adds virtual fields - must be placed before the '$match' and the '$sort' operators!
+  ; The '$unset' operator - which removes virtual fields - must be placed after the '$match' and the '$sort' operators!
   (cond-> [] field-pattern (conj {"$addFields"     (add-fields-query field-pattern)})
              :match        (conj {"$match" {"$and" [(filter-query     filter-pattern)
                                                     (search-query     search-pattern)]}})

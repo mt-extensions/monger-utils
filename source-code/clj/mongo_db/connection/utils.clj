@@ -25,7 +25,7 @@
   ; @ignore
   ;
   ; @description
-  ; Derives the database name from the 'collection-path' before the "/" character.
+  ; Derives the database name from the 'collection-path' before the '/' character.
   ; If no database name found in the 'collection-path' and only one database connection
   ; estabilished, returns the only connected database name.
   ;

@@ -229,7 +229,7 @@
   ; @description
   ; - Applies the given namespace to every key in the given query excluding keys that are operators.
   ; - It supports optional recursive application of the namespace to nested maps when the 'recur?' option is set to TRUE.
-  ; - Using the dot notation could lead to accidentally creating multi-namespaced keywords therefore this function applies
+  ; - Using dot notation could lead to accidentally creating multi-namespaced keywords. Therefore, this function applies
   ;   the given namespace by simply prepending it to keys without changing the key's structure:
   ;
   ; (query<-namespace {:a/b.c/d.e/f "My string"} :my-namespace)
@@ -324,7 +324,7 @@
 
          ; The 'map/collapse' function collapses the nested map structure in the
          ; given query to a flatten map structure where nested keys converted to
-         ; flatten keys separated with "." character.
+         ; flatten keys separated with '.' character.
          ;
          ; The output structure corresponds to the dot notation structure:
          ; (map/collapse {:a {:b {:c "My value"}}} {...})

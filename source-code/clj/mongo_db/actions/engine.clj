@@ -22,9 +22,9 @@
   ; @ignore
   ;
   ; @description
-  ; - Adjusts the order value of documents in a collection by either increasing
+  ; - Adjusts the ':order' value of documents in a collection by either increasing
   ;   or decreasing the positions of documents following a specified one (in terms
-  ;   of updating their ':order' value). It's used to maintain the sequence
+  ;   of updating their ':order' value). It is used to maintain the sequence
   ;   of documents in an ordered collection when items are added or removed.
   ;
   ; @param (string) collection-path

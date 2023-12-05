@@ -14,9 +14,9 @@
   ;
   ; @return (*)
   [document]
-  (try (if-let [namespace (map/namespace document)]
-               (-> document)
-               (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
+  (try (if (-> document map/namespaced?)
+           (-> document)
+           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -29,9 +29,9 @@
   ;
   ; @return (*)
   [document]
-  (try (if-let [namespace (map/namespace document)]
-               (-> document)
-               (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
+  (try (if (-> document map/namespaced?)
+           (-> document)
+           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -44,9 +44,9 @@
   ;
   ; @return (*)
   [document]
-  ; Az update művelet számára névtéres dokumentumot vagy utasításokat
-  ; tartalmazó névtér nélküli térképet is lehetséges átadni.
-  ; Pl.: {:$inc {:namespace/my-integer 1}}
+  ; The 'update' action could take a namespaced document or a non-namespaced map
+  ; with document commands.
+  ; E.g., {:$inc {:namespace/my-integer 1}}
   (try (if (-> document map?)
            (-> document)
            (throw (Exception. core.errors/INPUT-MUST-BE-MAP-ERROR)))

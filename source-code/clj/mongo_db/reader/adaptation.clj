@@ -1,6 +1,6 @@
 
 (ns mongo-db.reader.adaptation
-    (:import org.bson.types.ObjectId)
+    (:import [org.bson.types.ObjectId])
     (:require [json.api            :as json]
               [map.api             :as map]
               [mongo-db.core.utils :as core.utils]
@@ -43,9 +43,10 @@
   ;
   ; @return (namespaced map)
   [document]
-  ; 1. A dokumentumban használt string típusra alakított értékek átalakítása kulcsszó típusra
-  ; 2. A dokumentumban objektum típusként tárolt dátumok és idők átalakítása string típusra
-  ; 3. A dokumentum :_id tulajdonságának átnevezése :namespace/id tulajdonságra
+  ; 1. Converts values back to keywords that was converted from keywords to strings (when it was stored).
+  ; 2. Unparses the date and time objects within the document to string types.
+  ; 3. Renames the ':_id' key (a MongoDB compatible identifier) to ':namespace/id' key within the document.
+  ;    Unparses the identifier to string type.
   (try (-> document json/keywordize-values time/unparse-timestamps (core.utils/_id->id {:unparse? true}))
        (catch Exception e (println (str e "\n" {:document document})))))
 
@@ -70,14 +71,14 @@
   ; @return (map)
   [query]
   (if (map/nonempty? query)
-      ; 1. A query térképben található :namespace/id tulajdonságok átnevezése :_id tulajdonságra
-      ;    A query térképben található string típusú azonosítók átalakítása objektum típusra
-      ; 2. A query térképben használt kulcsszó típusú kulcsok és értékek átalakítása string típusra
-      ; 3. A query térképben string típusként tárolt dátumok és idők átalakítása objektum típusra
+      ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the query.
+      ;    Parses all the identifiers within the query to ObjectId objects.
+      ; 2. Converts the keyword type keys and values to strings within the document.
+      ; 4. Parses the date and time strings within the document to object types.
       (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
            (catch Exception e (println (str e "\n" {:query query}))))
 
-      ; The 'query' could be an empty map. In this case it returned as-is.
+      ; The given 'query' value could be an empty map. In this case it returned as-is.
       (-> query)))
 
 (defn find-projection
@@ -104,9 +105,8 @@
   ;
   ; @return (namespaced map)
   [projection]
-  ; The functions in the 'mongo-db.reader' namespace apply the 'find-projection' function
-  ; even if the projection value is nil. Therefore, it is necessary to use the '(if projection ...)'
-  ; condition.
+  ; Functions in the 'mongo-db.reader.engine' namespace always apply the 'find-projection' function
+  ; even if the given 'projection' value is NIL. Therefore, the '(if projection ...)' condition is necessary.
   (if projection (try (-> projection (core.utils/id->_id {:parse? false}) json/unkeywordize-keys)
                       (catch Exception e (println (str e "\n" {:projection projection}))))
                  (-> {})))

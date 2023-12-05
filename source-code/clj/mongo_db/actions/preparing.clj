@@ -23,7 +23,7 @@
   [collection-path document _]
   ; The 'upsert-input', 'save-input', and other functions also use the 'insert-input'
   ; function to prepare the given document, so if the document already has a ':namespace/order'
-  ; value, it does not change the value.
+  ; value, it doesn't change that value.
   (if-let [namespace (map/namespace document)]
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
@@ -183,7 +183,7 @@
                         (if-not changes   % (changed-duplicate-input collection-path % options))
                         (if-not label-key % (labeled-duplicate-input collection-path % options))
                         (if-not ordered?  % (ordered-duplicate-input collection-path % options))
-                        ; A dokumentum a changes térképpel való összefésülés után kapja meg a másolat azonosítóját,
-                        ; így nem okoz hibát, ha a changes térkép tartalmazza az eredeti azonosítót
+                        ; The copy document gets its ID after it has been merged with the given ':changes' map.
+                        ; Therefore, it wouldn't cause any problem if the ':changes' map also contains an ID.
                         (core.utils/assoc-id %))
        (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
