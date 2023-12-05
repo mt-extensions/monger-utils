@@ -1,6 +1,6 @@
 
 (ns mongo-db.reader.adaptation
-    (:import [org.bson.types.ObjectId])
+    (:import org.bson.types.ObjectId)
     (:require [json.api            :as json]
               [map.api             :as map]
               [mongo-db.core.utils :as core.utils]

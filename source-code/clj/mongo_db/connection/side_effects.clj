@@ -1,6 +1,7 @@
 
 (ns mongo-db.connection.side-effects
-    (:import  [com.mongodb MongoOptions ServerAddress])
+    (:import [com.mongodb ServerAddress]
+             [com.mongodb MongoOptions])
     (:require [monger.core               :as mcr]
               [mongo-db.connection.state :as connection.state]))
 
