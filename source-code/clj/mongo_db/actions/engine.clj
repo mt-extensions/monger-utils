@@ -3,15 +3,15 @@
     (:require [keyword.api                   :as keyword]
               [map.api                       :as map]
               [monger.result                 :as mrt]
-              [mongo-db.actions.checking     :as actions.checking]
               [mongo-db.actions.adaptation   :as actions.adaptation]
+              [mongo-db.actions.checking     :as actions.checking]
               [mongo-db.actions.postparing   :as actions.postparing]
               [mongo-db.actions.preparing    :as actions.preparing]
               [mongo-db.actions.prototyping  :as actions.prototyping]
               [mongo-db.actions.side-effects :as actions.side-effects]
-              [mongo-db.reader.checking      :as reader.checking]
-              [mongo-db.reader.adaptation    :as reader.adaptation]
               [mongo-db.core.errors          :as core.errors]
+              [mongo-db.reader.adaptation    :as reader.adaptation]
+              [mongo-db.reader.checking      :as reader.checking]
               [mongo-db.reader.engine        :as reader.engine]
               [vector.api                    :as vector]))
 

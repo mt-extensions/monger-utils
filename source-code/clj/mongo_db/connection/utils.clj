@@ -1,7 +1,7 @@
 
 (ns mongo-db.connection.utils
-    (:require [mongo-db.core.errors      :as core.errors]
-              [mongo-db.connection.state :as connection.state]
+    (:require [mongo-db.connection.state :as connection.state]
+              [mongo-db.core.errors      :as core.errors]
               [string.api                :as string]))
 
 ;; ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 
 (ns mongo-db.core.utils
-    (:import  org.bson.types.ObjectId)
+    (:import [org.bson.types.ObjectId])
     (:require [keyword.api          :as keyword]
               [map.api              :as map]
               [monger.conversion    :as mcv]

@@ -1,9 +1,9 @@
 
 (ns mongo-db.aggregation.engine
     (:require [mongo-db.aggregation.adaptation :as aggregation.adaptation]
+              [mongo-db.connection.utils       :as connection.utils]
               [mongo-db.core.config            :as core.config]
-              [mongo-db.core.env               :as core.env]
-              [mongo-db.connection.utils       :as connection.utils]))
+              [mongo-db.core.env               :as core.env]))
 
 ;; -- Aggregation functions ---------------------------------------------------
 ;; ----------------------------------------------------------------------------
