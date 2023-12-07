@@ -1,7 +1,8 @@
 
 (ns mongo-db.reader.engine
     (:require [monger.joda-time]
-              [map.api                     :as map]
+              [fruits.map.api              :as map]
+              [fruits.vector.api           :as vector]
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
               [mongo-db.connection.state   :as connection.state]
@@ -10,8 +11,7 @@
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.reader.checking    :as reader.checking]
               [mongo-db.reader.env         :as reader.env]
-              [mongo-db.reader.prototyping :as reader.prototyping]
-              [vector.api                  :as vector]))
+              [mongo-db.reader.prototyping :as reader.prototyping]))
 
 ;; -- Collection functions ----------------------------------------------------
 ;; ----------------------------------------------------------------------------

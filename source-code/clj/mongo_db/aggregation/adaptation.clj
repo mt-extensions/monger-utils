@@ -1,7 +1,7 @@
 
 (ns mongo-db.aggregation.adaptation
-    (:require [json.api                   :as json]
-              [map.api                    :as map]
+    (:require [fruits.json.api            :as json]
+              [fruits.map.api             :as map]
               [mongo-db.core.utils        :as core.utils]
               [mongo-db.reader.adaptation :as reader.adaptation]))
 

@@ -1,6 +1,6 @@
 
 (ns mongo-db.actions.checking
-    (:require [map.api                  :as map]
+    (:require [fruits.map.api           :as map]
               [mongo-db.core.errors     :as core.errors]
               [mongo-db.reader.checking :as reader.checking]))
 

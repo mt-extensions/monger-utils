@@ -1,8 +1,8 @@
 
 (ns mongo-db.actions.preparing
-    (:require [gestures.api           :as gestures]
-              [keyword.api            :as keyword]
-              [map.api                :as map]
+    (:require [fruits.gestures.api    :as gestures]
+              [fruits.keyword.api     :as keyword]
+              [fruits.map.api         :as map]
               [mongo-db.core.errors   :as core.errors]
               [mongo-db.core.utils    :as core.utils]
               [mongo-db.reader.engine :as reader.engine]))

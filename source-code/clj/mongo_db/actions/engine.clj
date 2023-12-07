@@ -1,7 +1,8 @@
 
 (ns mongo-db.actions.engine
-    (:require [keyword.api                   :as keyword]
-              [map.api                       :as map]
+    (:require [fruits.keyword.api            :as keyword]
+              [fruits.map.api                :as map]
+              [fruits.vector.api             :as vector]
               [monger.result                 :as mrt]
               [mongo-db.actions.adaptation   :as actions.adaptation]
               [mongo-db.actions.checking     :as actions.checking]
@@ -12,8 +13,7 @@
               [mongo-db.core.errors          :as core.errors]
               [mongo-db.reader.adaptation    :as reader.adaptation]
               [mongo-db.reader.checking      :as reader.checking]
-              [mongo-db.reader.engine        :as reader.engine]
-              [vector.api                    :as vector]))
+              [mongo-db.reader.engine        :as reader.engine]))
 
 ;; -- Reordering following documents ------------------------------------------
 ;; ----------------------------------------------------------------------------

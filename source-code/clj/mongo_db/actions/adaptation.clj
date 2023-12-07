@@ -1,8 +1,8 @@
 
 (ns mongo-db.actions.adaptation
     (:import org.bson.types.ObjectId)
-    (:require [bson.api                   :as bson]
-              [json.api                   :as json]
+    (:require [fruits.bson.api            :as bson]
+              [fruits.json.api            :as json]
               [mongo-db.core.utils        :as core.utils]
               [mongo-db.reader.adaptation :as reader.adaptation]
               [time.api                   :as time]))

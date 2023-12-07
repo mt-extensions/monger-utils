@@ -1,11 +1,11 @@
 
 (ns mongo-db.aggregation.pipelines
-    (:require [json.api                        :as json]
-              [map.api                         :as map]
+    (:require [fruits.json.api                 :as json]
+              [fruits.map.api                  :as map]
+              [fruits.vector.api               :as vector]
               [mongo-db.aggregation.adaptation :as aggregation.adaptation]
               [mongo-db.aggregation.checking   :as aggregation.checking]
-              [mongo-db.core.utils             :as core.utils]
-              [vector.api                      :as vector]))
+              [mongo-db.core.utils             :as core.utils]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

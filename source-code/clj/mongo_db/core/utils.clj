@@ -1,11 +1,11 @@
 
 (ns mongo-db.core.utils
     (:import org.bson.types.ObjectId)
-    (:require [keyword.api          :as keyword]
-              [map.api              :as map]
+    (:require [fruits.keyword.api   :as keyword]
+              [fruits.map.api       :as map]
+              [fruits.string.api    :as string]
               [monger.conversion    :as mcv]
-              [mongo-db.core.errors :as core.errors]
-              [string.api           :as string]))
+              [mongo-db.core.errors :as core.errors]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
