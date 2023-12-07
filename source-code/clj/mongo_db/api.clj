@@ -10,7 +10,7 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-; mongo-db.actions.engine
+; @redirect (mongo-db.actions.engine)
 (def insert-document!      actions.engine/insert-document!)
 (def insert-documents!     actions.engine/insert-documents!)
 (def save-document!        actions.engine/save-document!)
@@ -28,22 +28,22 @@
 (def duplicate-documents!  actions.engine/duplicate-documents!)
 (def reorder-documents!    actions.engine/reorder-documents!)
 
-; mongo-db.aggregation.pipelines
+; @redirect (mongo-db.aggregation.pipelines)
 (def get-pipeline   aggregation.pipelines/get-pipeline)
 (def count-pipeline aggregation.pipelines/count-pipeline)
 
-; mongo-db.connection.env
+; @redirect (mongo-db.connection.env)
 (def connected? connection.env/connected?)
 
-; mongo-db.connection.side-effects
+; @redirect (mongo-db.connection.side-effects)
 (def build-connection! connection.side-effects/build-connection!)
 
-; mongo-db.core.utils
+; @redirect (mongo-db.core.utils)
 (def generate-id        core.utils/generate-id)
 (def query<-namespace   core.utils/query<-namespace)
 (def apply-dot-notation core.utils/apply-dot-notation)
 
-; mongo-db.reader.engine
+; @redirect (mongo-db.reader.engine)
 (def get-collection-names        reader.engine/get-collection-names)
 (def get-collection-namespace    reader.engine/get-collection-namespace)
 (def get-all-document-count      reader.engine/get-all-document-count)
