@@ -5,7 +5,7 @@
               [monger.operators          :refer :all]
               [mongo-db.connection.state :as connection.state]
               [mongo-db.connection.utils :as connection.utils]
-              [mongo-db.core.errors      :as core.errors]))
+              [mongo-db.core.messages      :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -22,7 +22,7 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/drop database-reference collection-name)
                     (catch Exception e (println e (str e "\n" {:collection-path collection-path}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 (defn insert-and-return!
@@ -39,7 +39,7 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/insert-and-return database-reference collection-name document)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path :document document}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 (defn save-and-return!
@@ -56,7 +56,7 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/save-and-return database-reference collection-name document)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path :document document}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 (defn remove-by-id!
@@ -72,7 +72,7 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/remove-by-id database-reference collection-name document-id)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 (defn update!
@@ -99,7 +99,7 @@
                 (try (mcl/update database-reference collection-name query document options)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query   query
                                                               :document        document        :options options}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
 
 (defn upsert!
@@ -124,5 +124,5 @@
                 (try (mcl/upsert database-reference collection-name query document options)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query   query
                                                               :document        document        :options options}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name}))))))))

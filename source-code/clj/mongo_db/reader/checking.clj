@@ -1,6 +1,6 @@
 
 (ns mongo-db.reader.checking
-    (:require [mongo-db.core.errors :as core.errors]))
+    (:require [mongo-db.core.messages :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -18,5 +18,5 @@
   [query]
   (try (if (-> query map?)
            (-> query)
-           (throw (Exception. core.errors/QUERY-MUST-BE-MAP-ERROR)))
+           (throw (Exception. core.messages/QUERY-MUST-BE-MAP-ERROR)))
        (catch Exception e (println (str e "\n" {:query query})))))

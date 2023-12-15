@@ -5,7 +5,7 @@
               [monger.db                 :as mdb]
               [mongo-db.connection.state :as connection.state]
               [mongo-db.connection.utils :as connection.utils]
-              [mongo-db.core.errors      :as core.errors]))
+              [mongo-db.core.messages      :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -24,7 +24,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (vec (mcl/find-maps database-reference collection-name query))
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
   ([collection-path query projection]
@@ -33,7 +33,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (vec (mcl/find-maps database-reference collection-name query projection))
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query :projection projection}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
 
 (defn find-one-as-map
@@ -50,7 +50,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (mcl/find-one-as-map database-reference collection-name query)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
   ([collection-path query projection]
@@ -59,7 +59,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (mcl/find-one-as-map database-reference collection-name query projection)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query :projection projection}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
 
 (defn find-map-by-id
@@ -76,7 +76,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (mcl/find-map-by-id database-reference collection-name document-id)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
   ([collection-path document-id projection]
@@ -85,7 +85,7 @@
         (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                 (try (mcl/find-map-by-id database-reference collection-name document-id projection)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id :projection projection}))))
-                (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                      (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
 
 (defn count-documents
@@ -100,7 +100,7 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/count database-reference collection-name)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))
 
 
@@ -117,5 +117,5 @@
        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
                (try (mcl/count database-reference collection-name query)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
-               (try (throw (Exception. core.errors/NO-DATABASE-REFERENCE-FOUND-ERROR))
+               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                     (catch Exception e (println (str e "\n" {:database-name database-name})))))))

@@ -1,7 +1,7 @@
 
 (ns mongo-db.actions.checking
     (:require [fruits.map.api           :as map]
-              [mongo-db.core.errors     :as core.errors]
+              [mongo-db.core.messages     :as core.messages]
               [mongo-db.reader.checking :as reader.checking]))
 
 ;; ----------------------------------------------------------------------------
@@ -16,7 +16,7 @@
   [document]
   (try (if (-> document map/namespaced?)
            (-> document)
-           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
+           (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -31,7 +31,7 @@
   [document]
   (try (if (-> document map/namespaced?)
            (-> document)
-           (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR)))
+           (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 ;; ----------------------------------------------------------------------------
@@ -49,7 +49,7 @@
   ; E.g., {:$inc {:namespace/my-integer 1}}
   (try (if (-> document map?)
            (-> document)
-           (throw (Exception. core.errors/INPUT-MUST-BE-MAP-ERROR)))
+           (throw (Exception. core.messages/INPUT-MUST-BE-MAP-ERROR)))
        (catch Exception e (println (str e "\n" {:document document})))))
 
 (defn update-query

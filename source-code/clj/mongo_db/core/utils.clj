@@ -5,7 +5,7 @@
               [fruits.map.api       :as map]
               [fruits.string.api    :as string]
               [monger.conversion    :as mcv]
-              [mongo-db.core.errors :as core.errors]))
+              [mongo-db.core.messages :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -220,7 +220,7 @@
   [document]
   (if-let [namespace (map/namespace document)]
           (get document (keyword/add-namespace :order namespace))
-          (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
+          (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR))))
 
 ;; -- Query -------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

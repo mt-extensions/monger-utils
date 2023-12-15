@@ -10,7 +10,7 @@
               [mongo-db.actions.preparing    :as actions.preparing]
               [mongo-db.actions.prototyping  :as actions.prototyping]
               [mongo-db.actions.side-effects :as actions.side-effects]
-              [mongo-db.core.errors          :as core.errors]
+              [mongo-db.core.messages          :as core.messages]
               [mongo-db.reader.adaptation    :as reader.adaptation]
               [mongo-db.reader.checking      :as reader.checking]
               [mongo-db.reader.engine        :as reader.engine]))
@@ -55,8 +55,8 @@
                                ; the just inserted or removed document.
                                (let [result (actions.side-effects/update! collection-path query document {:multi true})]
                                     (if-not (mrt/acknowledged? result)
-                                            (throw (Exception. core.errors/REORDERING-DOCUMENTS-FAILED)))))))
-          (throw (Exception. core.errors/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
+                                            (throw (Exception. core.messages/REORDERING-DOCUMENTS-FAILED)))))))
+          (throw (Exception. core.messages/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------

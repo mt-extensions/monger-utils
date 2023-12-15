@@ -3,7 +3,7 @@
     (:require [fruits.gestures.api    :as gestures]
               [fruits.keyword.api     :as keyword]
               [fruits.map.api         :as map]
-              [mongo-db.core.errors   :as core.errors]
+              [mongo-db.core.messages   :as core.messages]
               [mongo-db.core.utils    :as core.utils]
               [mongo-db.reader.engine :as reader.engine]))
 
@@ -28,7 +28,7 @@
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
                (merge {order-key last-order} document))
-          (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
+          (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR))))
 
 (defn insert-input
   ; @ignore
@@ -161,8 +161,8 @@
           (let [order-key (keyword/add-namespace :order namespace)]
                (if-let [order (get document order-key)]
                        (update document order-key inc)
-                       (throw (Exception. core.errors/MISSING-DOCUMENT-ORDER-ERROR))))
-          (throw (Exception. core.errors/MISSING-NAMESPACE-ERROR))))
+                       (throw (Exception. core.messages/MISSING-DOCUMENT-ORDER-ERROR))))
+          (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR))))
 
 (defn duplicate-input
   ; @ignore
