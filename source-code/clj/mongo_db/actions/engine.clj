@@ -96,10 +96,10 @@
    (insert-document! collection-path document {}))
 
   ([collection-path document options]
-   ; XXX#7100
-   ; The checking function must be applied before the preparing function because
-   ; document preparing requires documents as namespaced maps and the checking
-   ; function checks whether a document is a namespaced map!
+   ; @NOTE (#7100)
+   ; The checking function must be applied before the preparing function.
+   ; Because the document preparing requires documents to be namespaced maps and
+   ; the checking function checks whether a document is a namespaced map!
    (if-let [document (as-> document % (actions.prototyping/insert-input collection-path % options)
                                       (actions.checking/insert-input %)
                                       (actions.preparing/insert-input collection-path % options)
@@ -185,7 +185,7 @@
    (save-document! collection-path document {}))
 
   ([collection-path document options]
-   ; XXX#7100
+   ; @NOTE (#7100)
    (if-let [document (as-> document % (actions.prototyping/save-input collection-path % options)
                                       (actions.checking/save-input %)
                                       (actions.preparing/save-input collection-path % options)
@@ -269,7 +269,7 @@
    (update-document! collection-path query document {}))
 
   ([collection-path query document options]
-   ; XXX#7100
+   ; @NOTE (#7100)
    (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
                                                (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
@@ -314,7 +314,7 @@
    (update-documents! collection-path query document {}))
 
   ([collection-path query document options]
-   ; XXX#7100
+   ; @NOTE (#7100)
    (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
                                                (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
@@ -363,7 +363,7 @@
    (upsert-document! collection-path query document {}))
 
   ([collection-path query document options]
-   ; XXX#7100
+   ; @NOTE (#7100)
    (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
                                                (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
@@ -409,7 +409,7 @@
    (upsert-documents! collection-path query document {}))
 
   ([collection-path query document options]
-   ; XXX#7100
+   ; @NOTE (#7100)
    (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
                                                (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
@@ -479,7 +479,7 @@
    (apply-on-collection! collection-path f {}))
 
   ([collection-path f options]
-   ; XXX#9801
+   ; @NOTE (#7100)
    (if-let [collection (reader.engine/get-collection collection-path)]
            (letfn [(fi [result document]
                        (if-let [document (f document)]
