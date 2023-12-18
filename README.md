@@ -13,7 +13,7 @@ error handling, input checking, output checking, order handling, prototype handl
 
 ```
 {:deps {bithandshake/clj-mongo-db {:git/url "https://github.com/bithandshake/clj-mongo-db"
-                                   :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+                                   :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}
 ```
 
 ### Current version

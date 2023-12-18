@@ -1,7 +1,7 @@
 
 (ns mongo-db.actions.checking
     (:require [fruits.map.api           :as map]
-              [mongo-db.core.messages     :as core.messages]
+              [mongo-db.core.messages   :as core.messages]
               [mongo-db.reader.checking :as reader.checking]))
 
 ;; ----------------------------------------------------------------------------

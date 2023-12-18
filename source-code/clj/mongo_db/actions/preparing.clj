@@ -3,7 +3,7 @@
     (:require [fruits.gestures.api    :as gestures]
               [fruits.keyword.api     :as keyword]
               [fruits.map.api         :as map]
-              [mongo-db.core.messages   :as core.messages]
+              [mongo-db.core.messages :as core.messages]
               [mongo-db.core.utils    :as core.utils]
               [mongo-db.reader.engine :as reader.engine]))
 

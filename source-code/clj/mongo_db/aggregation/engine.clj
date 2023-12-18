@@ -13,7 +13,7 @@
   ; @param (maps in vector) pipeline
   ; @param (map)(opt) options
   ; {:locale (string)(opt)
-  ;   Default: core.config/DEFAULT-LOCALE}
+  ;   Default: "en"}
   ;
   ; @return (maps in vector)
   ([collection-path pipeline]

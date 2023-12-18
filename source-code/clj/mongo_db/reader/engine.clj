@@ -7,7 +7,7 @@
               [mongo-db.aggregation.engine :as aggregation.engine]
               [mongo-db.connection.state   :as connection.state]
               [mongo-db.connection.utils   :as connection.utils]
-              [mongo-db.core.messages        :as core.messages]
+              [mongo-db.core.messages      :as core.messages]
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.reader.checking    :as reader.checking]
               [mongo-db.reader.env         :as reader.env]

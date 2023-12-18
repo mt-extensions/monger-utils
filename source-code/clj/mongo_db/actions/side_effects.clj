@@ -5,7 +5,7 @@
               [monger.operators          :refer :all]
               [mongo-db.connection.state :as connection.state]
               [mongo-db.connection.utils :as connection.utils]
-              [mongo-db.core.messages      :as core.messages]))
+              [mongo-db.core.messages    :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

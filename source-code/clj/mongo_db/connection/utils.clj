@@ -2,7 +2,7 @@
 (ns mongo-db.connection.utils
     (:require [fruits.string.api         :as string]
               [mongo-db.connection.state :as connection.state]
-              [mongo-db.core.messages      :as core.messages]))
+              [mongo-db.core.messages    :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

@@ -10,7 +10,7 @@
               [mongo-db.actions.preparing    :as actions.preparing]
               [mongo-db.actions.prototyping  :as actions.prototyping]
               [mongo-db.actions.side-effects :as actions.side-effects]
-              [mongo-db.core.messages          :as core.messages]
+              [mongo-db.core.messages        :as core.messages]
               [mongo-db.reader.adaptation    :as reader.adaptation]
               [mongo-db.reader.checking      :as reader.checking]
               [mongo-db.reader.engine        :as reader.engine]))
@@ -37,11 +37,9 @@
   [collection-path document-id {:keys [operation]}]
   ; In an ordered collection ...
   ; ... removing a document requires to update (decrease) the position (':order' value)
-  ;     of other documents that are follow (in terms of ':order' value) the just
-  ;     removed document.
+  ;     of other documents that follow (in terms of ':order' value) the removed document.
   ; ... inserting a document requires to update (increase) the position (':order' value)
-  ;     of other documents that are follow (in terms of ':order' value) the just
-  ;     inserted document.
+  ;     of other documents that follow (in terms of ':order' value) the inserted document.
   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
           (let [namespace    (map/namespace document)
                 order-key    (keyword/add-namespace :order namespace)
@@ -51,8 +49,8 @@
                                              :decrease {:$inc {order-key -1}})]
                (if-let [query (-> query actions.checking/update-query actions.adaptation/update-query)]
                        (if-let [document (-> document actions.checking/update-input actions.adaptation/update-input)]
-                               ; Adjusting the ':order' value of other documents that are follow (in terms of ':order' value)
-                               ; the just inserted or removed document.
+                               ; Adjusting the ':order' value of other documents that follow (in terms of ':order' value)
+                               ; the inserted or removed document.
                                (let [result (actions.side-effects/update! collection-path query document {:multi true})]
                                     (if-not (mrt/acknowledged? result)
                                             (throw (Exception. core.messages/REORDERING-DOCUMENTS-FAILED)))))))
