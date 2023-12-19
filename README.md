@@ -116,8 +116,8 @@ function estabilishes a connection with a MongoDB database and stores the connec
 
 ### How to use multiple databases?
 
-If you are estabilished only one database connection, you don't have to specify
-the database name in passed collection paths.
+If you estabilished only one database connection, you don't have to specify
+the database name in provided collection paths.
 
 ```
 (build-connection! "my-database" "0.0.0.1" 4200)
@@ -127,8 +127,8 @@ the database name in passed collection paths.
                                    :namespace/id          "MyObjectId"})
 ```
 
-If you are estabilished more than one database connection, you have to specify
-the database name in passed collection paths.
+If you estabilished more than one database connection, you must specify
+the database name in the provided collection paths.
 
 ```
 (build-connection! "my-database"   "0.0.0.1" 4200)

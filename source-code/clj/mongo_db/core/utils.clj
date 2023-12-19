@@ -123,7 +123,7 @@
    (id->_id n {}))
 
   ([n {:keys [parse?]}]
-   ; The n map (given as a parameter) doesn't have to contain the :namespace/id key!
+   ; The n map (provided as a parameter) doesn't have to contain the ':namespace/id' key!
    (if-let [namespace (map/namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n id-key)]
