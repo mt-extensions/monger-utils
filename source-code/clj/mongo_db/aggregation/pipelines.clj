@@ -10,14 +10,10 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-; @name pipeline
-; An aggregation pipeline can return results for groups of documents.
-;
-; @name stage
-; Each stage performs an operation on the input documents.
-;
-; @name operation
-; TODO
+; @description
+; Aggregation pipelines are a framework for performing data transformations using a series of processing stages.
+; Aggregation pipelines allow you to process and transform data within the database itself.
+; A pipeline consists of stages, each of which performs a specific operation on the data.
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

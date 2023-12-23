@@ -328,7 +328,7 @@
 
 (defn upsert-document!
   ; @description
-  ; - Updates or inserts a document in or into a collection found by the given query.
+  ; - Updates / inserts a document in / into a collection found by the given query.
   ; - You can apply custom functions for preparing and prototyping the document.
   ; - Returns a boolean indicating whether the updating/inserting was successful.
   ;
@@ -375,7 +375,7 @@
 
 (defn upsert-documents!
   ; @description
-  ; - Updates or inserts multiple documents in or into a collection found by the given query.
+  ; - Updates / inserts multiple documents in / into a collection found by the given query.
   ; - You can apply custom functions for preparing and prototyping each document.
   ; - Returns a boolean indicating whether the updating/inserting was successful.
   ;

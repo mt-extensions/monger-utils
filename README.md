@@ -3,9 +3,8 @@
 
 ### Overview
 
-The <strong>clj-mongo-db</strong> is a MongoDB implementation for Clojure projects
-based on the [michaelklishin / monger] library with some extra features such as
-error handling, input checking, output checking, order handling, prototype handling, etc.
+The <strong>clj-mongo-db</strong> is a MongoDB implementation for Clojure projects based on the [michaelklishin / monger] library.
+With extra features such as error handling, input checking, output checking, order handling, prototype handling, etc.
 
 > This library is designed for working with namespaced documents!
 
@@ -142,7 +141,7 @@ the database name in the provided collection paths.
 ### How to insert a document?
 
 The [`mongo-db.api/insert-document!`](documentation/clj/mongo-db/API.md#insert-document)
-function inserts the given document to the end of the collection.
+function inserts the given document at the end of the collection.
 
 - If the given document doesn't have the `:namespace/id` key, the function will
   generate it.
@@ -175,7 +174,7 @@ function inserts the given document to the end of the collection.
 ### How to insert more than one document?
 
 The [`mongo-db.api/insert-documents!`](documentation/clj/mongo-db/API.md#insert-documents)
-function inserts the given documents to the end of the collection.
+function inserts the given documents at the end of the collection.
 
 > The `insert-documents!` function applies the `insert-document!` function.
   You can find more information in the previous section.
@@ -192,7 +191,7 @@ function inserts the given documents to the end of the collection.
 
 The [`mongo-db.api/save-document!`](documentation/clj/mongo-db/API.md#save-document)
 function updates the given document if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts it to the end of the collection.
+`:namespace/id` value, otherwise it inserts it at the end of the collection.
 
 - If the given document doesn't have the `:namespace/id` key, the function will
   generate it.
@@ -226,7 +225,7 @@ function updates the given document if it exists in the collection with the same
 
 The [`mongo-db.api/save-documents!`](documentation/clj/mongo-db/API.md#save-documents)
 function updates the given documents if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts them to the end of the collection.
+`:namespace/id` value, otherwise it inserts them at the end of the collection.
 
 > The `insert-documents!` function applies the `insert-document!` function.
   You can find more information in the previous section.
@@ -285,10 +284,10 @@ function updates documents in the collection found by the given query.
 
 The [`mongo-db.api/upsert-document!`](documentation/clj/mongo-db/API.md#upsert-document)
 function updates the first document in the collection found by the given query,
-otherwise inserts it as a new document to the end of the collection.
+otherwise inserts it as a new document at the end of the collection.
 
 - If the function cannot find a document in the collection by the given query,
-  it will insert it as a new document to the end of the collection!
+  it will insert it as a new document at the end of the collection!
 - The given query can contains the `:namespace/id` key.
 - The given document cannot contains the `:namespace/id` key!
 - In case of successfully upserting, the return value will be `TRUE`.
