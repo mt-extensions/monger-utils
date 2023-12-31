@@ -58,15 +58,15 @@
   ; @example
   ; (find-query {:namespace/id            "MyObjectId"
   ;              :namespace/my-keyword    :my-value
-  ;              :namespace/your-string   "your-value"
+  ;              :namespace/my-string     "My value"
   ;              :namespace/our-timestamp "2020-04-20T16:20:00.000Z"
-  ;              :$or [{:namespace/id "YourObjectId"}]})
+  ;              :$or [{:namespace/id "AnotherObjectId"}]})
   ; =>
   ; {"_id"                     #<ObjectId MyObjectId>
   ;  "namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>
-  ;  "$or" [{"namespace/id" #<ObjectId YourObjectId>}]}
+  ;  "$or" [{"namespace/id" #<ObjectId AnotherObjectId>}]}
   ;
   ; @return (map)
   [query]

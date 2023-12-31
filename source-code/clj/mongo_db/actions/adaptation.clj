@@ -49,12 +49,12 @@
   ; @example
   ; (insert-input {:namespace/id            "MyObjectId"
   ;                :namespace/my-keyword    :my-value
-  ;                :namespace/your-string   "your-value"
+  ;                :namespace/my-string     "My value"
   ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ; =>
   ; {"_id"                     #<ObjectId MyObjectId>
   ;  "namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
@@ -75,12 +75,12 @@
   ; @example
   ; (insert-output {"_id"                     #<ObjectId MyObjectId>
   ;                 "namespace/my-keyword"    "*:my-value"
-  ;                 "namespace/your-string"   "your-value"
+  ;                 "namespace/my-string"     "My value"
   ;                 "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ; =>
   ; {:namespace/id            "MyObjectId"
   ;  :namespace/my-keyword    :my-value
-  ;  :namespace/your-string   "your-value"
+  ;  :namespace/my-string     "My value"
   ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)
@@ -103,12 +103,12 @@
   ; @example
   ; (save-input {:namespace/id            "MyObjectId"
   ;              :namespace/my-keyword    :my-value
-  ;              :namespace/your-string   "your-value"
+  ;              :namespace/my-string     "My value"
   ;              :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ; =>
   ; {"_id"                     #<ObjectId MyObjectId>
   ;  "namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
@@ -129,12 +129,12 @@
   ; @example
   ; (save-output {"_id"                     #<ObjectId MyObjectId>
   ;               "namespace/my-keyword"    "*:my-value"
-  ;               "namespace/your-string"   "your-value"
+  ;               "namespace/my-string"     "My value"
   ;               "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ; =>
   ; {:namespace/id            "MyObjectId"
   ;  :namespace/my-keyword    :my-value
-  ;  :namespace/your-string   "your-value"
+  ;  :namespace/my-string     "My value"
   ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)
@@ -156,11 +156,11 @@
   ;
   ; @example
   ; (update-input {:namespace/my-keyword    :my-value
-  ;                :namespace/your-string   "your-value"
+  ;                :namespace/my-string     "My value"
   ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ; =>
   ; {"namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
@@ -190,11 +190,11 @@
   ;
   ; @example
   ; (upsert-input {:namespace/my-keyword    :my-value
-  ;                :namespace/your-string   "your-value"
+  ;                :namespace/my-string     "My value"
   ;                :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ; =>
   ; {"namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
@@ -212,12 +212,12 @@
   ; @example
   ; (duplicate-input {:namespace/id            "MyObjectId"
   ;                   :namespace/my-keyword    :my-value
-  ;                   :namespace/your-string   "your-value"
+  ;                   :namespace/my-string     "My value"
   ;                   :namespace/our-timestamp "2020-04-20T16:20:00.000Z"})
   ; =>
   ; {"_id"                     #<ObjectId MyObjectId>
   ;  "namespace/my-keyword"    "*:my-value"
-  ;  "namespace/your-string"   "your-value"
+  ;  "namespace/my-string"     "My value"
   ;  "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>}
   ;
   ; @return (namespaced map)
@@ -238,12 +238,12 @@
   ; @example
   ; (insert-output {"_id"                     #<ObjectId MyObjectId>
   ;                 "namespace/my-keyword"    "*:my-value"
-  ;                 "namespace/your-string"   "your-value"
+  ;                 "namespace/my-string"     "My value"
   ;                 "namespace/our-timestamp" #<DateTime 2020-04-20T16:20:00.123Z>})
   ; =>
   ; {:namespace/id            "MyObjectId"
   ;  :namespace/my-keyword    :my-value
-  ;  :namespace/your-string   "your-value"
+  ;  :namespace/my-string     "My value"
   ;  :namespace/our-timestamp "2020-04-20T16:20:00.000Z"}
   ;
   ; @return (namespaced map)

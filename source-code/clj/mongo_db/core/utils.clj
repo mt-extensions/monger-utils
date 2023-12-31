@@ -248,29 +248,29 @@
   ; @usage
   ; (query<-namespace {:id         "MyObjectId"
   ;                    :my-keyword :my-value
-  ;                    :$or        [{:id "YourObjectId"}]}
+  ;                    :$or        [{:id "AnotherObjectId"}]}
   ;                   :my-namespace)
   ;
   ; @example
   ; (query<-namespace {:id         "MyObjectId"
   ;                    :my-keyword :my-value
-  ;                    :$or        [{:id "YourObjectId"}]}
+  ;                    :$or        [{:id "AnotherObjectId"}]}
   ;                   :my-namespace)
   ; =>
   ; {:my-namespace/id         "MyObjectId"
   ;  :my-namespace/my-keyword :my-value
-  ;  :$or                     [{:id "YourObjectId"}]}
+  ;  :$or                     [{:id "AnotherObjectId"}]}
   ;
   ; @example
   ; (query<-namespace {:id         "MyObjectId"
   ;                    :my-keyword :my-value
-  ;                    :my-map     {:id "YourObjectId"}}
+  ;                    :my-map     {:id "AnotherObjectId"}}
   ;                   :my-namespace
   ;                   {:recur? true})
   ; =>
   ; {:my-namespace/id         "MyObjectId"
   ;  :my-namespace/my-keyword :my-value
-  ;  :my-namespace/my-map     {:my-namespace/id "YourObjectId"}}
+  ;  :my-namespace/my-map     {:my-namespace/id "AnotherObjectId"}}
   ;
   ; @return (namespaced map)
   ([query namespace]

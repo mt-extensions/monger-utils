@@ -571,12 +571,12 @@
   ;   Default: false}
   ;
   ; @usage
-  ; (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; (remove-documents! "my_collection" ["MyObjectId" "AnotherObjectId"] {...})
   ;
   ; @example
-  ; (remove-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; (remove-documents! "my_collection" ["MyObjectId" "AnotherObjectId"] {...})
   ; =>
-  ; ["MyObjectId" "YourObjectId"]
+  ; ["MyObjectId" "AnotherObjectId"]
   ;
   ; @return (strings in vector)
   ([collection-path document-ids]
@@ -715,10 +715,10 @@
   ;   Must return a namespaced map!}
   ;
   ; @usage
-  ; (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; (duplicate-documents! "my_collection" ["MyObjectId" "AnotherObjectId"] {...})
   ;
   ; @example
-  ; (duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"] {...})
+  ; (duplicate-documents! "my_collection" ["MyObjectId" "AnotherObjectId"] {...})
   ; =>
   ; [{...} {...}]
   ;
@@ -743,7 +743,7 @@
   ;   (integer) document-dex]]
   ;
   ; @usage
-  ; (reorder-documents "my_collection" [["MyObjectId" 1] ["YourObjectId" 2]])
+  ; (reorder-documents "my_collection" [["MyObjectId" 1] ["AnotherObjectId" 2]])
   ;
   ; @return (vectors in vector)
   [collection-path document-order]

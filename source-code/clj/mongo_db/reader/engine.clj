@@ -78,8 +78,8 @@
   ; (get-document-count-by-query "my_collection" {:$or [{...} {...}]})
   ;
   ; @usage
-  ; (get-document-count-by-query "my_collection" {:namespace/my-keyword  :my-value}
-  ;                                               :namespace/your-string "Your value"})
+  ; (get-document-count-by-query "my_collection" {:namespace/my-keyword :my-value}
+  ;                                               :namespace/my-string  "My value"})
   ;
   ; @return (integer)
   [collection-path query]
@@ -100,18 +100,18 @@
   ; (get-collection "my_collection" {...})
   ;
   ; @example
-  ; (get-collection "my_collection" {:projection {:namespace/id          1
-  ;                                               :namespace/your-string 1}})
+  ; (get-collection "my_collection" {:projection {:namespace/id        1
+  ;                                               :namespace/my-string 1}})
   ; =>
-  ; [{:namespace/id          "MyObjectId"
-  ;   :namespace/your-string "Your value"}]
+  ; [{:namespace/id        "MyObjectId"
+  ;   :namespace/my-string "My value"}]
   ;
   ; @example
   ; (get-collection "my_collection" {:prototype-f :namespace/my-string}})
   ; =>
-  ; ["MY value" "Your value"]
+  ; ["My value" "Another value"]
   ;
-  ; @return (namespaced maps or * in vector)
+  ; @return (namespaced maps in vector or * in vector)
   ; [{:namespace/id (string)}]
   ([collection-path]
    (if-let [collection (reader.env/find-maps collection-path {})]
@@ -140,18 +140,18 @@
   ;
   ; @example
   ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                         {:projection {:namespace/id          1
-  ;                                                       :namespace/your-string 1}})
+  ;                                         {:projection {:namespace/id        1
+  ;                                                       :namespace/my-string 1}})
   ; =>
-  ; [{:namespace/id          "MyObjectId"
-  ;   :namespace/my-keyword  :my-value
-  ;   :namespace/your-string "Your value"}]
+  ; [{:namespace/id         "MyObjectId"
+  ;   :namespace/my-keyword :my-value
+  ;   :namespace/my-string  "My value"}]
   ;
   ; @example
   ; (get-documents-by-query "my_collection" {:namespace/my-keyword :my-value}
   ;                                         {:prototype-f :namespace/my-string})
   ; =>
-  ; ["My value" "Your value"]
+  ; ["My value" "Another value"]
   ;
   ; @return (namespaced maps or * in vector)
   ; [{:namespace/id (string)}]
@@ -190,11 +190,11 @@
   ;
   ; @example
   ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
-  ;                                        {:projection {:namespace/id          1
-  ;                                                      :namespace/your-string 1}})
+  ;                                        {:projection {:namespace/id        1
+  ;                                                      :namespace/my-string 1}})
   ; =>
-  ; {:namespace/id          "MyObjectId"
-  ;  :namespace/your-string "Your value"}
+  ; {:namespace/id        "MyObjectId"
+  ;  :namespace/my-string "My value"}
   ;
   ; @example
   ; (get-document-by-query "my_collection" {:namespace/my-keyword :my-value}
@@ -232,11 +232,11 @@
   ;
   ; @example
   ; (get-document-by-id "my_collection" "MyObjectId"
-  ;                     {:projection {:namespace/id          1
-  ;                                   :namespace/your-string 1}})
+  ;                     {:projection {:namespace/id        1
+  ;                                   :namespace/my-string 1}})
   ; =>
-  ; {:namespace/id          "MyObjectId"
-  ;  :namespace/your-string "Your value"}
+  ; {:namespace/id        "MyObjectId"
+  ;  :namespace/my-string "My value"}
   ;
   ; @example
   ; (get-document-by-id "my_collection" "MyObjectId" {:prototype-f :namespace/my-string})
@@ -369,10 +369,10 @@
   ; Default: some?
   ;
   ; @example
-  ; (get-specified-values "my_collection" [:my-key :your-key] string?)
+  ; (get-specified-values "my_collection" [:my-key :another-key] string?)
   ; =>
-  ; {:my-key   ["..." "..."]
-  ;  :your-key ["..." "..."]}
+  ; {:my-key      ["..." "..."]
+  ;  :another-key ["..." "..."]}
   ;
   ; @return (map)
   ([collection-path specified-keys]

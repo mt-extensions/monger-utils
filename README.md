@@ -121,21 +121,21 @@ the database name in provided collection paths.
 ```
 (build-connection! "my-database" "0.0.0.1" 4200)
 
-(insert-document! "my_collection" {:namespace/my-keyword  :my-value
-                                   :namespace/your-string "your-value"
-                                   :namespace/id          "MyObjectId"})
+(insert-document! "my_collection" {:namespace/my-keyword :my-value
+                                   :namespace/my-string  "My value"
+                                   :namespace/id         "MyObjectId"})
 ```
 
 If you estabilished more than one database connection, you must specify
 the database name in the provided collection paths.
 
 ```
-(build-connection! "my-database"   "0.0.0.1" 4200)
-(build-connection! "your-database" "0.0.0.1" 4300)
+(build-connection! "my-database"      "0.0.0.1" 4200)
+(build-connection! "another-database" "0.0.0.1" 4300)
 
-(insert-document! "my-database/my_collection" {:namespace/my-keyword  :my-value
-                                               :namespace/your-string "your-value"
-                                               :namespace/id          "MyObjectId"})
+(insert-document! "my-database/my_collection" {:namespace/my-keyword :my-value
+                                               :namespace/my-string  "My value"
+                                               :namespace/id         "MyObjectId"})
 ```
 
 ### How to insert a document?
@@ -152,9 +152,9 @@ function inserts the given document at the end of the collection.
 - In case of successfully inserting, the return value will be the inserted document.
 
 ```
-(insert-document! "my_collection" {:namespace/my-keyword  :my-value
-                                   :namespace/your-string "your-value"
-                                   :namespace/id          "MyObjectId"})
+(insert-document! "my_collection" {:namespace/my-keyword :my-value
+                                   :namespace/my-string  "My value"
+                                   :namespace/id         "MyObjectId"})
 ```
 
 ```
@@ -184,14 +184,14 @@ function inserts the given documents at the end of the collection.
 
 ```
 (insert-documents! "my_collection" [{:namespace/my-keyword :my-value}
-                                    {:namespace/my-keyword :your-value}])
+                                    {:namespace/my-keyword :my-value}])
 ```
 
 ### How to save a document? (upserting by ID)
 
 The [`mongo-db.api/save-document!`](documentation/clj/mongo-db/API.md#save-document)
 function updates the given document if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts it at the end of the collection.
+`:namespace/id` value; otherwise, it inserts the document at the end of the collection.
 
 - If the given document doesn't have the `:namespace/id` key, the function will
   generate it.
@@ -202,9 +202,9 @@ function updates the given document if it exists in the collection with the same
 - In case of successfully saving, the return value will be the saved document.
 
 ```
-(save-document! "my_collection" {:namespace/my-keyword  :my-value
-                                 :namespace/your-string "your-value"
-                                 :namespace/id          "MyObjectId"})
+(save-document! "my_collection" {:namespace/my-keyword :my-value
+                                 :namespace/my-string  "My value"
+                                 :namespace/id         "MyObjectId"})
 ```
 
 ```
@@ -225,7 +225,7 @@ function updates the given document if it exists in the collection with the same
 
 The [`mongo-db.api/save-documents!`](documentation/clj/mongo-db/API.md#save-documents)
 function updates the given documents if it exists in the collection with the same
-`:namespace/id` value, otherwise it inserts them at the end of the collection.
+`:namespace/id` value; otherwise, it inserts them at the end of the collection.
 
 > The `insert-documents!` function applies the `insert-document!` function.
   You can find more information in the previous section.
@@ -235,7 +235,7 @@ function updates the given documents if it exists in the collection with the sam
 
 ```
 (save-documents! "my_collection" [{:namespace/my-keyword :my-value}
-                                  {:namespace/my-keyword :your-value}])
+                                  {:namespace/my-keyword :my-value}])
 ```
 
 ### How to update a document?
@@ -251,8 +251,8 @@ function updates the first document in the collection found by the given query.
 
 ```
 (update-document! "my_collection" {:namespace/id "MyObjectId"}
-                                  {:namespace/my-keyword  :my-value
-                                   :namespace/your-string "your-value"})
+                                  {:namespace/my-keyword :my-value
+                                   :namespace/my-string  "My value"})
 ```
 
 ```
@@ -283,8 +283,8 @@ function updates documents in the collection found by the given query.
 ### How to upsert a document?
 
 The [`mongo-db.api/upsert-document!`](documentation/clj/mongo-db/API.md#upsert-document)
-function updates the first document in the collection found by the given query,
-otherwise inserts it as a new document at the end of the collection.
+function updates the first document in the collection found by the given query;
+otherwise, it inserts the document at the end of the collection.
 
 - If the function cannot find a document in the collection by the given query,
   it will insert it as a new document at the end of the collection!
@@ -294,8 +294,8 @@ otherwise inserts it as a new document at the end of the collection.
 
 ```
 (upsert-document! "my_collection" {:namespace/id "MyObjectId"}
-                                  {:namespace/my-keyword  :my-value
-                                   :namespace/your-string "your-value"})
+                                  {:namespace/my-keyword :my-value
+                                   :namespace/my-string  "My value"})
 ```
 
 ```
@@ -311,8 +311,8 @@ otherwise inserts it as a new document at the end of the collection.
 ### How to upsert more than one document?
 
 The [`mongo-db.api/upsert-documents!`](documentation/clj/mongo-db/API.md#upsert-documents)
-function updates documents in the collection found by the given query, otherwise
-inserts it as a new document to the end of the collection.
+function updates documents in the collection found by the given query; otherwise,
+it inserts them at the end of the collection.
 
 > The `upsert-documents!` function applies the `upsert-document!` function.
   You can find more information in the previous section.
@@ -411,7 +411,7 @@ function removes documents from the collection found by the given IDs.
   removed documents' IDs.
 
 ```
-(remove-documents! "my_collection" ["MyObjectId" "YourObjectId"])
+(remove-documents! "my_collection" ["MyObjectId" "AnotherObjectId"])
 ```
 
 ### How to remove all documents of a collection?
@@ -458,7 +458,7 @@ function duplicates the document found by the given ID.
   ; and updated label, and the changes merged into it.
   (assoc document :namespace/modified-by {:user/id "my-user"}))
 
-(duplicate-document! "my_collection" "MyObjectId" {:changes    {:namespace/your-string "I'm changed!"}
+(duplicate-document! "my_collection" "MyObjectId" {:changes    {:namespace/my-string "I've changed!"}
                                                    :label-key  :namespace/label
                                                    :ordered?   true
                                                    :prepare-f  my-prepare-f
@@ -474,7 +474,7 @@ function duplicates the documents found by the given IDs.
   copy documents.
 
 ```
-(duplicate-documents! "my_collection" ["MyObjectId" "YourObjectId"]
+(duplicate-documents! "my_collection" ["MyObjectId" "AnotherObjectId"]
 ```
 
 ### How to reorder documents?
@@ -491,7 +491,7 @@ found by the given IDs.
   documents' IDs and their updated positions.
 
 ```
-(reorder-documents! "my_collection" [["MyObjectId" 5] ["YourObjectId" 3]]
+(reorder-documents! "my_collection" [["MyObjectId" 5] ["AnotherObjectId" 3]]
 ```
 
 ### How to check whether the database is connected?

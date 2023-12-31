@@ -29,12 +29,12 @@
   ; (filter-query {:namespace/my-keyword :my-value
   ;                :$or  [{:namespace/my-boolean   false}
   ;                       {:namespace/my-boolean   nil}]
-  ;                :$and [{:namespace/your-boolean true}]})
+  ;                :$and [{:namespace/another-boolean true}]})
   ; =>
   ; {"namespace/my-keyword" "*:my-value"
   ;  "$or"  [{"namespace/my-boolean"   false}
   ;          {"namespace/my-boolean"   nil}]
-  ;  "$and" [{"namespace/your-boolean" true}]}
+  ;  "$and" [{"namespace/another-boolean" true}]}
   ;
   ; @return (map)
   [query]

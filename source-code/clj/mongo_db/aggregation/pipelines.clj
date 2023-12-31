@@ -46,14 +46,14 @@
   ;
   ; @example
   ; (filter-query {:namespace/my-keyword :my-value
-  ;                :$or  [{:namespace/my-boolean   false}
-  ;                       {:namespace/my-boolean   nil}]
-  ;                :$and [{:namespace/your-boolean true}]})
+  ;                :$or  [{:namespace/my-boolean false}
+  ;                       {:namespace/my-boolean nil}]
+  ;                :$and [{:namespace/another-boolean true}]})
   ; =>
   ; {"namespace/my-keyword" "*:my-value"
-  ;  "$or"  [{"namespace/my-boolean"   false}
-  ;          {"namespace/my-boolean"   nil}]
-  ;  "$and" [{"namespace/your-boolean" true}]}
+  ;  "$or"  [{"namespace/my-boolean" false}
+  ;          {"namespace/my-boolean" nil}]
+  ;  "$and" [{"namespace/another-boolean" true}]}
   ;
   ; @return (map)
   [filter-pattern]
@@ -67,11 +67,11 @@
   ;  :$or (maps in vector)(opt)}
   ;
   ; @example
-  ; (search-query {:$or [{:namespace/my-string   "My value"}
-  ;                      {:namespace/your-string "Your value"}]})
+  ; (search-query {:$or [{:namespace/my-string      "My value"}
+  ;                      {:namespace/another-string "Another value"}]})
   ; =>
-  ; {"$or" [{"namespace/my-string"   {"$regex" "My value" "$options" "i"}}
-  ;         {"namespace/your-string" {"$regex" "Your value" "$options" "i"}}]}
+  ; {"$or" [{"namespace/my-string"      {"$regex" "My value"      "$options" "i"}}
+  ;         {"namespace/another-string" {"$regex" "Another value" "$options" "i"}}]}
   ;
   ; @return (map)
   ; {"$and" (maps in vector)
@@ -107,9 +107,9 @@
   ; @param (namespaced keywords in vector) unset-pattern
   ;
   ; @example
-  ; (unset-query [:namespace/my-string :namespace/your-string])
+  ; (unset-query [:namespace/my-string :namespace/another-string])
   ; =>
-  ; ["namespace/my-string" "namespace/your-string"]
+  ; ["namespace/my-string" "namespace/another-string"]
   ;
   ; @return (strings in vector)
   [unset-pattern]
@@ -131,12 +131,12 @@
   ; @usage
   ; (get-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
   ;                :filter-pattern {:namespace/my-keyword :my-value
-  ;                                 :$or [{:namespace/my-boolean  false}
-  ;                                       {:namespace/my-boolean  nil}]}
-  ;                :search-pattern {:$or [{:namespace/my-string   "My value"}
-  ;                                       {:namespace/your-string "Your value"}]}
+  ;                                 :$or [{:namespace/my-boolean false}
+  ;                                       {:namespace/my-boolean nil}]}
+  ;                :search-pattern {:$or [{:namespace/my-string      "My value"}
+  ;                                       {:namespace/another-string "Another value"}]}
   ;                :sort-pattern   {:namespace/my-string -1}
-  ;                :unset-pattern  [:namespace/my-string :namespace/your-string]
+  ;                :unset-pattern  [:namespace/my-string :namespace/another-string]
   ;                :max-count 20
   ;                :skip      40})
   ;
@@ -161,10 +161,10 @@
   ; @usage
   ; (count-pipeline {:field-pattern  {:namespace/name {:$concat [:$namespace/first-name " " :$namespace/last-name]}
   ;                  :filter-pattern {:namespace/my-keyword :my-value
-  ;                                   :$or [{:namespace/my-boolean   false}
-  ;                                         {:namespace/my-boolean   nil}]}
-  ;                  :search-pattern {:$or [{:namespace/my-string   "My value"}]
-  ;                                         {:namespace/your-string "Your value"}]}})
+  ;                                   :$or [{:namespace/my-boolean false}
+  ;                                         {:namespace/my-boolean nil}]}
+  ;                  :search-pattern {:$or [{:namespace/my-string      "My value"}]
+  ;                                         {:namespace/another-string "Another value"}]}})
   ;
   ; @return (maps in vector)
   [{:keys [field-pattern filter-pattern search-pattern]}]
