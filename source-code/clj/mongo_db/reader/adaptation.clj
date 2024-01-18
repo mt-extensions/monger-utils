@@ -70,7 +70,7 @@
   ;
   ; @return (map)
   [query]
-  (if (map/nonempty? query)
+  (if (map/not-empty? query)
       ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the query.
       ;    Parses all the identifiers within the query to ObjectId objects.
       ; 2. Converts the keyword type keys and values to strings within the document.
