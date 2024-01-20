@@ -30,7 +30,7 @@
   ; @ignore
   ;
   ; @description
-  ; Converts the given 'n' MongoDB database object (DBObject) into an EDN map.
+  ; Converts the given 'n' MongoDB database object (DBObject) into EDN map.
   ;
   ; @param (DBObject) n
   ;

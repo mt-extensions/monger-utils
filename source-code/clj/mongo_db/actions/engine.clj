@@ -67,8 +67,7 @@
   ;
   ; @param (string) collection-path
   ; @param (namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
@@ -116,8 +115,7 @@
   ;
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
@@ -156,8 +154,7 @@
   ;
   ; @param (string) collection-path
   ; @param (namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; {:namespace/id (string)(opt)}
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
@@ -202,8 +199,7 @@
   ;
   ; @param (string) collection-path
   ; @param (namespaced maps in vector) documents
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; [{:namespace/id (string)(opt)}]
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
@@ -244,8 +240,7 @@
   ; @param (map) query
   ; {:namespace/id (string)(opt)}
   ; @param (map or namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; @param (map)(opt) options
   ; {:prepare-f (function)(opt)
   ;   Applied on the input document.
@@ -289,8 +284,7 @@
   ; @param (map) query
   ; {:namespace/id (string)(opt)}
   ; @param (namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; @param (map)(opt) options
   ; {:prepare-f (function)(opt)
   ;   Applied on each input document.
@@ -335,8 +329,7 @@
   ; @param (string) collection-path
   ; @param (map) query
   ; @param (map or namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Set to TRUE when upserting a document into an ordered collection!
@@ -382,8 +375,7 @@
   ; @param (string) collection-path
   ; @param (map) query
   ; @param (namespaced map) document
-  ; No need to be a namespaced map if using a prototype function that converts it
-  ; into a namespaced form!
+  ; No need for the map to be namespaced in case the prototype function converts it into namespaced map!
   ; @param (map)(opt) options
   ; {:ordered? (boolean)(opt)
   ;   Set to TRUE when upserting documents into an ordered collection!

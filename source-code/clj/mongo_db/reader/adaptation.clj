@@ -43,7 +43,7 @@
   ;
   ; @return (namespaced map)
   [document]
-  ; 1. Converts values back to keywords that was converted from keywords to strings (when it was stored).
+  ; 1. Converts values back into keywords that were converted from keywords into strings (when it was stored).
   ; 2. Unparses the date and time objects within the document to string types.
   ; 3. Renames the ':_id' key (a MongoDB compatible identifier) to ':namespace/id' key within the document.
   ;    Unparses the identifier to string type.
@@ -73,7 +73,7 @@
   (if (map/not-empty? query)
       ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the query.
       ;    Parses all the identifiers within the query to ObjectId objects.
-      ; 2. Converts the keyword type keys and values to strings within the document.
+      ; 2. Converts the keyword type keys and values into strings within the document.
       ; 4. Parses the date and time strings within the document to object types.
       (try (-> query (core.utils/id->>_id {:parse? true}) json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
            (catch Exception e (println (str e "\n" {:query query}))))

@@ -62,7 +62,7 @@
   ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the document.
   ;    Parses the identifier to ObjectId object.
   ; 2. Removes the '.' characters from the keys within the document to prevent them misread as dot notations (BSON syntax requirement).
-  ; 3. Converts the keyword type keys and values to strings within the document.
+  ; 3. Converts the keyword type keys and values into strings within the document.
   ; 4. Parses the date and time strings within the document to object types.
   (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
@@ -85,7 +85,7 @@
   ;
   ; @return (namespaced map)
   [document]
-  ; 1. Converts the keys and values back to keywords that was converted from keywords to strings (when it was stored).
+  ; 1. Converts the keys and values back into keywords that were converted from keywords into strings (when it was stored).
   ; 2. Unparses the date and time objects within the document to string types.
   ; 3. Renames the ':_id' key (a MongoDB compatible identifier) to ':namespace/id' key within the document.
   ;    Unparses the identifier to string type.
@@ -116,7 +116,7 @@
   ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the document.
   ;    Parses the identifier to ObjectId object.
   ; 2. Removes the '.' characters from the keys within the document to prevent them misread as dot notations (BSON syntax requirement).
-  ; 3. Converts the keyword type keys and values to strings within the document.
+  ; 3. Converts the keyword type keys and values into strings within the document.
   ; 4. Parses the date and time strings within the document to object types.
   (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
@@ -139,7 +139,7 @@
   ;
   ; @return (namespaced map)
   [document]
-  ; 1. Converts the keys and values back to keywords that was converted from keywords to strings (when it was stored).
+  ; 1. Converts the keys and values back into keywords that were converted from keywords into strings (when it was stored).
   ; 2. Unparses the date and time objects within the document to string types.
   ; 3. Renames the ':_id' key (a MongoDB compatible identifier) to ':namespace/id' key within the document.
   ;    Unparses the identifier to string type.
@@ -166,7 +166,7 @@
   ; @return (namespaced map)
   [document]
   ; 1. Removes the '.' characters from the keys within the document to prevent them misread as dot notations (BSON syntax requirement).
-  ; 2. Converts the keyword type keys and values to strings within the document.
+  ; 2. Converts the keyword type keys and values into strings within the document.
   ; 4. Parses the date and time strings within the document to object types.
   (try (-> document bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
@@ -225,7 +225,7 @@
   ; 1. Renames the ':namespace/id' key to ':_id' key (a MongoDB compatible identifier) within the document.
   ;    Parses the identifier to ObjectId object.
   ; 2. Removes the '.' characters from the keys within the document to prevent them misread as dot notations (BSON syntax requirement).
-  ; 3. Converts the keyword type keys and values to strings within the document.
+  ; 3. Converts the keyword type keys and values into strings within the document.
   ; 4. Parses the date and time strings within the document to object types.
   (try (-> document (core.utils/id->_id {:parse? true}) bson/undot-keys json/unkeywordize-keys json/unkeywordize-values time/parse-timestamps)
        (catch Exception e (println (str e "\n" {:document document})))))
@@ -248,7 +248,7 @@
   ;
   ; @return (namespaced map)
   [document]
-  ; 1. Converts the keys and values back to keywords that was converted from keywords to strings (when it was stored).
+  ; 1. Converts the keys and values back into keywords that were converted from keywords into strings (when it was stored).
   ; 2. Unparses the date and time objects within the document to string types.
   ; 3. Renames the ':_id' key (a MongoDB compatible identifier) to ':namespace/id' key within the document.
   ;    Unparses the identifier to string type.
