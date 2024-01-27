@@ -42,29 +42,29 @@
 ; @ignore
 ;
 ; @constant (string)
-(def REORDERING-DOCUMENTS-FAILED "Reordering documents failed")
+(def REORDERING-DOCUMENTS-FAILED "Reordering documents has been failed")
 
 ; @ignore
 ;
 ; @constant (string)
-(def REMOVING-DOCUMENT-FAILED "Removing document failed")
+(def REMOVING-DOCUMENT-FAILED "Removing document has been failed")
 
 ; @ignore
 ;
 ; @constant (string)
-(def APPLYING-FUNCTION-FAILED "Applying function failed")
+(def APPLYING-FUNCTION-FAILED "Applying function has been failed")
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR "Missing database name and cannot assume default database name if no database connection estabilished yet")
+(def MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR "Missing database name and cannot assume default database name if no database connection is estabilished")
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR "Missing database name and cannot assume default database name if more than one database connection estabilished")
+(def MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR "Missing database name and cannot assume default database name if multiple database connections are estabilished")
 
 ; @ignore
 ;
 ; @constant (string)
-(def NO-DATABASE-REFERENCE-FOUND-ERROR "No connected database reference found")
+(def NO-DATABASE-REFERENCE-FOUND-ERROR "No connected database reference is found")

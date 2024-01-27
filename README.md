@@ -40,19 +40,19 @@ You can track the changes of the <strong>clj-mongo-db</strong> library [here](CH
 
 - [How to insert a document?](#how-to-insert-a-document)
 
-- [How to insert more than one document?](#how-to-insert-more-than-one-document)
+- [How to insert multiple documents?](#how-to-insert-multiple-documents)
 
 - [How to save a document?](#how-to-save-a-document-upserting-by-id)
 
-- [How to save more than one document?](#how-to-save-more-than-one-document)
+- [How to save multiple documents?](#how-to-save-multiple-documents)
 
 - [How to update a document?](#how-to-update-a-document)
 
-- [How to update more than one document?](#how-to-update-more-than-one-document)
+- [How to update multiple documents?](#how-to-update-multiple-documents)
 
 - [How to upsert a document?](#how-to-upsert-a-document)
 
-- [How to upsert more than one document?](#how-to-upsert-more-than-one-document)
+- [How to upsert multiple documents?](#how-to-upsert-multiple-documents)
 
 - [How to apply a function on a document?](#how-to-apply-a-function-on-a-document)
 
@@ -60,13 +60,13 @@ You can track the changes of the <strong>clj-mongo-db</strong> library [here](CH
 
 - [How to remove a document?](#how-to-remove-a-document)
 
-- [How to remove more than one document?](#how-to-remove-more-than-one-document)
+- [How to remove multiple documents?](#how-to-remove-multiple-documents)
 
 - [How to remove all documents of a collection?](#how-to-remove-all-documents-of-a-collection)
 
 - [How to duplicate a document?](#how-to-duplicate-a-document)
 
-- [How to duplicate more than one document?](#how-to-duplicate-more-than-one-document)
+- [How to duplicate multiple documents?](#how-to-duplicate-multiple-documents)
 
 - [How to reorder documents?](#how-to-reorder-documents)
 
@@ -126,7 +126,7 @@ the database name in provided collection paths.
                                    :namespace/id         "MyObjectId"})
 ```
 
-If you estabilished more than one database connection, you must specify
+If you estabilished multiple database connections, you must specify
 the database name in the provided collection paths.
 
 ```
@@ -171,7 +171,7 @@ function inserts the given document at the end of the collection.
                                   {:ordered? true})
 ```
 
-### How to insert more than one document?
+### How to insert multiple documents?
 
 The [`mongo-db.api/insert-documents!`](documentation/clj/mongo-db/API.md#insert-documents)
 function inserts the given documents at the end of the collection.
@@ -221,7 +221,7 @@ function updates the given document if it exists in the collection with the same
                                 {:ordered? true})
 ```
 
-### How to save more than one document?
+### How to save multiple documents?
 
 The [`mongo-db.api/save-documents!`](documentation/clj/mongo-db/API.md#save-documents)
 function updates the given documents if it exists in the collection with the same
@@ -265,7 +265,7 @@ function updates the first document in the collection found by the given query.
                                   {:prepare-f my-prepare-f})
 ```
 
-### How to update more than one document?
+### How to update multiple documents?
 
 The [`mongo-db.api/update-documents!`](documentation/clj/mongo-db/API.md#update-documents)
 function updates documents in the collection found by the given query.
@@ -308,7 +308,7 @@ otherwise, it inserts the document at the end of the collection.
                                   {:prepare-f my-prepare-f})
 ```
 
-### How to upsert more than one document?
+### How to upsert multiple documents?
 
 The [`mongo-db.api/upsert-documents!`](documentation/clj/mongo-db/API.md#upsert-documents)
 function updates documents in the collection found by the given query; otherwise,
@@ -399,7 +399,7 @@ function removes the document found by the given ID.
 (remove-document! "my_collection" "MyObjectId" {:ordered? true})
 ```
 
-### How to remove more than one document?
+### How to remove multiple documents?
 
 The [`mongo-db.api/remove-documents!`](documentation/clj/mongo-db/API.md#remove-documents)
 function removes documents from the collection found by the given IDs.
@@ -465,7 +465,7 @@ function duplicates the document found by the given ID.
                                                    :postpare-f my-postpare-f})
 ```
 
-### How to duplicate more than one document?
+### How to duplicate multiple documents?
 
 The [`mongo-db.api/duplicate-documents!`](documentation/clj/mongo-db/API.md#duplicate-documents)
 function duplicates the documents found by the given IDs.
