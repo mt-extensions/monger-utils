@@ -19,13 +19,13 @@ With extra features such as error handling, input checking, output checking, ord
 
 Check out the latest commit on the [release branch](https://github.com/bithandshake/clj-mongo-db/tree/release).
 
-### Documentation
-
-The <strong>clj-mongo-db</strong> functional documentation is [available here](https://bithandshake.github.io/clj-mongo-db).
-
 ### Changelog
 
 You can track the changes of the <strong>clj-mongo-db</strong> library [here](CHANGES.md).
+
+# Documentation
+
+The <strong>clj-mongo-db</strong> functional documentation is [available here](https://bithandshake.github.io/clj-mongo-db).
 
 # Usage
 
@@ -115,7 +115,7 @@ function estabilishes a connection with a MongoDB database and stores the connec
 
 ### How to use multiple databases?
 
-If you estabilished only one database connection, you don't have to specify
+If you estabilished only one database connection, you do not have to specify
 the database name in provided collection paths.
 
 ```
@@ -143,7 +143,7 @@ the database name in the provided collection paths.
 The [`mongo-db.api/insert-document!`](documentation/clj/mongo-db/API.md#insert-document)
 function inserts the given document at the end of the collection.
 
-- If the given document doesn't have the `:namespace/id` key, the function will
+- If the given document does not have the `:namespace/id` key, the function will
   generate it.
 - If the collection has a document with the same `:namespace/id` value, the function
   will ignore the inserting!
@@ -193,7 +193,7 @@ The [`mongo-db.api/save-document!`](documentation/clj/mongo-db/API.md#save-docum
 function updates the given document if it exists in the collection with the same
 `:namespace/id` value; otherwise, it inserts the document at the end of the collection.
 
-- If the given document doesn't have the `:namespace/id` key, the function will
+- If the given document does not have the `:namespace/id` key, the function will
   generate it.
 - If the collection has a document with the same `:namespace/id` value, the
   function will update it!

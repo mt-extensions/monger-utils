@@ -123,7 +123,7 @@
    (id->_id n {}))
 
   ([n {:keys [parse?]}]
-   ; The n map (provided as a parameter) doesn't have to contain the ':namespace/id' key!
+   ; The n map (provided as a parameter) does not have to contain the ':namespace/id' key!
    (if-let [namespace (map/namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n id-key)]
@@ -160,7 +160,7 @@
    (_id->id n {}))
 
   ([n {:keys [unparse?]}]
-   ; The given n map doesn't have to contain the :_id key!
+   ; The given n map does not have to contain the :_id key!
    (if-let [namespace (map/namespace n)]
            (let [id-key (keyword/add-namespace :id namespace)]
                 (if-let [value (get n :_id)]

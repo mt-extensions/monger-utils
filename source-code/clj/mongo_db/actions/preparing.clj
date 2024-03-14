@@ -23,7 +23,7 @@
   [collection-path document _]
   ; The 'upsert-input', 'save-input', and other functions also use the 'insert-input'
   ; function to prepare the given document, so if the document already has a ':namespace/order'
-  ; value, it doesn't change that value.
+  ; value, it does not change that value.
   (if-let [namespace (map/namespace document)]
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
