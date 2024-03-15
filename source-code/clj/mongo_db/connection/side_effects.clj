@@ -3,7 +3,7 @@
     (:import [com.mongodb MongoOptions]
              [com.mongodb ServerAddress])
     (:require [monger.core               :as mcr]
-              [mongo-db.connection.state :as connection.state]))
+              [common-state.api :as common-state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -20,4 +20,4 @@
         ^ServerAddress server-address (mcr/server-address database-host  database-port)
                        connection     (mcr/connect        server-address mongo-options)
                        reference      (mcr/get-db         connection     database-name)]
-       (swap! connection.state/REFERENCES assoc database-name reference)))
+       (common-state/assoc-state :monger.extra :connections database-name reference)))

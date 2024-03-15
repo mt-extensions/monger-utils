@@ -1,25 +1,10 @@
 
 (ns mongo-db.connection.utils
     (:require [fruits.string.api         :as string]
-              [mongo-db.connection.state :as connection.state]
               [mongo-db.core.messages    :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
-
-(defn default-database-name
-  ; @ignore
-  ;
-  ; @description
-  ; Returns the connected database's name as default database name in case
-  ; of only one database is connected. Otherwise, it throws an error.
-  ;
-  ; @return (string)
-  []
-  (let [connection-count (-> @connection.state/REFERENCES keys count)]
-       (case connection-count 1 (-> @connection.state/REFERENCES keys first)
-                              0 (throw (Exception. core.messages/MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR))
-                                (throw (Exception. core.messages/MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR)))))
 
 (defn collection-path->database-name
   ; @ignore

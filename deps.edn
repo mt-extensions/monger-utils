@@ -1,10 +1,10 @@
 
 {:paths ["source-code/clj"]
- :deps  {com.novemberain/monger    {:mvn/version "3.5.0"}
-         bithandshake/cljc-fruits  {:git/url "https://github.com/bithandshake/cljc-fruits"
-                                    :sha     "6b5c9c060bdff84d0cd0bce908b64b268e5e6f0e"}
-         bithandshake/re-frame-api {:git/url "https://github.com/bithandshake/re-frame-api"
-                                    :sha     "8a673f4b5f52dc0c9aaeeae30bdf7ba627f68e52"}
-         bithandshake/time-api     {:git/url "https://github.com/bithandshake/time-api"
-                                    :sha     "a29aea7c473eb9bc1636103575dc72501932e488"}
-         org.clojure/clojure       {:mvn/version "1.10.1"}}}
+ :deps  {com.novemberain/monger       {:mvn/version "3.5.0"}
+         mt-app-kit/cljc-common-state {:git/url "https://github.com/mt-app-kit/cljc-common-state"
+                                       :sha     "6b3e58faf87802c4c824a48d94458648cc09a6bb"}
+         mt-utilities/cljc-fruits     {:git/url "https://github.com/mt-utilities/cljc-fruits"
+                                       :sha     "6b5c9c060bdff84d0cd0bce908b64b268e5e6f0e"}
+         mt-utilities/cljc-time       {:git/url "https://github.com/mt-utilities/cljc-time"
+                                       :sha     "cb5bba453d022b5248196ac73e8f3916b06d441c"}
+         org.clojure/clojure          {:mvn/version "1.10.1"}}}
