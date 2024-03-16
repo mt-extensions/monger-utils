@@ -1,7 +1,7 @@
 
 (ns mongo-db.connection.env
-    (:require [mongo-db.core.env :as core.env]
-              [common-state.api :as common-state]))
+    (:require [common-state.api :as common-state]
+              [mongo-db.core.messages :as core.messages]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -32,30 +32,28 @@
   (let [connection-count (get-connection-count)]
        (case connection-count 1 (get-first-database-name)
                               0 (throw (Exception. core.messages/MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR))
-                                (throw (Exception. core.messages/MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR)))))
+                                (throw (Exception. core.messages/MISSING-DATABASE-NAME-AND-MULTIPLE-CONNECTIONS-ERROR)))))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn connected?
-  ; @description
-  ; - Checks whether a specific database has an active connection.
-  ; - If no database name is passed it uses the connected database's name, in case
-  ;   of only one database is connected.
-  ;
-  ;
+(defn get-database-reference
   ; @param (string)(opt) database-name
   ;
   ; @usage
-  ; (connected?)
+  ; (get-database-reference)
+  ; =>
+  ; ?
   ;
   ; @usage
-  ; (connected? "my-database")
+  ; (get-database-reference "my-database")
+  ; =>
+  ; ?
   ;
-  ; @return (boolean)
+  ; @return (?)
   ([]
    (let [database-name (get-default-database-name)]
-        (connected? database-name)))
+        (get-database-reference database-name)))
 
   ([database-name]
-   (core.env/command database-name {:ping 1 :warn? false})))
+   (common-state/get-state :monger.extra :connections database-name)))

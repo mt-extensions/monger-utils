@@ -3,7 +3,8 @@
     (:require monger.joda-time
               [monger.collection         :as mcl]
               [monger.operators          :refer :all]
-              [mongo-db.connection.state :as connection.state]
+              [mongo-db.core.error :as core.error]
+              [mongo-db.connection.env :as connection.env]
               [mongo-db.connection.utils :as connection.utils]
               [mongo-db.core.messages    :as core.messages]))
 
@@ -17,13 +18,12 @@
   ;
   ; @return (?)
   [collection-path]
-  (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-        collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-               (try (mcl/drop database-reference collection-name)
-                    (catch Exception e (println e (str e "\n" {:collection-path collection-path}))))
-               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                    (catch Exception e (println (str e "\n" {:database-name database-name})))))))
+  (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+             collection-name (connection.utils/collection-path->collection-name collection-path)]
+            (if-let [database-reference (connection.env/get-database-reference database-name)]
+                    (mcl/drop database-reference collection-name)
+                    (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))))
+       (catch Exception e (core.error/error-catched e {:collection-path collection-path}))))
 
 (defn insert-and-return!
   ; @ignore
@@ -34,13 +34,15 @@
   ;
   ; @return (namespaced map)
   [collection-path document]
-  (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-        collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-               (try (mcl/insert-and-return database-reference collection-name document)
-                    (catch Exception e (println (str e "\n" {:collection-path collection-path :document document}))))
-               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                    (catch Exception e (println (str e "\n" {:database-name database-name})))))))
+  (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+             collection-name (connection.utils/collection-path->collection-name collection-path)]
+            (if-let [database-reference (connection.env/get-database-reference database-name)]
+                    (mcl/insert-and-return database-reference collection-name document)
+                    (throw ;(Throwable. {:e core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR :document document})
+                           (ex-info "The ice cream has melted!"
+                                    {:causes             #{:fridge-door-open :dangerously-high-temperature}
+                                     :current-temperature {:value 25 :unit :celcius}}))))
+       (catch Exception e (core.error/error-catched {:collection-path collection-path :document document :error e}))))
 
 (defn save-and-return!
   ; @ignore
@@ -51,13 +53,12 @@
   ;
   ; @return (namespaced map)
   [collection-path document]
-  (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-        collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-               (try (mcl/save-and-return database-reference collection-name document)
-                    (catch Exception e (println (str e "\n" {:collection-path collection-path :document document}))))
-               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                    (catch Exception e (println (str e "\n" {:database-name database-name})))))))
+  (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+             collection-name (connection.utils/collection-path->collection-name collection-path)]
+            (if-let [database-reference (connection.env/get-database-reference database-name)]
+                    (mcl/save-and-return database-reference collection-name document)
+                    (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))))
+       (catch Exception e (core.error/error-catched e {:collection-path collection-path :document document}))))
 
 (defn remove-by-id!
   ; @ignore
@@ -67,13 +68,12 @@
   ;
   ; @return (?)
   [collection-path document-id]
-  (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-        collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-               (try (mcl/remove-by-id database-reference collection-name document-id)
-                    (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id}))))
-               (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                    (catch Exception e (println (str e "\n" {:database-name database-name})))))))
+  (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+             collection-name (connection.utils/collection-path->collection-name collection-path)]
+            (if-let [database-reference (connection.env/get-database-reference database-name)]
+                    (mcl/remove-by-id database-reference collection-name document-id)
+                    (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))))
+       (catch Exception e (core.error/error-catched e {:collection-path collection-path :document-id document-id}))))
 
 (defn update!
   ; @ignore
@@ -93,14 +93,12 @@
    (update! collection-path query document {}))
 
   ([collection-path query document options]
-   (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-         collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-                (try (mcl/update database-reference collection-name query document options)
-                     (catch Exception e (println (str e "\n" {:collection-path collection-path :query   query
-                                                              :document        document        :options options}))))
-                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                     (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
+   (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+              collection-name (connection.utils/collection-path->collection-name collection-path)]
+             (if-let [database-reference (connection.env/get-database-reference database-name)]
+                     (mcl/update database-reference collection-name query document options)
+                     (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))))
+        (catch Exception e (core.error/error-catched e {:collection-path collection-path :query query :document document :options options})))))
 
 (defn upsert!
   ; @ignore
@@ -118,11 +116,9 @@
    (upsert! collection-path query document {}))
 
   ([collection-path query document options]
-   (let [database-name   (connection.utils/collection-path->database-name   collection-path)
-         collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
-                (try (mcl/upsert database-reference collection-name query document options)
-                     (catch Exception e (println (str e "\n" {:collection-path collection-path :query   query
-                                                              :document        document        :options options}))))
-                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
-                     (catch Exception e (println (str e "\n" {:database-name database-name}))))))))
+   (try (let [database-name   (connection.utils/collection-path->database-name   collection-path)
+              collection-name (connection.utils/collection-path->collection-name collection-path)]
+             (if-let [database-reference (connection.env/get-database-reference database-name)]
+                     (mcl/upsert database-reference collection-name query document options)
+                     (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))))
+        (catch Exception e (core.error/error-catched e {:collection-path collection-path :query query :document document :options options})))))

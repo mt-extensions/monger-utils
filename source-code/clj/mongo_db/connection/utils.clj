@@ -1,7 +1,8 @@
 
 (ns mongo-db.connection.utils
-    (:require [fruits.string.api         :as string]
-              [mongo-db.core.messages    :as core.messages]))
+    (:require [fruits.string.api :as string]
+              [mongo-db.core.messages :as core.messages]
+              [mongo-db.connection.env :as connection.env]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -34,7 +35,7 @@
   [collection-path]
   (if-let [database-name (string/before-first-occurence collection-path "/" {:return? false})]
           (-> database-name)
-          (default-database-name)))
+          (connection.env/get-default-database-name)))
 
 (defn collection-path->collection-name
   ; @ignore

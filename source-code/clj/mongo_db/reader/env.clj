@@ -3,7 +3,7 @@
     (:require [monger.joda-time]
               [monger.collection         :as mcl]
               [monger.db                 :as mdb]
-              [mongo-db.connection.state :as connection.state]
+              [mongo-db.connection.env :as connection.env]
               [mongo-db.connection.utils :as connection.utils]
               [mongo-db.core.messages    :as core.messages]))
 
@@ -21,7 +21,7 @@
   ([collection-path query]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (vec (mcl/find-maps database-reference collection-name query))
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -30,7 +30,7 @@
   ([collection-path query projection]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (vec (mcl/find-maps database-reference collection-name query projection))
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query :projection projection}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -47,7 +47,7 @@
   ([collection-path query]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (mcl/find-one-as-map database-reference collection-name query)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -56,7 +56,7 @@
   ([collection-path query projection]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (mcl/find-one-as-map database-reference collection-name query projection)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :query query :projection projection}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -73,7 +73,7 @@
   ([collection-path document-id]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (mcl/find-map-by-id database-reference collection-name document-id)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -82,7 +82,7 @@
   ([collection-path document-id projection]
    (let [database-name   (connection.utils/collection-path->database-name   collection-path)
          collection-name (connection.utils/collection-path->collection-name collection-path)]
-        (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+        (if-let [database-reference (connection.env/get-database-reference database-name)]
                 (try (mcl/find-map-by-id database-reference collection-name document-id projection)
                      (catch Exception e (println (str e "\n" {:collection-path collection-path :document-id document-id :projection projection}))))
                 (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -97,7 +97,7 @@
   [collection-path]
   (let [database-name   (connection.utils/collection-path->database-name   collection-path)
         collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+       (if-let [database-reference (connection.env/get-database-reference database-name)]
                (try (mcl/count database-reference collection-name)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path}))))
                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
@@ -114,7 +114,7 @@
   [collection-path query]
   (let [database-name   (connection.utils/collection-path->database-name   collection-path)
         collection-name (connection.utils/collection-path->collection-name collection-path)]
-       (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+       (if-let [database-reference (connection.env/get-database-reference database-name)]
                (try (mcl/count database-reference collection-name query)
                     (catch Exception e (println (str e "\n" {:collection-path collection-path :query query}))))
                (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))

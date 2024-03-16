@@ -5,8 +5,7 @@
               [fruits.vector.api           :as vector]
               [monger.db                   :as mdb]
               [mongo-db.aggregation.engine :as aggregation.engine]
-              [mongo-db.connection.state   :as connection.state]
-              [mongo-db.connection.utils   :as connection.utils]
+              [mongo-db.connection.env   :as connection.env]
               [mongo-db.core.messages      :as core.messages]
               [mongo-db.reader.adaptation  :as reader.adaptation]
               [mongo-db.reader.checking    :as reader.checking]
@@ -27,11 +26,11 @@
   ;
   ; @return (strings in vector)
   ([]
-   (let [database-name (connection.utils/default-database-name)]
+   (let [database-name (connection.env/get-default-database-name)]
         (get-collection-names database-name)))
 
   ([database-name]
-   (if-let [database-reference (get @connection.state/REFERENCES database-name)]
+   (if-let [database-reference (connection.env/get-database-reference database-name)]
            (-> database-reference mdb/get-collection-names vec)
            (try (throw (Exception. core.messages/NO-DATABASE-REFERENCE-FOUND-ERROR))
                 (catch Exception e (println (str e "\n" {:database-name database-name})))))))

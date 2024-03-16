@@ -47,14 +47,16 @@
                 query        {order-key {:$gt document-dex}}
                 document     (case operation :increase {:$inc {order-key  1}}
                                              :decrease {:$inc {order-key -1}})]
-               (if-let [query (-> query actions.checking/update-query actions.adaptation/update-query)]
-                       (if-let [document (-> document actions.checking/update-input actions.adaptation/update-input)]
+               (if-let [query (-> query (actions.checking/update-query)
+                                        (actions.adaptation/query-input {:parse-id? true :rename-id? true}))]
+                       (if-let [document (-> document (actions.checking/update-input)
+                                                      (actions.adaptation/document-input {:parse-id? false :rename-id? false}))]
                                ; Adjusting the ':order' value of other documents that follow (in terms of ':order' value)
                                ; the inserted or removed document.
                                (let [result (actions.side-effects/update! collection-path query document {:multi true})]
                                     (if-not (mrt/acknowledged? result)
-                                            (throw (Exception. core.messages/REORDERING-DOCUMENTS-FAILED)))))))
-          (throw (Exception. core.messages/DOCUMENT-DOES-NOT-EXISTS-ERROR))))
+                                            (throw (Exception. core.messages/FAILED-TO-REORDER-DOCUMENTS-ERROR)))))))
+          (throw (Exception. core.messages/DOCUMENT-DOES-NOT-EXIST-ERROR))))
 
 ;; -- Inserting document ------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -95,14 +97,14 @@
   ([collection-path document options]
    ; @NOTE (#7100)
    ; The checking function must be applied before the preparing function.
-   ; Because the document preparing requires documents to be namespaced maps and
+   ; Because preparing the document requires documents to be namespaced maps and
    ; the checking function checks whether a document is a namespaced map!
    (if-let [document (as-> document % (actions.prototyping/insert-input collection-path % options)
                                       (actions.checking/insert-input %)
                                       (actions.preparing/insert-input collection-path % options)
-                                      (actions.adaptation/insert-input %))]
+                                      (actions.adaptation/document-input % {:parse-id? true :rename-id? true}))]
            (if-let [result (actions.side-effects/insert-and-return! collection-path document)]
-                   (actions.adaptation/insert-output result)))))
+                   (actions.adaptation/document-output result {:rename-id? true :unparse-id? true})))))
 
 ;; -- Inserting documents -----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -184,9 +186,9 @@
    (if-let [document (as-> document % (actions.prototyping/save-input collection-path % options)
                                       (actions.checking/save-input %)
                                       (actions.preparing/save-input collection-path % options)
-                                      (actions.adaptation/save-input %))]
+                                      (actions.adaptation/document-input % {:parse-id? true :rename-id? true}))]
            (if-let [result (actions.side-effects/save-and-return! collection-path document)]
-                   (actions.adaptation/save-output result)))))
+                   (actions.adaptation/document-output result {:rename-id? true :unparse-id? true})))))
 
 ;; -- Saving documents --------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -266,7 +268,7 @@
    (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
                                                (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
-                                               (actions.adaptation/update-input %))]
+                                               (actions.adaptation/document-input {:parse-id? false :rename-id? false}))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             (let [result (actions.side-effects/update! collection-path query document {:multi false :upsert false})]
                                  (mrt/updated-existing? result)))))))
@@ -310,7 +312,7 @@
    (boolean (if-let [document (as-> document % (actions.prototyping/update-input collection-path % options)
                                                (actions.checking/update-input %)
                                                (actions.preparing/update-input collection-path % options)
-                                               (actions.adaptation/update-input %))]
+                                               (actions.adaptation/document-input {:parse-id? false :rename-id? false}))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             ; WARNING! DO NOT USE!
                             ; java.lang.IllegalArgumentException: Replacements can not be multi
@@ -358,7 +360,7 @@
    (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
                                                (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
-                                               (actions.adaptation/upsert-input %))]
+                                               (actions.adaptation/document-input % {:parse-id? false :rename-id? false}))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             (let [result (actions.side-effects/upsert! collection-path query document {:multi false})]
                                  (mrt/acknowledged? result)))))))
@@ -403,7 +405,7 @@
    (boolean (if-let [document (as-> document % (actions.prototyping/upsert-input collection-path % options)
                                                (actions.checking/upsert-input %)
                                                (actions.preparing/upsert-input collection-path % options)
-                                               (actions.adaptation/upsert-input %))]
+                                               (actions.adaptation/document-input % {:parse-id? false :rename-id? false}))]
                     (if-let [query (-> query reader.checking/find-query reader.adaptation/find-query)]
                             ; WARNING! DO NOT USE!
                             ; java.lang.IllegalArgumentException: Replacements can not be multi
@@ -440,9 +442,9 @@
            (if-let [document (actions.preparing/apply-input collection-path document options)]
                    (if-let [document (f document)]
                            (if-let [document (actions.postparing/apply-input collection-path document options)]
-                                   (if-let [document (actions.adaptation/save-input document)]
+                                   (if-let [document (actions.adaptation/document-input % {:parse-id? true :rename-id? true})]
                                            (let [result (actions.side-effects/save-and-return! collection-path document)]
-                                                (actions.adaptation/save-output result)))))))))
+                                                (actions.adaptation/document-output result {:rename-id? true :unparse-id? true})))))))))
 
 ;; -- Applying on collection --------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -613,9 +615,9 @@
   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
           (if-let [document-copy (actions.preparing/duplicate-input collection-path document options)]
                   (if-let [document-copy (actions.postparing/duplicate-input collection-path document-copy options)]
-                          (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
+                          (if-let [document-copy (actions.adaptation/document-input document-copy {:parse-id? true :rename-id? true})]
                                   (let [result (actions.side-effects/insert-and-return! collection-path document-copy)]
-                                       (actions.adaptation/duplicate-output result)))))))
+                                       (actions.adaptation/document-output result {:rename-id? true :unparse-id? true})))))))
 
 (defn- duplicate-ordered-document!
   ; @ignore
@@ -633,10 +635,10 @@
   (if-let [document (reader.engine/get-document-by-id collection-path document-id)]
           (if-let [document-copy (actions.preparing/duplicate-input collection-path document options)]
                   (if-let [document-copy (actions.postparing/duplicate-input collection-path document-copy options)]
-                          (if-let [document-copy (actions.adaptation/duplicate-input document-copy)]
+                          (if-let [document-copy (actions.adaptation/document-input document-copy {:parse-id? true :rename-id? true})]
                                   (do (reorder-following-documents! collection-path document-id {:operation :increase})
                                       (let [result (actions.side-effects/insert-and-return! collection-path document-copy)]
-                                           (actions.adaptation/duplicate-output result))))))))
+                                           (actions.adaptation/document-output result {:rename-id? true :unparse-id? true}))))))))
 
 (defn duplicate-document!
   ; @description

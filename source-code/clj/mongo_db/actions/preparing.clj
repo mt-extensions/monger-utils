@@ -28,7 +28,7 @@
           (let [order-key  (keyword/add-namespace :order namespace)
                 last-order (reader.engine/get-all-document-count collection-path)]
                (merge {order-key last-order} document))
-          (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR))))
+          (throw (Exception. core.messages/DOCUMENT-TYPE-ERROR))))
 
 (defn insert-input
   ; @ignore
@@ -162,7 +162,7 @@
                (if-let [order (get document order-key)]
                        (update document order-key inc)
                        (throw (Exception. core.messages/MISSING-DOCUMENT-ORDER-ERROR))))
-          (throw (Exception. core.messages/MISSING-NAMESPACE-ERROR))))
+          (throw (Exception. core.messages/DOCUMENT-TYPE-ERROR))))
 
 (defn duplicate-input
   ; @ignore

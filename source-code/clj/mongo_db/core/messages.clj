@@ -7,64 +7,63 @@
 ; @ignore
 ;
 ; @constant (string)
-(def QUERY-MUST-BE-MAP-ERROR "Query must be map")
+(def QUERY-TYPE-ERROR "Query must be a map.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def INPUT-MUST-BE-MAP-ERROR "Input must be map")
+(def DOCUMENT-TYPE-ERROR "Document must be a map.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-NAMESPACE-ERROR "Document must be a namespaced map with keyword type keys")
+(def NAMESPACED-DOCUMENT-TYPE-ERROR "Document must be a namespaced map.")
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-DOCUMENT-ID-ERROR "Missing document ID error")
+(def MISSING-DOCUMENT-ID-ERROR "Missing document ID.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-DOCUMENT-ORDER-ERROR "Missing document order error")
+(def MISSING-DOCUMENT-ORDER-ERROR "Missing document order.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def DOCUMENT-DOES-NOT-EXISTS-ERROR "Document does not exists error")
+(def DOCUMENT-DOES-NOT-EXIST-ERROR "Document does not exist.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def DOCUMENT-CORRUPTED-ERROR "Document corrupted error")
+(def DOCUMENT-CORRUPTED-ERROR "Document corrupted.")
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 ; @ignore
 ;
 ; @constant (string)
-(def REORDERING-DOCUMENTS-FAILED "Reordering documents has been failed")
+(def FAILED-TO-REORDER-DOCUMENTS-ERROR "Failed to reorder documents.")
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 ; @ignore
 ;
 ; @constant (string)
-(def REMOVING-DOCUMENT-FAILED "Removing document has been failed")
+(def MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR "Missing database name. Cannot assume a default database name if no database connection is estabilished.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def APPLYING-FUNCTION-FAILED "Applying function has been failed")
+(def MISSING-DATABASE-NAME-AND-MULTIPLE-CONNECTIONS-ERROR "Missing database name. Cannot assume a default database name if multiple database connections are estabilished.")
 
 ; @ignore
 ;
 ; @constant (string)
-(def MISSING-DATABASE-NAME-AND-NO-CONNECTION-ERROR "Missing database name and cannot assume default database name if no database connection is estabilished")
-
-; @ignore
-;
-; @constant (string)
-(def MISSING-DATABASE-NAME-AND-MULTI-CONNECTION-ERROR "Missing database name and cannot assume default database name if multiple database connections are estabilished")
-
-; @ignore
-;
-; @constant (string)
-(def NO-DATABASE-REFERENCE-FOUND-ERROR "No connected database reference is found")
+(def NO-DATABASE-REFERENCE-FOUND-ERROR "No connected database reference is found.")

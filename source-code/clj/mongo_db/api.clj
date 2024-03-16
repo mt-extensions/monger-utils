@@ -3,6 +3,7 @@
     (:require [mongo-db.actions.engine          :as actions.engine]
               [mongo-db.aggregation.pipelines   :as aggregation.pipelines]
               [mongo-db.connection.env          :as connection.env]
+              [mongo-db.connection.check          :as connection.check]
               [mongo-db.connection.side-effects :as connection.side-effects]
               [mongo-db.core.utils              :as core.utils]
               [mongo-db.reader.engine           :as reader.engine]))
@@ -32,8 +33,11 @@
 (def get-pipeline   aggregation.pipelines/get-pipeline)
 (def count-pipeline aggregation.pipelines/count-pipeline)
 
+; @redirect (mongo-db.connection.check)
+(def connected? connection.check/connected?)
+
 ; @redirect (mongo-db.connection.env)
-(def connected? connection.env/connected?)
+(def get-database-reference connection.env/get-database-reference)
 
 ; @redirect (mongo-db.connection.side-effects)
 (def build-connection! connection.side-effects/build-connection!)

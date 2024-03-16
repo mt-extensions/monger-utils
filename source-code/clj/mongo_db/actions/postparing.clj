@@ -1,5 +1,6 @@
 
-(ns mongo-db.actions.postparing)
+(ns mongo-db.actions.postparing
+    (:require [mongo-db.core.error :as core.error]))
 
 ;; -- Applying document -------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -16,7 +17,7 @@
   [collection-path document {:keys [postpare-f] :as options}]
   (try (if postpare-f (-> document postpare-f)
                       (-> document))
-       (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
+       (catch Exception e (core.error/error-catched e {:collection-path collection-path :document document :options options}))))
 
 ;; -- Duplicating document -----------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -33,4 +34,4 @@
   [collection-path document {:keys [postpare-f] :as options}]
   (try (if postpare-f (-> document postpare-f)
                       (-> document))
-       (catch Exception e (println (str e "\n" {:collection-path collection-path :document document :options options})))))
+       (catch Exception e (core.error/error-catched e {:collection-path collection-path :document document :options options}))))
