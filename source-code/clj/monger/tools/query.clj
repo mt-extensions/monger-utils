@@ -1,7 +1,7 @@
 
-(ns monger.utils.query
+(ns monger.tools.query
     (:require [fruits.map.api :as map]
-              [monger.utils.check :as check]))
+              [monger.tools.check :as check]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -32,7 +32,7 @@
   [query]
   ; The 'except-f' function provides exception rule for the 'map/collapse' function
   ; in order to avoid collapsing operator keys in the given map.
-  (letfn [(except-f [k _] (operator? k))]
+  (letfn [(except-f [k _] (check/operator? k))]
          (map/collapse query {:keywordize? true :inner-except-f except-f :outer-except-f except-f :separator "."})))
 
 ;; ----------------------------------------------------------------------------
