@@ -1,7 +1,7 @@
 
 (ns monger.tools.api
     (:require [monger.tools.check :as check]
-              [monger.tools.id :as id]
+              [monger.tools.id    :as id]
               [monger.tools.query :as query]
               [monger.tools.value :as value]))
 

@@ -1,16 +1,16 @@
 
 (ns monger.stages.api
     (:require [monger.stages.acknowledging :as acknowledging]
-              [monger.stages.adaptation :as adaptation]
-              [monger.stages.changing :as changing]
-              [monger.stages.checking :as checking]
-              [monger.stages.labeling :as labeling]
+              [monger.stages.adaptation    :as adaptation]
+              [monger.stages.changing      :as changing]
+              [monger.stages.checking      :as checking]
+              [monger.stages.id            :as id]
+              [monger.stages.labeling      :as labeling]
               [monger.stages.normalization :as normalization]
-              [monger.stages.positioning :as positioning]
-              [monger.stages.postparing :as postparing]
-              [monger.stages.preparing :as preparing]
-              [monger.stages.prototyping :as prototyping]
-              [monger.stages.id :as id]))
+              [monger.stages.positioning   :as positioning]
+              [monger.stages.postparing    :as postparing]
+              [monger.stages.preparing     :as preparing]
+              [monger.stages.prototyping   :as prototyping]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

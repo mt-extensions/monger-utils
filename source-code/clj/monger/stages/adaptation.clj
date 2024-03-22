@@ -1,12 +1,12 @@
 
 (ns monger.stages.adaptation
     (:import org.bson.types.ObjectId)
-    (:require [fruits.bson.api :as bson]
-              [fruits.json.api :as json]
-              [fruits.map.api :as map]
-              [fruits.vector.api :as vector]
+    (:require [fruits.bson.api   :as bson]
+              [fruits.json.api   :as json]
+              [fruits.map.api    :as map]
               [fruits.syntax.api :as syntax]
-              [time.api :as time]))
+              [fruits.vector.api :as vector]
+              [time.api          :as time]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

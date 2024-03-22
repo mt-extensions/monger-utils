@@ -1,12 +1,12 @@
 
 (ns monger.stages.normalization
-    (:require [fruits.bson.api            :as bson]
-              [fruits.json.api            :as json]
-              [fruits.vector.api :as vector]
-              [fruits.map.api :as map]
+    (:require [fruits.bson.api   :as bson]
+              [fruits.json.api   :as json]
+              [fruits.map.api    :as map]
               [fruits.syntax.api :as syntax]
-              [monger.tools.api        :as monger.tools]
-              [time.api                   :as time]))
+              [fruits.vector.api :as vector]
+              [monger.tools.api  :as monger.tools]
+              [time.api          :as time]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

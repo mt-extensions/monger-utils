@@ -1,9 +1,9 @@
 
 (ns monger.stages.checking
-    (:require [fruits.map.api :as map]
-              [fruits.vector.api :as vector]
+    (:require [fruits.map.api         :as map]
+              [fruits.vector.api      :as vector]
               [monger.stages.messages :as messages]
-              [monger.tools.api :as monger.tools]))
+              [monger.tools.api       :as monger.tools]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

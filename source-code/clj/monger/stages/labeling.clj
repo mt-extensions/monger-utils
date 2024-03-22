@@ -1,9 +1,9 @@
 
 (ns monger.stages.labeling
     (:require [fruits.gestures.api    :as gestures]
-              [fruits.vector.api :as vector]
+              [fruits.vector.api      :as vector]
               [monger.stages.messages :as messages]
-              [monger.tools.api :as monger.tools]))
+              [monger.tools.api       :as monger.tools]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

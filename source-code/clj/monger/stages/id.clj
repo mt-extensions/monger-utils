@@ -1,7 +1,7 @@
 
 (ns monger.stages.id
-    (:require [monger.tools.api :as monger.tools]
-              [fruits.vector.api :as vector]))
+    (:require [fruits.vector.api :as vector]
+              [monger.tools.api  :as monger.tools]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

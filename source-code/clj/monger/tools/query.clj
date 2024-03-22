@@ -1,6 +1,6 @@
 
 (ns monger.tools.query
-    (:require [fruits.map.api :as map]
+    (:require [fruits.map.api     :as map]
               [monger.tools.check :as check]))
 
 ;; ----------------------------------------------------------------------------
