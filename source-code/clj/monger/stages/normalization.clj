@@ -190,7 +190,7 @@
 
 (defn normalize-document-id
   ; @description
-  ; Renames the ':_id' key (a MongoDB compatible identifier) to the given ID key within the given document (if ':id-key' is provided).
+  ; Renames the ':_id' key (MongoDB compatible) to the given ID key within the given document (if ':id-key' is provided).
   ;
   ; @param (map) document
   ; @param (map)(opt) options

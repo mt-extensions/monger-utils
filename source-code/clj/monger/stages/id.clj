@@ -8,7 +8,7 @@
 
 (defn assoc-document-id
   ; @description
-  ; Associates a randomly generate ObjectId string as document ID to the given document (if ':id-key' is provided).
+  ; Associates a randomly generated ObjectId string as document ID to the given document (if ':id-key' is provided).
   ;
   ; @param (map) document
   ; @param (map)(opt) options

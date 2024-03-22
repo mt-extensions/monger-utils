@@ -139,7 +139,7 @@
   ; @param (keywords in vector) locales
   ;
   ; @usage
-  ; (adapt-locale [:my-locale :another-locale])
+  ; (adapt-locales [:my-locale :another-locale])
   ; =>
   ; ["my-locale" "another-locale"]
   ;
@@ -239,9 +239,9 @@
 
 (defn adapt-document
   ; @description
-  ; 1. Optionally parses the document ID string into object within the given document.
-  ; 2. Optionally parses date and time strings to objects within the given document.
-  ; 3. Optionally removes '.' characters from keys within the given document to prevent them misread as dot notations (BSON syntax requirement).
+  ; 1. Optionally parses the document ID string into an object within the given document.
+  ; 2. Optionally parses date and time strings into objects within the given document.
+  ; 3. Optionally removes '.' characters from keys within the given document to prevent them misread as dot notations.
   ; 4. Optionally converts keyword type keys and/or values into strings within the given document.
   ;
   ; @param (map) document
@@ -250,7 +250,7 @@
   ;  :parse-timestamps? (boolean)(opt)
   ;  :undot-keys? (boolean)(opt)
   ;  :unkeywordize-keys? (boolean)(opt)
-  ;  :unkeywordize-values?? (boolean)(opt)}
+  ;  :unkeywordize-values? (boolean)(opt)}
   ;
   ; @usage
   ; (adapt-document {:_id                       "MyObjectId"
@@ -286,7 +286,7 @@
   ;  :parse-timestamps? (boolean)(opt)
   ;  :undot-keys? (boolean)(opt)
   ;  :unkeywordize-keys? (boolean)(opt)
-  ;  :unkeywordize-values?? (boolean)(opt)}
+  ;  :unkeywordize-values? (boolean)(opt)}
   ;
   ; @usage
   ; (adapt-documents [{:_id                       "MyObjectId"
@@ -314,7 +314,7 @@
 
 (defn adapt-projection-id
   ; @description
-  ; Renames the given ID key to ':_id' (a MongoDB compatible identifier) within the given projection (if ':id-key' is provided).
+  ; Renames the given ID key to ':_id' (MongoDB compatible) within the given projection (if ':id-key' is provided).
   ;
   ; @param (map) projection
   ; @param (map)(opt) options
@@ -363,7 +363,7 @@
 
 (defn adapt-projection
   ; @description
-  ; 1. Optionally removes '.' characters from keys within the given projection to prevent them misread as dot notations (BSON syntax requirement).
+  ; 1. Optionally removes '.' characters from keys within the given projection to prevent them misread as dot notations.
   ; 2. Optionally converts keyword type keys into strings within the given projection.
   ;
   ; @param (map) projection
@@ -422,7 +422,7 @@
   ; All changes performed recursivelly on the given query!
   ;
   ; @description
-  ; Renames the given ID key to ':_id' (a MongoDB compatible identifier) within the given query (if ':id-key' is provided).
+  ; Renames the given ID key to ':_id' (MongoDB compatible) within the given query (if ':id-key' is provided).
   ;
   ; @param (map) query
   ; @param (map)(opt) options
@@ -480,7 +480,7 @@
   ; @description
   ; 1. Optionally parses document ID strings into objects within the given query.
   ; 2. Optionally parses date and time strings into objects within the given query.
-  ; 3. Optionally removes '.' characters from keys within the given query to prevent them misread as dot notations (BSON syntax requirement).
+  ; 3. Optionally removes '.' characters from keys within the given query to prevent them misread as dot notations.
   ; 4. Optionally converts keyword type keys and values into strings within the given query.
   ;
   ; @param (map) query
@@ -531,7 +531,7 @@
   ;  :parse-timestamps? (boolean)(opt)
   ;  :undot-keys? (boolean)(opt)
   ;  :unkeywordize-keys? (boolean)(opt)
-  ;  :unkeywordize-values?? (boolean)(opt)}
+  ;  :unkeywordize-values? (boolean)(opt)}
   ;
   ; @usage
   ; (adapt-queries [{:_id                       "MyObjectId"
@@ -564,7 +564,7 @@
   ; All changes performed recursivelly on the given pipeline stage!
   ;
   ; @description
-  ; Renames the given ID key to ':_id' (a MongoDB compatible identifier) within the given pipeline stage (if ':id-key' is provided).
+  ; Renames the given ID key to ':_id' (MongoDB compatible) within the given pipeline stage (if ':id-key' is provided).
   ;
   ; @param (map) pipeline-stage
   ; @param (map)(opt) options
@@ -624,7 +624,7 @@
   ; @description
   ; 1. Optionally parses document ID strings into objects within the given pipeline stage.
   ; 2. Optionally parses date and time strings into objects within the given pipeline stage.
-  ; 3. Optionally removes '.' characters from keys within the given pipeline stage to prevent them misread as dot notations (BSON syntax requirement).
+  ; 3. Optionally removes '.' characters from keys within the given pipeline stage to prevent them misread as dot notations.
   ; 4. Optionally converts keyword type keys and values into strings within the given pipeline stage.
   ;
   ; @param (map) pipeline-stage
@@ -668,7 +668,7 @@
   ;  :parse-timestamps? (boolean)(opt)
   ;  :undot-keys? (boolean)(opt)
   ;  :unkeywordize-keys? (boolean)(opt)
-  ;  :unkeywordize-values?? (boolean)(opt)}
+  ;  :unkeywordize-values? (boolean)(opt)}
   ;
   ; @usage
   ; (adapt-pipeline-stages [{:$unset [:my-namespace/my-key]}

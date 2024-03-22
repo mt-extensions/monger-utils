@@ -7,7 +7,7 @@
 
 (defn get-value
   ; @description
-  ; Returns a specific value from the given map.
+  ; Returns a specific value from the given optionally namespaced map.
   ;
   ; @param (map) n
   ; @param (keyword) k
@@ -24,7 +24,7 @@
 
 (defn assoc-value
   ; @description
-  ; Associates a specific value to the given map.
+  ; Associates a specific value to the given optionally namespaced map.
   ;
   ; @param (map) n
   ; @param (keyword) k
@@ -44,7 +44,7 @@
 
 (defn dissoc-value
   ; @description
-  ; Dissociates a specific value of the given map.
+  ; Dissociates a specific value of the given optionally namespaced map.
   ;
   ; @param (map) n
   ; @param (keyword) k
@@ -61,7 +61,7 @@
 
 (defn update-value
   ; @description
-  ; Updates a specific value within the given map.
+  ; Updates a specific value within the given optionally namespaced map.
   ;
   ; @param (map) n
   ; @param (keyword) k

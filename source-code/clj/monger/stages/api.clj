@@ -62,7 +62,7 @@
 (def adapt-queries-id            adaptation/adapt-queries-id)
 (def adapt-query                 adaptation/adapt-query)
 (def adapt-queries               adaptation/adapt-queries)
-(def adapt-pipeline-stage-id)    adaptation/adapt-pipeline-stage-id
+(def adapt-pipeline-stage-id     adaptation/adapt-pipeline-stage-id)
 (def adapt-pipeline-stages-id    adaptation/adapt-pipeline-stages-id)
 (def adapt-pipeline-stage        adaptation/adapt-pipeline-stage)
 (def adapt-pipeline-stages       adaptation/adapt-pipeline-stages)
@@ -88,7 +88,7 @@
 (def check-projections           checking/check-projections)
 (def check-query                 checking/check-query)
 (def check-queries               checking/check-queries)
-(def check-pipeline-stage)       checking/check-pipeline-stage
+(def check-pipeline-stage        checking/check-pipeline-stage)
 (def check-pipeline-stages       checking/check-pipeline-stages)
 
 ; @redirect (monger.stages.id/*)

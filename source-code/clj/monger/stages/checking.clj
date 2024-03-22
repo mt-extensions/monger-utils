@@ -18,7 +18,8 @@
   ; {:check-type? (boolean)(opt)}
   ;
   ; @usage
-  ; (check-database-name :my-database)
+  ; (check-database-name :my-database 
+  ;                      {:check-type? true})
   ; =>
   ; :my-database
   ;
@@ -42,7 +43,8 @@
   ;  :e (string)(opt)}
   ;
   ; @usage
-  ; (check-databases-name [:my-database :another-database])
+  ; (check-databases-name [:my-database :another-database]
+  ;                       {:check-type? true})
   ; =>
   ; [:my-database :another-database]
   ;
@@ -69,7 +71,8 @@
   ; {:check-type? (boolean)(opt)}
   ;
   ; @usage
-  ; (check-collection-name :my-collection)
+  ; (check-collection-name :my-collection
+  ;                        {:check-type? true})
   ; =>
   ; :my-collection
   ;
@@ -93,7 +96,8 @@
   ;  :e (string)(opt)}
   ;
   ; @usage
-  ; (check-collections-name [:my-collection :another-collection])
+  ; (check-collections-name [:my-collection :another-collection]
+  ;                         {:check-type? true})
   ; =>
   ; [:my-collection :another-collection]
   ;
@@ -120,7 +124,8 @@
   ; {:check-type? (boolean)(opt)}
   ;
   ; @usage
-  ; (check-collection-namespace :my-collection)
+  ; (check-collection-namespace :my-collection
+  ;                             {:check-type? true})
   ; =>
   ; :my-collection
   ;
@@ -144,7 +149,8 @@
   ;  :e (string)(opt)}
   ;
   ; @usage
-  ; (check-collections-namespace [:my-collection :another-collection])
+  ; (check-collections-namespace [:my-collection :another-collection]
+  ;                              {:check-type? true})
   ; =>
   ; [:my-collection :another-collection]
   ;
@@ -171,7 +177,8 @@
   ; {:check-type? (boolean)(opt)}
   ;
   ; @usage
-  ; (check-locale :my-locale)
+  ; (check-locale :my-locale
+  ;               {:check-type? true}))
   ; =>
   ; :my-locale
   ;
@@ -195,7 +202,8 @@
   ;  :e (string)(opt)}
   ;
   ; @usage
-  ; (check-locale [:my-locale :another-locale])
+  ; (check-locale [:my-locale :another-locale]
+  ;               {:check-type? true})
   ; =>
   ; [:my-locale :another-locale]
   ;

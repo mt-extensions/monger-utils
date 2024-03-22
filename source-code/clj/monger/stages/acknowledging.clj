@@ -16,7 +16,8 @@
   ; {:e (string)(opt)}
   ;
   ; @usage
-  ; (result-acknowledged? ? {:e "Something happened!"})
+  ; (let [result (monger.collection/update ...)]
+  ;      (result-acknowledged? result {:e "Something happened!"}))
   ; =>
   ; true
   ;
@@ -39,7 +40,8 @@
   ; {:e (string)(opt)}
   ;
   ; @usage
-  ; (results-acknowledged? [?] {:e "Something happened!"})
+  ; (let [result (monger.collection/update ...)]
+  ;      (results-acknowledged? [result] {:e "Something happened!"}))
   ; =>
   ; [true]
   ;
@@ -64,7 +66,8 @@
   ; {:e (string)(opt)}
   ;
   ; @usage
-  ; (updated-existing? ? {:e "Something happened!"})
+  ; (let [result (monger.collection/update ...)]
+  ;      (updated-existing? result {:e "Something happened!"}))
   ; =>
   ; true
   ;
@@ -87,7 +90,8 @@
   ; {:e (string)(opt)}
   ;
   ; @usage
-  ; (updated-existings? [?] {:e "Something happened!"})
+  ; (let [result (monger.collection/update ...)]
+  ;      (updated-existings? [result] {:e "Something happened!"}))
   ; =>
   ; [true]
   ;
