@@ -81,6 +81,7 @@
                        (->   k)
                        (as-> k % (str  %)
                                  (subs % 1)
-                                 (str (name namespace) "/" %))))]
+                                 (str (name namespace) "/" %)
+                                 (keyword %))))]
           (if recur? (map/->>keys query f0)
                      (map/->keys  query f0)))))

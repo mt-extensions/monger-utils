@@ -646,12 +646,19 @@
    (adapt-pipeline-stage pipeline-stage {}))
 
   ([pipeline-stage {:keys [parse-id? parse-timestamps? undot-keys? unkeywordize-keys? unkeywordize-values?]}]
-   (letfn [(f0 [%] (println %) (adapt-document % {:parse-id? parse-id?}))]
+   ; @note (#0114)
+   ; By default, the JSON functions below unkeywordize vector items as values,
+   ; but in MongoDB pipelines keywords in vectors must be unkeywordized as keys (not as values).
+   ; If they were unkeywordized as values, the 'json/unkeywordize-values' function would mark them with a '*' prefix.
+   ; E.g., {:$unset [:my-namespace/my-key]} => {"$unset" [":*my-namespace/my-key"]} ... as values :(
+   ;       {:$unset [:my-namespace/my-key]} => {"$unset" ["my-namespace/my-key"]}   ... as keys   :)
+   (letfn [(f0 [%] (adapt-document    % {:parse-id? parse-id?}))
+           (f1 [%] (vector/->items-by % keyword? json/unkeywordize-key))]
           (if (->     pipeline-stage some?)
               (cond-> pipeline-stage parse-id?            (map/->>values-by map? f0 {:on-self? true})
                                      parse-timestamps?    (time/parse-timestamps)
                                      undot-keys?          (bson/undot-keys)
-                                     unkeywordize-keys?   (map/->>values-by keyword? json/unkeywordize-key)
+                                     unkeywordize-keys?   (map/->>values-by vector? f1) ; <- @note (#0114)
                                      unkeywordize-keys?   (json/unkeywordize-keys)
                                      unkeywordize-values? (json/unkeywordize-values))))))
 
