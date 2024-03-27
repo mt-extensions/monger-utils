@@ -2,7 +2,7 @@
 {:paths ["source-code/clj"]
  :deps  {com.novemberain/monger   {:mvn/version "3.5.0"}
          bithandshake/cljc-fruits {:git/url "https://github.com/bithandshake/cljc-fruits"
-                                   :sha     "289bfaa76c90632b4332e89a226eb657e7eb4107"}
+                                   :sha     "fcd4ebfed6cc44486464b5d619bef88d620c7f6a"}
          mt-utilities/cljc-time   {:git/url "https://github.com/mt-utilities/cljc-time"
-                                   :sha     "880512f25278823fb72bb1fe96036be32573a83a"}
+                                   :sha     "798bb57c5d0d421618bcef7071d49580e16b61aa"}
          org.clojure/clojure      {:mvn/version "1.10.1"}}}
