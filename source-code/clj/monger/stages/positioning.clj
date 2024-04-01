@@ -75,7 +75,7 @@
 
 (defn shift-document-position
   ; @description
-  ; - Increases the virtual position value within the given document (if ':position-key' is provided).
+  ; - Increments the virtual position value within the given document (if ':position-key' is provided).
   ; - Throws an error if the virtual position value is NIL.
   ;
   ; @param (map) document

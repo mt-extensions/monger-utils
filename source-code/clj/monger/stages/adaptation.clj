@@ -419,7 +419,7 @@
 
 (defn adapt-query-id
   ; @note
-  ; All changes performed recursivelly on the given query!
+  ; All changes performed recursivelly to nested keys within given query.
   ;
   ; @description
   ; Renames the given ID key to ':_id' (MongoDB compatible) within the given query (if ':id-key' is provided).
@@ -446,7 +446,7 @@
 
 (defn adapt-queries-id
   ; @note
-  ; All changes performed recursivelly on the given queries!
+  ; All changes performed recursivelly to nested keys within given queries.
   ;
   ; @description
   ; Applies the 'adapt-query-id' function on the given queries.
@@ -475,7 +475,7 @@
 
 (defn adapt-query
   ; @note
-  ; All changes performed recursivelly on the given query!
+  ; All changes performed recursivelly to nested keys within given query.
   ;
   ; @description
   ; 1. Optionally parses document ID strings into objects within the given query.
@@ -520,7 +520,7 @@
 
 (defn adapt-queries
   ; @note
-  ; All changes performed recursivelly on the given queries!
+  ; All changes performed recursivelly to nested keys within given queries.
   ;
   ; @description
   ; Applies the 'adapt-query' function on the given queries.
@@ -561,7 +561,7 @@
 
 (defn adapt-pipeline-stage-id
   ; @note
-  ; All changes performed recursivelly on the given pipeline stage!
+  ; All changes performed recursivelly to nested keys within given pipeline stage.
   ;
   ; @description
   ; Renames the given ID key to ':_id' (MongoDB compatible) within the given pipeline stage (if ':id-key' is provided).
@@ -588,7 +588,7 @@
 
 (defn adapt-pipeline-stages-id
   ; @note
-  ; All changes performed recursivelly on the given pipeline stages!
+  ; All changes performed recursivelly to nested keys within given pipeline stages.
   ;
   ; @description
   ; Applies the 'adapt-pipeline-stage-id' function on the given pipeline stages.
@@ -619,7 +619,7 @@
 
 (defn adapt-pipeline-stage
   ; @note
-  ; All changes performed recursivelly on the given pipeline stage!
+  ; All changes performed recursivelly to nested keys within given pipeline stage.
   ;
   ; @description
   ; 1. Optionally parses document ID strings into objects within the given pipeline stage.
@@ -664,7 +664,7 @@
 
 (defn adapt-pipeline-stages
   ; @note
-  ; All changes performed recursivelly on the given pipeline stages!
+  ; All changes performed recursivelly to nested keys within given pipeline stages.
   ;
   ; @description
   ; Applies the 'adapt-pipeline-stage' function on the given pipeline stages.
